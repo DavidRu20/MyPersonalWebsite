@@ -1,293 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="theme-color" content="#1a1324" />
-  <title>Applied Engineering & Arcane Intelligence — Portfolio</title>
-  <meta name="description" content="A fantasy-augmented Beaver Works portfolio: applied engineering with cinematic magic." />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Spectral+SC:wght@500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0a0615" />
+  <title>Beaver Works · Applied Engineering & Arcane Intelligence</title>
+  <meta name="description" content="An epic cinematic fantasy portfolio for Beaver Works — where engineering meets arcane power.">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Magic / particle canvas -->
-  <canvas id="magicCanvas" aria-hidden="true"></canvas>
-  <div class="rune-layer" id="runeLayer" aria-hidden="true"></div>
-
-  <!-- Background dragon image -->
-  <div class="dragon-bg"></div>
-
-  <!-- Navigation bar -->
   <nav class="nav">
-    <div class="nav-wrap container">
-      <a class="brand" href="#top" aria-label="Home">
+    <div class="container nav-wrap">
+      <div class="brand">
         <div class="logo">AI</div>
         <div>
           <div class="title">Beaver Works</div>
           <div class="subtitle">Applied Engineering & Arcane Intelligence</div>
         </div>
-      </a>
-      <div class="nav-actions">
-        <button class="btn" id="themeToggle">🌗 Theme</button>
-        <button class="btn" id="toggleMagic">✨ Toggle Magic</button>
+      </div>
+      <div class="actions">
+        <a href="#about" class="btn btn-primary">Enter Realm</a>
       </div>
     </div>
   </nav>
 
-  <!-- Hero / Landing section -->
-  <header id="top" class="hero container">
-    <div class="hero-grid">
-      <div class="hero-text">
-        <span class="badge">🪄 Portfolio in the Making</span>
-        <h1 class="h1">Hi, I'm <span id="name">David</span> — conjuring <span class="gradient" id="typewriter"></span></h1>
-        <p class="kicker">This page is my canvas — full of engineering, AI, and a dash of cinematic magic. Check back soon for projects and creations.</p>
-        <div class="cta">
-          <a class="btn btn-primary" href="#about">📜 About</a>
-          <a class="btn" href="#links">🔮 Outputs</a>
-        </div>
-      </div>
+  <header class="hero">
+    <div class="overlay"></div>
+    <div class="hero-content container">
+      <h1 class="headline">
+        <span class="magic-text">Welcome to the Realm of</span><br>
+        <span class="hero-title">Applied Engineering & Arcane Intelligence</span>
+      </h1>
+      <p class="intro">Here, science fuses with sorcery, and circuits hum with ancient energy. Every spark of code is a spell, every machine a living construct, every project a ritual to reshape reality itself.</p>
+      <a href="#about" class="btn btn-glow">Discover the Arcana</a>
     </div>
   </header>
 
-  <!-- About section -->
-  <section id="about" class="container">
-    <div class="section-head">
-      <div>
-        <div class="section-title">About</div>
-        <h2>Who I Am</h2>
-      </div>
+  <section id="about" class="about container">
+    <div class="portrait">
+      <img src="https://images.unsplash.com/photo-1605733513560-910598e63e9a?q=80&w=1600&auto=format&fit=crop" alt="Dragon illustration">
     </div>
-    <div class="about">
-      <div class="card">
-        <img class="profile" src="profile.jpg" alt="Profile photo" />
-        <p class="mini">Replace <code>profile.jpg</code> with your image.</p>
-      </div>
-      <div class="card">
-        <p>I'm a Beaver Works student focused on <strong>applied engineering</strong> and <strong>AI</strong>. I build hardware prototypes, data visualizations, and run experiments that feel a bit magical.</p>
-        <ul>
-          <li>🧰 Skills: Python, JavaScript, Arduino, Data Viz, Git</li>
-          <li>🧪 Interests: Edge AI, Robotics, Earth Data, Health Tech</li>
-          <li>🎯 Goal: Launch my first flagship project (soon!)</li>
-        </ul>
-      </div>
+    <div class="bio">
+      <h2 class="section-title">About the Apprentice</h2>
+      <p>
+        I am a student of both machine and magic, blending the logic of engineering with the creativity of the arcane. The Beaver Works program taught me to approach technology not just as tools, but as extensions of human imagination — to treat innovation as alchemy.  
+      </p>
+      <p>
+        My focus lies in systems that adapt, learn, and create — where artificial intelligence becomes a living spell that transforms data into understanding. This realm is my workshop, my laboratory, and my sanctum where lines of code and ancient runes coexist.
+      </p>
+      <p>
+        Each idea I explore feels like summoning light from the void — from neural networks to symbolic computation, from digital enchantments to robotic familiars. The goal is not just to build, but to breathe life into the constructed world.
+      </p>
     </div>
   </section>
 
-  <!-- Outputs / links -->
-  <section id="links" class="container">
-    <div class="section-head">
-      <div>
-        <div class="section-title">Outputs</div>
-        <h2>Profiles & Deliverables</h2>
-      </div>
-    </div>
-    <div class="links">
-      <a class="link-card" href="https://github.com/yourgithub" target="_blank" rel="noopener">
-        <strong>GitHub</strong>
-        <div class="mini">Code repositories & commits</div>
-      </a>
-      <a class="link-card" href="resume.pdf" target="_blank" rel="noopener">
-        <strong>Resume (PDF)</strong>
-        <div class="mini">Latest version</div>
-      </a>
-      <a class="link-card" href="mailto:your.email@example.com">
-        <strong>Email</strong>
-        <div class="mini">your.email@example.com</div>
-      </a>
-      <div class="link-card">
-        <strong>Certificates / Badges</strong>
-        <div class="mini">Link your achievements here</div>
-      </div>
+  <section id="links" class="links container">
+    <h2 class="section-title">Tomes & Portals</h2>
+    <div class="link-grid">
+      <a href="#" class="link-card">📜 Resume Scroll</a>
+      <a href="#" class="link-card">⚙️ GitHub Spellbook</a>
+      <a href="#" class="link-card">🔮 Research Codex</a>
+      <a href="#" class="link-card">🌌 Astral Notebook</a>
     </div>
   </section>
 
-  <footer class="container">
-    <div class="mini">© <span id="year"></span> Beaver Works — Applied Engineering & Arcane Intelligence. Crafted with HTML / CSS / JS.</div>
+  <footer>
+    <div class="footer-content container">
+      © <span id="year"></span> Beaver Works · Applied Engineering & Arcane Intelligence.  
+      <br>Crafted in the glow of runes and code.
+    </div>
   </footer>
 
   <script>
-    // ========== Theme Toggle ==========
-    const root = document.documentElement;
-    const themeBtn = document.getElementById('themeToggle');
-    const saved = localStorage.getItem('theme');
-    if (saved) root.setAttribute('data-theme', saved);
-    themeBtn.addEventListener('click', () => {
-      const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-      root.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
-    });
-
-    // ========== Year ==========
     document.getElementById('year').textContent = new Date().getFullYear();
-
-    // ========== Typewriter effect ==========
-    const phrases = [
-      'epic visual stories',
-      'magical tech creations',
-      'digital runes & AI',
-      'engineering meets myth',
-      'future magic in code'
-    ];
-    let idx = 0, ptr = 0, rev = false;
-    const tw = document.getElementById('typewriter');
-    function tick() {
-      const text = phrases[idx];
-      if (!rev) {
-        ptr++;
-        if (ptr === text.length + 6) rev = true;
-      } else {
-        ptr--;
-        if (ptr <= 0) {
-          rev = false;
-          idx = (idx + 1) % phrases.length;
-        }
-      }
-      tw.textContent = text.slice(0, Math.max(0, Math.min(ptr, text.length)));
-      setTimeout(tick, rev ? 50 : 80);
-    }
-    tick();
-
-    // ========== Magic / Particles ==========
-    const canvas = document.getElementById('magicCanvas');
-    const ctx = canvas.getContext('2d');
-    let W = canvas.width = window.innerWidth;
-    let H = canvas.height = window.innerHeight;
-    let particles = [];
-    let magicEnabled = true;
-
-    window.addEventListener('resize', () => {
-      W = canvas.width = window.innerWidth;
-      H = canvas.height = window.innerHeight;
-    });
-
-    class Particle {
-      constructor(x, y, vx, vy, r, life, type) {
-        this.x = x; this.y = y; this.vx = vx; this.vy = vy;
-        this.r = r; this.life = life; this.maxLife = life; this.type = type;
-      }
-      step(dt) {
-        this.x += this.vx * dt;
-        this.y += this.vy * dt;
-        this.vx *= 0.99;
-        this.vy *= 0.99;
-        this.life -= dt;
-      }
-      draw(ctx) {
-        const t = Math.max(0, this.life / this.maxLife);
-        if (this.type === 'orb') {
-          const g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.r * 5);
-          g.addColorStop(0, `rgba(200,150,255,${0.2 * t})`);
-          g.addColorStop(1, `rgba(200,150,255,0)`);
-          ctx.globalAlpha = 0.5 * t;
-          ctx.fillStyle = g;
-          ctx.beginPath();
-          ctx.arc(this.x, this.y, this.r*3, 0, Math.PI*2);
-          ctx.fill();
-        } else {
-          ctx.beginPath();
-          ctx.globalAlpha = 0.9 * t;
-          ctx.fillStyle = `rgba(210,180,255,${0.8 * t})`;
-          ctx.arc(this.x, this.y, this.r * t, 0, Math.PI * 2);
-          ctx.fill();
-        }
-        ctx.globalAlpha = 1;
-      }
-    }
-
-    let last = performance.now();
-    function spawnParticles() {
-      // orbs
-      if (Math.random() < 0.015) {
-        const x = Math.random() * W;
-        const y = Math.random() * H * 0.5;
-        particles.push(new Particle(x, y, (Math.random() - 0.5) * 0.1, (Math.random() - 0.3) * 0.02, 8 + Math.random() * 12, 60 + Math.random() * 30, 'orb'));
-      }
-      // sparks
-      if (Math.random() < 0.05) {
-        const x = Math.random() * W;
-        const y = H - Math.random() * 200;
-        particles.push(new Particle(x, y, (Math.random() - 0.5)*0.3, -(0.8 + Math.random()), 2 + Math.random()*3, 20 + Math.random()*10, 'spark'));
-      }
-    }
-
-    function animate(now) {
-      const dt = Math.min(0.033, (now - last) / 16.666);
-      last = now;
-      if (!magicEnabled) {
-        ctx.clearRect(0, 0, W, H);
-        requestAnimationFrame(animate);
-        return;
-      }
-
-      spawnParticles();
-
-      particles = particles.filter(p => p.life > 0 && p.x >= -100 && p.x <= W + 100 && p.y >= -100 && p.y <= H + 100);
-
-      ctx.clearRect(0, 0, W, H);
-      const g2 = ctx.createLinearGradient(0, 0, W, H);
-      g2.addColorStop(0, 'rgba(80,20,140,0.02)');
-      g2.addColorStop(1, 'rgba(40,200,180,0.02)');
-      ctx.fillStyle = g2;
-      ctx.fillRect(0, 0, W, H);
-
-      particles.forEach(p => p.draw(ctx));
-      requestAnimationFrame(animate);
-    }
-    requestAnimationFrame(animate);
-
-    // ========== Runes in background ==========
-    const runeSVGs = [
-      `<svg viewBox="0 0 100 100" class="rune" style="left:10%;top:8%;width:140px;height:140px;opacity:0.07;transform:rotate(5deg)">
-         <defs><linearGradient id="rg1"><stop offset="0" stop-color="#c69bff"/><stop offset="1" stop-color="#54e2cf"/></linearGradient></defs>
-         <circle cx="50" cy="50" r="40" fill="none" stroke="url(#rg1)" stroke-width="3"/>
-         <path d="M50 20 L50 80 M20 50 L80 50" stroke="url(#rg1)" stroke-width="2" stroke-linecap="round" fill="none"/>
-       </svg>`,
-      `<svg viewBox="0 0 100 100" class="rune" style="right:12%;top:25%;width:160px;height:160px;opacity:0.05;transform:rotate(-15deg)">
-         <defs><linearGradient id="rg2"><stop offset="0" stop-color="#9f6bff"/><stop offset="1" stop-color="#64e6c9"/></linearGradient></defs>
-         <circle cx="50" cy="50" r="45" fill="none" stroke="url(#rg2)" stroke-width="2"/>
-         <path d="M30 30 C50 10, 70 10, 70 30 C90 50, 70 90, 50 70 C30 50, 10 70, 30 30" stroke="url(#rg2)" stroke-width="2" fill="none"/>
-       </svg>`,
-      `<svg viewBox="0 0 100 100" class="rune" style="left:15%;bottom:10%;width:100px;height:100px;opacity:0.06;transform:rotate(22deg)">
-         <circle cx="50" cy="50" r="30" fill="none" stroke="rgba(200,180,255,0.5)" stroke-width="2"/>
-         <path d="M50 30 L58 60 L42 60 Z" fill="rgba(150,240,210,0.1)"/>
-       </svg>`,
-      `<svg viewBox="0 0 100 100" class="rune" style="right:5%;bottom:15%;width:120px;height:120px;opacity:0.04;transform:rotate(-25deg)">
-         <circle cx="50" cy="50" r="35" fill="none" stroke="rgba(180,140,255,0.4)" stroke-width="2"/>
-         <path d="M50 15 L50 85 M35 50 L65 50" stroke="rgba(180,140,255,0.4)" stroke-width="2" fill="none"/>
-       </svg>`
-    ];
-    const runeLayer = document.getElementById('runeLayer');
-    runeLayer.innerHTML = runeSVGs.join('');
-    function animateRunes() {
-      document.querySelectorAll('.rune').forEach((r, i) => {
-        const delay = Math.random() * 4000;
-        r.animate([
-          { transform: r.style.transform + ' translateY(0px)', opacity: r.style.opacity },
-          { transform: r.style.transform + ` translateY(${(i%2?6:-6)}px)`, opacity: parseFloat(r.style.opacity) + 0.03 },
-          { transform: r.style.transform + ' translateY(0px)', opacity: r.style.opacity }
-        ], { duration: 5000 + Math.random()*5000, iterations: Infinity, delay });
-      });
-    }
-    animateRunes();
-
-    // ========== Magic toggle ==========
-    const toggleMagicBtn = document.getElementById('toggleMagic');
-    toggleMagicBtn.addEventListener('click', () => {
-      magicEnabled = !magicEnabled;
-      toggleMagicBtn.textContent = magicEnabled ? '✨ Toggle Magic' : '⛔ Magic Off';
-      if (!magicEnabled) {
-        particles = [];
-        ctx.clearRect(0, 0, W, H);
-      }
-    });
-
-    // ========== Disable on reduced-motion ==========
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (mq.matches) {
-      magicEnabled = false;
-      toggleMagicBtn.textContent = '⛔ Magic Off';
-    }
   </script>
 </body>
 </html>
