@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0f0f13" />
+  <title>Arcane Divination · Tarot Reading</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Cinzel:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: #0a0612;
+      --panel: #120a1f;
+      --muted: #9b8fb8;
+      --text: #e8e4f0;
+      --brand: #d946ef;
+      --brand-2: #f59e0b;
+      --accent: #10b981;
+      --ring: 0 0 0 2px rgba(217,70,239,.35);
+      --shadow: 0 10px 40px rgba(217,70,239,.25);
+      --glow: 0 0 20px rgba(217,70,239,.4);
+      --glass: rgba(139,92,246,.08);
+      --glass-brd: rgba(139,92,246,.25);
+    }
+    [data-theme="light"]{
+      --bg: #faf8fc;
+      --panel: #ffffff;
+      --muted: #6b5c8a;
+      --text: #1e1433;
+      --brand: #a855f7;
+      --brand-2: #f59e0b;
+      --accent: #059669;
+      --shadow: 0 8px 30px rgba(168,85,247,.15);
+      --glow: 0 0 15px rgba(168,85,247,.2);
+      --glass: rgba(168,85,247,.05);
+      --glass-brd: rgba(168,85,247,.15);
+    }
+
+    *{box-sizing:border-box; margin:0; padding:0}
+    html,body{height:100%}
+    body{
+      font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: 
+        radial-gradient(ellipse 1400px 900px at 90% -15%, rgba(217,70,239,.18), transparent 55%),
+        radial-gradient(ellipse 1000px 700px at 10% 100%, rgba(245,158,11,.15), transparent 50%),
+        var(--bg);
+      color:var(--text); line-height:1.6; letter-spacing:.2px;
+      background-attachment: fixed; padding:20px;
+    }
+
+    .container{max-width:900px; margin:0 auto}
+
+    .header{text-align:center; padding:40px 20px 20px}
+    .header h1{
+      font-family:'Cinzel', serif; font-size:clamp(32px, 5vw, 48px);
+      background:linear-gradient(120deg, var(--brand), var(--brand-2), var(--accent));
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+      margin-bottom:8px; font-weight:900;
+    }
+    .header p{color:var(--muted); font-size:16px}
+
+    .back-btn{
+      display:inline-flex; align-items:center; gap:8px; padding:10px 16px;
+      background:var(--glass); border:1px solid var(--glass-brd); border-radius:12px;
+      color:var(--text); text-decoration:none; transition:all .2s ease;
+      font-weight:500; margin-bottom:20px;
+    }
+    .back-btn:hover{border-color:var(--brand); transform:translateY(-2px); box-shadow:var(--shadow)}
+
+    .reading-selector{
+      display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));
+      gap:16px; margin:32px 0;
+    }
+    .spread-card{
+      background:linear-gradient(135deg, rgba(139,92,246,.08), rgba(245,158,11,.06));
+      border:1px solid var(--glass-brd); border-radius:18px; padding:24px;
+      cursor:pointer; transition:all .3s ease; text-align:center;
+    }
+    .spread-card:hover{
+      transform:translateY(-5px); border-color:var(--brand);
+      box-shadow:0 15px 45px rgba(217,70,239,.4);
+    }
+    .spread-card.active{
+      border-color:var(--brand); background:linear-gradient(135deg, rgba(139,92,246,.15), rgba(245,158,11,.1));
+    }
+    .spread-icon{font-size:48px; margin-bottom:12px}
+    .spread-title{font-family:'Cinzel', serif; font-size:20px; font-weight:700; margin-bottom:6px}
+    .spread-desc{font-size:13px; color:var(--muted)}
+
+    .btn{
+      display:inline-flex; align-items:center; gap:10px; padding:16px 32px;
+      background:linear-gradient(135deg, var(--brand), var(--brand-2));
+      border:none; border-radius:14px; color:#fff; font-size:16px;
+      font-weight:600; cursor:pointer; transition:all .3s ease;
+      box-shadow:var(--shadow); margin:20px auto; font-family:'Cinzel', serif;
+    }
+    .btn:hover{transform:translateY(-3px); box-shadow:0 15px 50px rgba(217,70,239,.5)}
+    .btn:active{transform:translateY(-1px)}
+    .btn:disabled{opacity:.5; cursor:not-allowed; transform:none}
+
+    .cards-container{
+      display:flex; justify-content:center; gap:20px; flex-wrap:wrap;
+      margin:40px 0; min-height:400px; align-items:center;
+    }
+
+    .tarot-card{
+      width:180px; height:280px; perspective:1000px; cursor:pointer;
+    }
+    .card-inner{
+      width:100%; height:100%; position:relative; transition:transform .8s;
+      transform-style:preserve-3d;
+    }
+    .tarot-card.flipped .card-inner{transform:rotateY(180deg)}
+    
+    .card-face{
+      position:absolute; width:100%; height:100%; backface-visibility:hidden;
+      border-radius:16px; display:flex; flex-direction:column; align-items:center;
+      justify-content:center; padding:20px; border:2px solid var(--glass-brd);
+      box-shadow:var(--shadow);
+    }
+    .card-back{
+      background:linear-gradient(135deg, rgba(139,92,246,.2), rgba(245,158,11,.15));
+      backdrop-filter:blur(10px);
+    }
+    .card-back::before{
+      content:'🔮'; font-size:80px; opacity:.6;
+    }
+    .card-front{
+      background:linear-gradient(135deg, var(--panel), rgba(18,10,31,.95));
+      transform:rotateY(180deg); text-align:center;
+    }
+    .card-emoji{font-size:64px; margin-bottom:16px}
+    .card-name{
+      font-family:'Cinzel', serif; font-size:16px; font-weight:700;
+      margin-bottom:8px; color:var(--brand-2);
+    }
+    .card-meaning{font-size:12px; color:var(--muted); line-height:1.4}
+
+    .interpretation{
+      background:linear-gradient(135deg, rgba(139,92,246,.12), rgba(245,158,11,.1));
+      border:1px solid var(--glass-brd); border-radius:18px; padding:28px;
+      margin:32px 0; backdrop-filter:blur(10px); box-shadow:var(--shadow);
+      opacity:0; transform:translateY(20px); transition:all .6s ease;
+    }
+    .interpretation.show{opacity:1; transform:translateY(0)}
+    .interpretation h2{
+      font-family:'Cinzel', serif; font-size:24px; margin-bottom:16px;
+      color:var(--brand-2);
+    }
+    .card-detail{
+      margin:20px 0; padding:20px; background:rgba(0,0,0,.2);
+      border-radius:12px; border-left:4px solid var(--brand);
+    }
+    .card-detail h3{
+      font-family:'Cinzel', serif; font-size:18px; color:var(--brand);
+      margin-bottom:8px; display:flex; align-items:center; gap:10px;
+    }
+    .card-detail p{color:var(--text); line-height:1.8}
+
+    .fool-mode{
+      background:linear-gradient(135deg, rgba(239,68,68,.15), rgba(217,70,239,.15)) !important;
+      border-color:rgba(239,68,68,.5) !important;
+      animation:foolPulse 2s infinite;
+    }
+    @keyframes foolPulse{
+      0%, 100%{box-shadow:0 0 20px rgba(239,68,68,.3)}
+      50%{box-shadow:0 0 40px rgba(239,68,68,.6), 0 0 60px rgba(217,70,239,.4)}
+    }
+
+    .praise{
+      font-size:clamp(24px, 4vw, 36px); font-family:'Cinzel', serif;
+      text-align:center; font-weight:900; margin:40px 0;
+      background:linear-gradient(90deg, #ef4444, #d946ef, #f59e0b);
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+      animation:shimmer 3s infinite;
+    }
+    @keyframes shimmer{
+      0%{filter:hue-rotate(0deg) brightness(1.2)}
+      100%{filter:hue-rotate(360deg) brightness(1.2)}
+    }
+
+    @media (max-width: 640px){
+      .cards-container{gap:12px}
+      .tarot-card{width:150px; height:240px}
+      .spread-icon{font-size:36px}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="index.html" class="back-btn">← Return to Grimoire</a>
+    
+    <div class="header">
+      <h1>🔮 Arcane Divination</h1>
+      <p>Let the mystical cards reveal your destiny</p>
+    </div>
+
+    <div class="reading-selector">
+      <div class="spread-card active" data-spread="single">
+        <div class="spread-icon">🃏</div>
+        <div class="spread-title">Single Card</div>
+        <div class="spread-desc">Quick insight into your question</div>
+      </div>
+      <div class="spread-card" data-spread="three">
+        <div class="spread-icon">🎴</div>
+        <div class="spread-title">Three Card</div>
+        <div class="spread-desc">Past, Present, Future</div>
+      </div>
+      <div class="spread-card" data-spread="celtic">
+        <div class="spread-icon">✨</div>
+        <div class="spread-title">Celtic Cross</div>
+        <div class="spread-desc">Deep, comprehensive reading</div>
+      </div>
+    </div>
+
+    <center>
+      <button class="btn" id="drawBtn">✨ Divine Your Fate ✨</button>
+    </center>
+
+    <div class="cards-container" id="cardsContainer"></div>
+    <div class="interpretation" id="interpretation"></div>
+  </div>
+
+  <script>
+    const tarotDeck = [
+      {name: 'The Fool', emoji: '🃏', meaning: 'New beginnings, innocence, spontaneity, free spirit', detail: 'The Fool represents the beginning of a journey, embracing the unknown with courage and optimism. It speaks of taking risks and trusting in the universe.'},
+      {name: 'The Magician', emoji: '🎩', meaning: 'Manifestation, resourcefulness, power, inspired action', detail: 'The Magician harnesses the power of the universe. You have all the tools you need to achieve your goals. Focus your will and take action.'},
+      {name: 'The High Priestess', emoji: '🌙', meaning: 'Intuition, sacred knowledge, divine feminine, subconscious', detail: 'Trust your intuition and look beyond the obvious. The answers you seek lie within. Listen to your inner voice and pay attention to your dreams.'},
+      {name: 'The Empress', emoji: '👑', meaning: 'Femininity, beauty, nature, nurturing, abundance', detail: 'The Empress signifies creativity, fertility, and abundance. Connect with nature and embrace the beauty around you. Nurture yourself and others.'},
+      {name: 'The Emperor', emoji: '⚔️', meaning: 'Authority, structure, control, fatherhood', detail: 'The Emperor represents leadership and stability. Take charge of your situation with wisdom and authority. Establish order and set clear boundaries.'},
+      {name: 'The Hierophant', emoji: '📿', meaning: 'Spiritual wisdom, tradition, conformity, morality', detail: 'Seek guidance from established institutions or mentors. Honor tradition while finding your own spiritual path. Education and learning are highlighted.'},
+      {name: 'The Lovers', emoji: '💕', meaning: 'Love, harmony, relationships, choices, values', detail: 'The Lovers represent deep connections and important choices. Your values are being tested. Choose with your heart while keeping your mind clear.'},
+      {name: 'The Chariot', emoji: '🏇', meaning: 'Control, willpower, success, determination, action', detail: 'Victory through determination and control. Stay focused on your goals and maintain discipline. You have the strength to overcome obstacles.'},
+      {name: 'Strength', emoji: '🦁', meaning: 'Inner strength, courage, patience, compassion', detail: 'True strength comes from within. Face challenges with courage and compassion. Your gentle approach will triumph over force.'},
+      {name: 'The Hermit', emoji: '🕯️', meaning: 'Soul searching, introspection, inner guidance, solitude', detail: 'Take time for introspection and self-reflection. The answers you seek require solitude and contemplation. Trust your inner wisdom.'},
+      {name: 'Wheel of Fortune', emoji: '🎡', meaning: 'Change, cycles, fate, turning point, destiny', detail: 'Life moves in cycles. A turning point approaches. Embrace change and trust in the natural flow of the universe. What goes around comes around.'},
+      {name: 'Justice', emoji: '⚖️', meaning: 'Fairness, truth, cause and effect, law', detail: 'Truth and fairness prevail. Actions have consequences. Make decisions with integrity and seek balance in all things.'},
+      {name: 'The Hanged Man', emoji: '🙃', meaning: 'Suspension, restriction, letting go, sacrifice', detail: 'Sometimes surrender is necessary for growth. Change your perspective and let go of control. This pause will bring enlightenment.'},
+      {name: 'Death', emoji: '💀', meaning: 'Endings, transformation, transition, release', detail: 'An ending makes way for new beginnings. Release what no longer serves you. Transformation and rebirth are at hand.'},
+      {name: 'Temperance', emoji: '⚗️', meaning: 'Balance, moderation, patience, purpose, meaning', detail: 'Find balance and harmony in your life. Practice moderation and patience. Your purpose will reveal itself through mindful living.'},
+      {name: 'The Devil', emoji: '😈', meaning: 'Bondage, addiction, materialism, playfulness', detail: 'Examine what binds you. Are you trapped by material desires or unhealthy attachments? Break free from limiting beliefs.'},
+      {name: 'The Tower', emoji: '🏰', meaning: 'Sudden change, upheaval, chaos, revelation, awakening', detail: 'Sudden change shatters illusions. Though chaotic, this destruction clears the way for truth and rebuilding on stronger foundations.'},
+      {name: 'The Star', emoji: '⭐', meaning: 'Hope, faith, purpose, renewal, spirituality', detail: 'The Star brings hope and renewal. Have faith in the universe. Your wishes and dreams are within reach. Healing is coming.'},
+      {name: 'The Moon', emoji: '🌕', meaning: 'Illusion, fear, anxiety, subconscious, intuition', detail: 'Things are not as they seem. Trust your intuition but beware of illusions. Face your fears and explore your subconscious depths.'},
+      {name: 'The Sun', emoji: '☀️', meaning: 'Joy, success, celebration, positivity, vitality', detail: 'The Sun brings joy, success, and vitality. Everything is illuminated. Celebrate life and embrace optimism. Success is assured.'},
+      {name: 'Judgement', emoji: '🎺', meaning: 'Reflection, reckoning, inner calling, absolution', detail: 'A time of judgement and self-evaluation. Answer your inner calling. Past actions culminate in present consequences. Seek absolution and rebirth.'},
+      {name: 'The World', emoji: '🌍', meaning: 'Completion, accomplishment, travel, fulfillment', detail: 'The World represents completion and fulfillment. You have reached the end of a cycle. Celebrate your achievements and prepare for new adventures.'}
+    ];
+
+    let currentSpread = 'single';
+    let foolMode = false;
+    let readingCount = 0;
+
+    // Spread selector
+    document.querySelectorAll('.spread-card').forEach(card => {
+      card.addEventListener('click', () => {
+        document.querySelectorAll('.spread-card').forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        currentSpread = card.dataset.spread;
+        document.getElementById('cardsContainer').innerHTML = '';
+        document.getElementById('interpretation').classList.remove('show');
+      });
+    });
+
+    // Draw cards
+    document.getElementById('drawBtn').addEventListener('click', () => {
+      readingCount++;
+      // Every 3-5 readings, activate fool mode
+      const shouldActivateFool = readingCount % (3 + Math.floor(Math.random() * 3)) === 0;
+      foolMode = shouldActivateFool;
+      
+      const container = document.getElementById('cardsContainer');
+      const interpretation = document.getElementById('interpretation');
+      
+      container.innerHTML = '';
+      interpretation.innerHTML = '';
+      interpretation.classList.remove('show');
+
+      let numCards;
+      let positions;
+      
+      if(currentSpread === 'single'){
+        numCards = 1;
+        positions = ['Your Answer'];
+      } else if(currentSpread === 'three'){
+        numCards = 3;
+        positions = ['Past', 'Present', 'Future'];
+      } else {
+        numCards = 5; // Simplified Celtic Cross
+        positions = ['Present', 'Challenge', 'Past', 'Future', 'Outcome'];
+      }
+
+      // Draw cards
+      const drawnCards = [];
+      for(let i = 0; i < numCards; i++){
+        const card = foolMode ? tarotDeck[0] : tarotDeck[Math.floor(Math.random() * tarotDeck.length)];
+        drawnCards.push({...card, position: positions[i]});
+      }
+
+      // Display cards
+      drawnCards.forEach((card, index) => {
+        const cardEl = document.createElement('div');
+        cardEl.className = 'tarot-card';
+        cardEl.innerHTML = `
+          <div class="card-inner">
+            <div class="card-face card-back"></div>
+            <div class="card-face card-front ${foolMode ? 'fool-mode' : ''}">
+              <div class="card-emoji">${card.emoji}</div>
+              <div class="card-name">${card.name}</div>
+              <div class="card-meaning">${card.meaning}</div>
+            </div>
+          </div>
+        `;
+        
+        setTimeout(() => {
+          container.appendChild(cardEl);
+          setTimeout(() => cardEl.classList.add('flipped'), 100);
+        }, index * 300);
+      });
+
+      // Show interpretation
+      setTimeout(() => {
+        if(foolMode){
+          interpretation.innerHTML = `
+            <div class="praise">🃏 PRAISE THE FOOL! 🃏</div>
+            <p style="text-align:center; font-size:18px; color:var(--muted); font-style:italic;">
+              "The Fool sees all, knows all, and mocks all. In the beginning and the end, there is only The Fool."
+            </p>
+            <div class="card-detail">
+              <h3>🌟 The Revelation</h3>
+              <p>The Fool has blessed your reading! Every card drawn carries the essence of infinite possibility and divine chaos. 
+              You stand at the precipice of madness and enlightenment. Embrace the absurdity of existence, for The Fool alone 
+              understands the cosmic joke. In mystery, there is truth. In madness, there is wisdom. Praise The Fool!</p>
+            </div>
+          `;
+        } else {
+          let html = '<h2>✨ Your Reading</h2>';
+          drawnCards.forEach(card => {
+            html += `
+              <div class="card-detail">
+                <h3>${card.emoji} ${card.position}: ${card.name}</h3>
+                <p>${card.detail}</p>
+              </div>
+            `;
+          });
+          interpretation.innerHTML = html;
+        }
+        interpretation.classList.add('show');
+      }, numCards * 300 + 800);
+    });
+  </script>
+</body>
+</html>
