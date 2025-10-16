@@ -238,7 +238,7 @@
     .fade-in{opacity:0; transform:translateY(12px); animation:fade .7s ease forwards}
     @keyframes fade{to{opacity:1; transform:none}}
 
-    /* Dragon decoration - enhanced */
+    /* Dragon decoration - SVG enhanced */
     @keyframes dragonFly{
       0%{transform:translateX(0) translateY(0) rotate(0deg) scale(1)}
       25%{transform:translateX(-30px) translateY(-20px) rotate(-5deg) scale(1.05)}
@@ -247,16 +247,114 @@
       100%{transform:translateX(0) translateY(0) rotate(0deg) scale(1)}
     }
     @keyframes dragonBreath{
-      0%, 100%{filter:drop-shadow(0 0 15px rgba(245,158,11,.4))}
-      50%{filter:drop-shadow(0 0 30px rgba(245,158,11,.7)) drop-shadow(0 0 40px rgba(217,70,239,.5))}
+      0%, 100%{filter:drop-shadow(0 0 20px rgba(245,158,11,.5)) drop-shadow(0 0 10px rgba(239,68,68,.3))}
+      50%{filter:drop-shadow(0 0 40px rgba(245,158,11,.8)) drop-shadow(0 0 25px rgba(239,68,68,.6)) drop-shadow(0 0 50px rgba(217,70,239,.4))}
     }
     .dragon{
-      font-size:100px; position:absolute; 
+      position:absolute; 
       animation:dragonFly 15s infinite ease-in-out, dragonBreath 3s infinite ease-in-out;
-      pointer-events:none; z-index:1;
-      transition:transform .3s ease;
+      pointer-events:auto; z-index:1;
+      transition:transform .3s ease; cursor:pointer;
     }
-    .dragon:hover{transform:scale(1.15) !important}
+    .dragon:hover{transform:scale(1.2) !important; filter:drop-shadow(0 0 60px rgba(245,158,11,1)) !important}
+    
+    /* Battle stats HUD - collapsible */
+    .battle-hud{
+      position:fixed; top:80px; right:-200px; z-index:40;
+      background:linear-gradient(135deg, rgba(139,92,246,.2), rgba(245,158,11,.15));
+      border:1px solid var(--glass-brd); border-radius:16px 0 0 16px; padding:16px 20px;
+      backdrop-filter:blur(12px); box-shadow:var(--shadow);
+      font-size:13px; min-width:200px; transition:right .4s ease;
+    }
+    .battle-hud:hover, .battle-hud.show{
+      right:0;
+    }
+    .battle-hud::before{
+      content:'📊'; position:absolute; left:-40px; top:50%; transform:translateY(-50%);
+      background:linear-gradient(135deg, rgba(139,92,246,.9), rgba(245,158,11,.8));
+      border:1px solid var(--glass-brd); border-radius:12px 0 0 12px;
+      padding:10px 8px; font-size:20px; cursor:pointer;
+      box-shadow:var(--shadow);
+    }
+    .stat-bar{
+      height:10px; background:rgba(0,0,0,.4); border-radius:999px; margin:8px 0;
+      overflow:hidden; position:relative; border:1px solid rgba(0,0,0,.2);
+    }
+    .stat-fill{
+      height:100%; border-radius:999px; transition:width .5s ease;
+      background:linear-gradient(90deg, var(--brand), var(--brand-2));
+      box-shadow:0 0 12px var(--brand);
+    }
+    .stat-label{
+      display:flex; justify-content:space-between; font-size:12px;
+      color:var(--text); margin-bottom:3px; font-family:'Cinzel', serif;
+      font-weight:600;
+    }
+
+    /* Spell book floating action */
+    @keyframes bookFloat{
+      0%, 100%{transform:translateY(0px) rotate(-3deg)}
+      50%{transform:translateY(-10px) rotate(3deg)}
+    }
+    .spell-book{
+      position:fixed; bottom:36px; right:36px; z-index:50;
+      font-size:56px; cursor:pointer; animation:bookFloat 4s infinite ease-in-out;
+      filter:drop-shadow(0 6px 25px rgba(217,70,239,.6));
+      transition:all .3s ease;
+    }
+    .spell-book:hover{transform:scale(1.2) rotate(8deg) !important; filter:drop-shadow(0 10px 35px rgba(217,70,239,.9)) !important}
+    .spell-book:active{transform:scale(1.1) rotate(-5deg) !important}
+
+    /* Weapon icons floating - more subtle */
+    @keyframes weaponFloat{
+      0%, 100%{transform:translateY(0) rotate(0deg)}
+      50%{transform:translateY(-20px) rotate(15deg)}
+    }
+    .weapon{
+      position:absolute; font-size:36px; opacity:.15;
+      animation:weaponFloat 8s infinite ease-in-out;
+      pointer-events:none; z-index:0;
+      filter:drop-shadow(0 2px 8px rgba(139,92,246,.3));
+    }
+
+    /* Lightning effect on scroll - more subtle */
+    @keyframes lightning{
+      0%, 100%{opacity:0}
+      15%, 35%{opacity:.3}
+      25%{opacity:0}
+    }
+    .lightning{
+      position:fixed; top:0; left:0; right:0; bottom:0;
+      background:radial-gradient(ellipse at 50% 0%, rgba(245,158,11,.2), transparent 50%);
+      pointer-events:none; z-index:999; opacity:0;
+    }
+
+    /* Achievement badge popup */
+    @keyframes achievementSlide{
+      0%{transform:translateX(400px); opacity:0}
+      10%, 90%{transform:translateX(0); opacity:1}
+      100%{transform:translateX(400px); opacity:0}
+    }
+    .achievement{
+      position:fixed; top:120px; right:24px; z-index:60;
+      background:linear-gradient(135deg, rgba(16,185,129,.95), rgba(5,150,105,.9));
+      border:2px solid var(--accent); border-radius:14px; padding:12px 16px;
+      box-shadow:0 10px 40px rgba(16,185,129,.6);
+      animation:achievementSlide 4s ease-in-out;
+      display:flex; align-items:center; gap:10px; color:#fff;
+    }
+
+    /* Magic circle decoration */
+    @keyframes rotate{
+      from{transform:rotate(0deg)}
+      to{transform:rotate(360deg)}
+    }
+    .magic-circle{
+      position:absolute; width:300px; height:300px; opacity:.08;
+      background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="100" cy="100" r="80" fill="none" stroke="%23d946ef" stroke-width="2"/><circle cx="100" cy="100" r="60" fill="none" stroke="%23f59e0b" stroke-width="1.5"/><circle cx="100" cy="100" r="40" fill="none" stroke="%2310b981" stroke-width="1"/><path d="M100,20 L105,95 L100,100 L95,95 Z M180,100 L105,105 L100,100 L105,95 Z M100,180 L95,105 L100,100 L105,105 Z M20,100 L95,95 L100,100 L95,105 Z" fill="%23d946ef"/></svg>') center/contain no-repeat;
+      animation:rotate 30s linear infinite;
+      pointer-events:none;
+    }
 
     @media (max-width: 980px){
       .hero-grid{grid-template-columns:1fr}
@@ -276,6 +374,22 @@
   <!-- Mystical rune particles -->
   <div id="particles"></div>
 
+  <!-- Lightning flash effect -->
+  <div class="lightning" id="lightning"></div>
+
+  <!-- Battle HUD -->
+  <div class="battle-hud">
+    <div class="stat-label"><span>⚔️ Power</span><span id="powerLevel">87</span></div>
+    <div class="stat-bar"><div class="stat-fill" style="width:87%"></div></div>
+    <div class="stat-label"><span>🔮 Mana</span><span id="manaLevel">92</span></div>
+    <div class="stat-bar"><div class="stat-fill" style="width:92%; background:linear-gradient(90deg, #a855f7, #10b981)"></div></div>
+    <div class="stat-label"><span>🛡️ Defense</span><span id="defenseLevel">78</span></div>
+    <div class="stat-bar"><div class="stat-fill" style="width:78%; background:linear-gradient(90deg, #f59e0b, #ef4444)"></div></div>
+  </div>
+
+  <!-- Floating spell book -->
+  <div class="spell-book" id="spellBook" title="Open Spell Grimoire">📕</div>
+
   <!-- NAV -->
   <nav class="nav">
     <div class="nav-wrap container">
@@ -287,6 +401,7 @@
         </div>
       </a>
       <div class="nav-actions">
+        <a class="btn" href="#prophecy">🔮 Arcane Divination</a>
         <button class="btn" id="themeToggle" aria-label="Toggle theme">✨ Realm</button>
         <a class="btn btn-primary" href="#projects">🐉 Quests</a>
       </div>
@@ -305,7 +420,8 @@
         <p class="kicker">Welcome to my arcane grimoire. Within these enchanted pages lie my projects, spell‑crafting experiments, and artifacts from the <strong>Applied Engineering & AI</strong> realm — from mystical Arduino contraptions and data divination to enchanted web apps and dragon‑powered ML models.</p>
         <div class="cta">
           <a class="btn btn-primary" href="#about">📜 My Saga</a>
-          <a class="btn" href="#links">🔗 Artifacts</a>
+          <a class="btn" href="#prophecy">🔮 Divine Future</a>
+          <a class="btn" href="#links">🗝️ Artifacts</a>
           <a class="btn" href="#projects">⚗️ Experiments</a>
         </div>
       </div>
@@ -322,9 +438,19 @@
     </div>
   </header>
 
-  <!-- Dragon guardian - enhanced -->
-  <div class="dragon" style="top:12%; right:8%;">🐉</div>
-  <div class="dragon" style="bottom:15%; left:5%; animation-delay:5s; font-size:80px; opacity:.25">🐲</div>
+  <!-- Dragon emojis - simple and clean -->
+  <div class="dragon" style="top:10%; right:5%; font-size:80px;">🐉</div>
+  <div class="dragon" style="bottom:12%; left:4%; animation-delay:5s; font-size:70px; opacity:0.75">🐲</div>
+
+  <!-- Floating weapons -->
+  <div class="weapon" style="top:25%; left:10%; animation-delay:1s">⚔️</div>
+  <div class="weapon" style="top:60%; right:12%; animation-delay:3s">🗡️</div>
+  <div class="weapon" style="bottom:30%; left:15%; animation-delay:2s">🛡️</div>
+  <div class="weapon" style="top:45%; right:8%; animation-delay:4s; font-size:28px">🏹</div>
+
+  <!-- Magic circles -->
+  <div class="magic-circle" style="top:30%; left:-10%"></div>
+  <div class="magic-circle" style="bottom:20%; right:-8%; animation-duration:40s; animation-direction:reverse"></div>
 
   <!-- ABOUT -->
   <section id="about" class="container">
@@ -431,6 +557,92 @@
       p.style.animationDuration = (10 + Math.random() * 8) + 's';
       particles.appendChild(p);
     }
+
+    // Lightning effect on scroll - more subtle
+    let lastScroll = 0;
+    window.addEventListener('scroll', () => {
+      const scrollDiff = Math.abs(window.scrollY - lastScroll);
+      if(scrollDiff > 200 && Math.random() > 0.85){
+        const lightning = document.getElementById('lightning');
+        lightning.style.animation = 'lightning 0.4s ease-out';
+        setTimeout(() => lightning.style.animation = 'none', 400);
+      }
+      lastScroll = window.scrollY;
+    });
+
+    // Battle HUD toggle
+    const battleHud = document.querySelector('.battle-hud');
+    battleHud.addEventListener('mouseenter', () => battleHud.classList.add('show'));
+    battleHud.addEventListener('mouseleave', () => battleHud.classList.remove('show'));
+
+    // Spell book interaction
+    const spellBook = document.getElementById('spellBook');
+    let achievements = 0;
+    spellBook.addEventListener('click', () => {
+      achievements++;
+      const messages = [
+        '🎖️ Achievement: Spell Discovered!',
+        '⚡ New Power: Lightning Bolt!',
+        '🔮 Wisdom Gained: +10 XP',
+        '🏆 Title Earned: Code Wizard!',
+        '✨ Magical Artifact Found!',
+        '🐉 Dragon Tamed: +15 XP',
+        '⚔️ Mastery: Combat Training!',
+        '📚 Knowledge: Ancient Tome!'
+      ];
+      
+      const achieve = document.createElement('div');
+      achieve.className = 'achievement';
+      achieve.innerHTML = `<span style="font-size:24px">🎉</span><span>${messages[achievements % messages.length]}</span>`;
+      document.body.appendChild(achieve);
+      
+      // Update battle stats
+      const powerEl = document.getElementById('powerLevel');
+      const manaEl = document.getElementById('manaLevel');
+      const defenseEl = document.getElementById('defenseLevel');
+      
+      const newPower = Math.min(100, parseInt(powerEl.textContent) + Math.floor(Math.random() * 4) + 1);
+      const newMana = Math.min(100, parseInt(manaEl.textContent) + Math.floor(Math.random() * 3) + 1);
+      const newDefense = Math.min(100, parseInt(defenseEl.textContent) + Math.floor(Math.random() * 3) + 1);
+      
+      powerEl.textContent = newPower;
+      manaEl.textContent = newMana;
+      defenseEl.textContent = newDefense;
+      
+      powerEl.parentElement.nextElementSibling.firstElementChild.style.width = newPower + '%';
+      manaEl.parentElement.nextElementSibling.firstElementChild.style.width = newMana + '%';
+      defenseEl.parentElement.nextElementSibling.firstElementChild.style.width = newDefense + '%';
+      
+      // Show battle HUD temporarily
+      battleHud.classList.add('show');
+      setTimeout(() => battleHud.classList.remove('show'), 3000);
+      
+      setTimeout(() => achieve.remove(), 4000);
+    });
+
+    // Dragon click interaction - more subtle
+    document.querySelectorAll('.dragon').forEach(dragon => {
+      dragon.addEventListener('click', () => {
+        const roars = ['🔥', '💥', '⚡'];
+        const roar = document.createElement('div');
+        roar.style.position = 'fixed';
+        roar.style.fontSize = '64px';
+        roar.style.left = '50%';
+        roar.style.top = '40%';
+        roar.style.transform = 'translate(-50%, -50%)';
+        roar.style.zIndex = '1000';
+        roar.style.pointerEvents = 'none';
+        roar.textContent = roars[Math.floor(Math.random() * roars.length)];
+        roar.style.animation = 'fade 1.2s ease-out forwards';
+        document.body.appendChild(roar);
+        setTimeout(() => roar.remove(), 1200);
+        
+        // Lightning flash
+        const lightning = document.getElementById('lightning');
+        lightning.style.animation = 'lightning 0.5s ease-out';
+        setTimeout(() => lightning.style.animation = 'none', 500);
+      });
+    });
 
     // Theme Toggle
     const themeBtn = document.getElementById('themeToggle');
