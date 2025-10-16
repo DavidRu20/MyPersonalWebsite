@@ -3,27 +3,292 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#090a0f" />
-  <title>Arcane Engineering & AI · Beaver Works Portfolio</title>
-  <meta name="description" content="A fantasy-themed, modern portfolio template for MIT Beaver Works students in the Applied Engineering & AI track." />
+  <meta name="theme-color" content="#0f0f13" />
+  <title>Arcane Engineering & AI · Beaver Works Grimoire</title>
+  <meta name="description" content="A mystical portfolio chronicling my journey through the realms of Applied Engineering & AI." />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Cormorant+Garamond:wght@600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Cinzel:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: #0a0612;
+      --panel: #120a1f;
+      --muted: #9b8fb8;
+      --text: #e8e4f0;
+      --brand: #d946ef; /* mystic purple */
+      --brand-2: #f59e0b; /* dragon gold */
+      --accent: #10b981; /* emerald magic */
+      --ring: 0 0 0 2px rgba(217,70,239,.35);
+      --shadow: 0 10px 40px rgba(217,70,239,.25);
+      --glow: 0 0 20px rgba(217,70,239,.4);
+      --glass: rgba(139,92,246,.08);
+      --glass-brd: rgba(139,92,246,.25);
+    }
+    [data-theme="light"]{
+      --bg: #faf8fc;
+      --panel: #ffffff;
+      --muted: #6b5c8a;
+      --text: #1e1433;
+      --brand: #a855f7;
+      --brand-2: #f59e0b;
+      --accent: #059669;
+      --ring: 0 0 0 2px rgba(168,85,247,.25);
+      --shadow: 0 8px 30px rgba(168,85,247,.15);
+      --glow: 0 0 15px rgba(168,85,247,.2);
+      --glass: rgba(168,85,247,.05);
+      --glass-brd: rgba(168,85,247,.15);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: 
+        radial-gradient(ellipse 1400px 900px at 90% -15%, rgba(217,70,239,.18), transparent 55%),
+        radial-gradient(ellipse 1000px 700px at 10% 100%, rgba(245,158,11,.15), transparent 50%),
+        radial-gradient(ellipse 800px 600px at 50% 50%, rgba(16,185,129,.08), transparent 60%),
+        var(--bg);
+      color:var(--text); line-height:1.6; letter-spacing:.2px;
+      background-attachment: fixed;
+    }
+    a{color:inherit; text-decoration:none}
+    .container{max-width:1100px; margin:0 auto; padding:24px}
+
+    /* Mystical rune particles */
+    @keyframes float{
+      0%, 100%{transform:translateY(0px) translateX(0px) rotate(0deg)}
+      33%{transform:translateY(-25px) translateX(15px) rotate(120deg)}
+      66%{transform:translateY(-12px) translateX(-15px) rotate(240deg)}
+    }
+    @keyframes runeGlow{
+      0%, 100%{opacity:.15; text-shadow:0 0 8px var(--brand)}
+      50%{opacity:.35; text-shadow:0 0 15px var(--brand), 0 0 25px var(--brand-2)}
+    }
+    .magic-particle{
+      position:fixed; font-size:18px; color:var(--brand); 
+      pointer-events:none; font-family:'Cinzel', serif;
+      animation:float 12s infinite ease-in-out, runeGlow 4s infinite ease-in-out;
+    }
+
+    /* NAV */
+    .nav{
+      position:sticky; top:0; z-index:50; backdrop-filter:saturate(1.3) blur(12px);
+      background:linear-gradient(180deg, rgba(10,6,18,.85), rgba(10,6,18,0));
+      border-bottom:1px solid var(--glass-brd);
+      box-shadow:0 4px 20px rgba(0,0,0,.3);
+    }
+    .nav-wrap{display:flex; align-items:center; justify-content:space-between; gap:16px; padding:14px 24px}
+    .brand{display:flex; align-items:center; gap:12px; text-decoration:none; transition:transform .3s ease}
+    .brand:hover{transform:scale(1.03)}
+    .logo{
+      width:42px; height:42px; border-radius:14px; display:grid; place-items:center; 
+      font-weight:900; font-size:20px;
+      background: conic-gradient(from 200deg, var(--brand), var(--brand-2), var(--accent), var(--brand)); 
+      color:#fff; box-shadow:var(--glow);
+      animation:pulse 3s infinite ease-in-out;
+    }
+    @keyframes pulse{
+      0%, 100%{box-shadow:var(--glow)}
+      50%{box-shadow:0 0 30px rgba(217,70,239,.6)}
+    }
+    .title{font-size:16px; font-weight:700; letter-spacing:.6px; font-family:'Cinzel', serif}
+    .subtitle{font-size:11px; color:var(--muted); margin-top:-4px; letter-spacing:1.5px}
+    .nav-actions{display:flex; gap:10px; align-items:center}
+    .btn{
+      border:1px solid var(--glass-brd); background:var(--glass); color:var(--text);
+      padding:10px 16px; border-radius:12px; cursor:pointer; 
+      transition:all .2s ease; font-weight:500; font-size:14px;
+    }
+    .btn:hover{transform:translateY(-2px); border-color:var(--brand); box-shadow:var(--shadow)}
+    .btn-primary{
+      background:linear-gradient(135deg, var(--brand), var(--brand-2)); 
+      border:none; color:#fff; font-weight:600;
+    }
+    .btn-primary:hover{box-shadow:0 8px 25px rgba(217,70,239,.4)}
+
+    /* HERO */
+    .hero{padding:80px 24px 32px}
+    .hero-grid{display:grid; grid-template-columns:1.1fr .9fr; gap:32px; align-items:center}
+    .badge{
+      display:inline-flex; align-items:center; gap:8px; font-weight:600; color:#fff; 
+      background:linear-gradient(90deg, var(--brand), var(--brand-2));
+      border-radius:999px; padding:9px 14px; box-shadow:var(--shadow); 
+      font-size:12px; letter-spacing:.5px; font-family:'Cinzel', serif;
+    }
+    .h1{
+      font-size: clamp(30px, 4.5vw, 48px); line-height:1.15; margin:18px 0 12px; 
+      font-weight:900; font-family:'Cinzel', serif; text-shadow:0 2px 10px rgba(0,0,0,.3);
+    }
+    .h1 span.gradient{
+      background:linear-gradient(120deg, var(--brand), var(--brand-2), var(--accent)); 
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+      animation:shimmer 3s infinite linear;
+    }
+    @keyframes shimmer{
+      0%{filter:hue-rotate(0deg)}
+      100%{filter:hue-rotate(360deg)}
+    }
+    .kicker{color:var(--muted); max-width:58ch; font-size:15px}
+    .cta{margin-top:20px; display:flex; gap:12px; flex-wrap:wrap}
+    .hero-card{
+      border:1px solid var(--glass-brd); 
+      background:linear-gradient(135deg, rgba(139,92,246,.12), rgba(245,158,11,.1));
+      border-radius:20px; padding:20px; box-shadow:var(--shadow);
+      backdrop-filter:blur(10px);
+    }
+    .hero-list{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:14px}
+    .hero-item{
+      border:1px dashed var(--glass-brd); border-radius:14px; padding:12px; 
+      background:var(--glass); font-size:13px;
+      transition:all .2s ease;
+    }
+    .hero-item:hover{border-color:var(--brand); background:rgba(139,92,246,.12)}
+    .mini{font-size:12px; color:var(--muted)}
+
+    /* SECTIONS */
+    section{padding:40px 24px}
+    .section-title{
+      font-size:13px; letter-spacing:.3em; color:var(--brand-2); 
+      text-transform:uppercase; font-weight:700; font-family:'Cinzel', serif;
+    }
+    .section-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:18px}
+    .section-head h2{
+      margin:6px 0 0; font-size:28px; font-family:'Cinzel', serif; 
+      font-weight:700; text-shadow:0 2px 8px rgba(0,0,0,.2);
+    }
+
+    /* ABOUT */
+    .about{display:grid; grid-template-columns:.8fr 1.2fr; gap:24px; align-items:start}
+    .card{
+      border:1px solid var(--glass-brd); background:var(--panel); 
+      border-radius:18px; padding:20px; box-shadow:var(--shadow);
+      transition:all .3s ease;
+    }
+    .card:hover{border-color:var(--brand); box-shadow:0 12px 40px rgba(217,70,239,.3)}
+    .profile{
+      width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:16px; 
+      border:2px solid var(--glass-brd); box-shadow:0 4px 20px rgba(0,0,0,.3);
+    }
+
+    /* PROJECTS */
+    .filters{display:flex; gap:10px; flex-wrap:wrap}
+    .chip{
+      padding:9px 14px; border-radius:999px; border:1px solid var(--glass-brd); 
+      background:var(--glass); cursor:pointer; font-size:13px; font-weight:500;
+      transition:all .2s ease;
+    }
+    .chip:hover{border-color:var(--brand); background:rgba(139,92,246,.15)}
+    .chip.active{
+      background:linear-gradient(135deg, var(--brand), var(--brand-2)); 
+      border-color:transparent; color:#fff; box-shadow:var(--shadow);
+    }
+
+    .grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px}
+    .proj{
+      position:relative; overflow:hidden; border-radius:18px; 
+      border:1px solid var(--glass-brd);
+      background:linear-gradient(135deg, rgba(139,92,246,.08), rgba(245,158,11,.06));
+      box-shadow:var(--shadow); transition:all .3s ease;
+    }
+    .proj:hover{
+      transform:translateY(-6px) scale(1.02); 
+      border-color:var(--brand); 
+      box-shadow:0 18px 50px rgba(217,70,239,.45);
+    }
+    .thumb{
+      height:170px; 
+      background:linear-gradient(135deg, rgba(217,70,239,.25), rgba(245,158,11,.25)); 
+      display:grid; place-items:center; font-weight:800;
+      position:relative; overflow:hidden;
+    }
+    .thumb::before{
+      content:''; position:absolute; inset:0;
+      background:radial-gradient(circle at 50% 50%, rgba(255,255,255,.1), transparent);
+      opacity:0; transition:opacity .3s ease;
+    }
+    .proj:hover .thumb::before{opacity:1}
+    .proj-body{padding:16px}
+    .tags{display:flex; gap:8px; flex-wrap:wrap; margin:8px 0}
+    .tag{
+      font-size:11px; padding:5px 10px; border-radius:999px; 
+      background:rgba(139,92,246,.12); border:1px solid var(--glass-brd);
+      font-weight:500;
+    }
+    .proj a.btn{display:inline-flex; gap:8px; align-items:center; margin-top:6px}
+
+    /* OUTPUTS */
+    .links{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px}
+    .link-card{
+      border:1px solid var(--glass-brd); background:var(--glass); 
+      border-radius:16px; padding:16px; transition:all .3s ease;
+    }
+    .link-card:hover{
+      border-color:var(--brand); background:rgba(139,92,246,.12);
+      transform:translateY(-3px); box-shadow:var(--shadow);
+    }
+
+    /* FOOTER */
+    footer{
+      padding:36px 24px; color:var(--muted); 
+      border-top:1px solid var(--glass-brd); margin-top:32px;
+      background:linear-gradient(180deg, transparent, rgba(0,0,0,.2));
+    }
+
+    /* UTIL */
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    .fade-in{opacity:0; transform:translateY(12px); animation:fade .7s ease forwards}
+    @keyframes fade{to{opacity:1; transform:none}}
+
+    /* Dragon decoration - enhanced */
+    @keyframes dragonFly{
+      0%{transform:translateX(0) translateY(0) rotate(0deg) scale(1)}
+      25%{transform:translateX(-30px) translateY(-20px) rotate(-5deg) scale(1.05)}
+      50%{transform:translateX(-15px) translateY(-35px) rotate(3deg) scale(1.1)}
+      75%{transform:translateX(-25px) translateY(-15px) rotate(-3deg) scale(1.05)}
+      100%{transform:translateX(0) translateY(0) rotate(0deg) scale(1)}
+    }
+    @keyframes dragonBreath{
+      0%, 100%{filter:drop-shadow(0 0 15px rgba(245,158,11,.4))}
+      50%{filter:drop-shadow(0 0 30px rgba(245,158,11,.7)) drop-shadow(0 0 40px rgba(217,70,239,.5))}
+    }
+    .dragon{
+      font-size:100px; position:absolute; 
+      animation:dragonFly 15s infinite ease-in-out, dragonBreath 3s infinite ease-in-out;
+      pointer-events:none; z-index:1;
+      transition:transform .3s ease;
+    }
+    .dragon:hover{transform:scale(1.15) !important}
+
+    @media (max-width: 980px){
+      .hero-grid{grid-template-columns:1fr}
+      .about{grid-template-columns:1fr}
+      .grid{grid-template-columns:1fr 1fr}
+      .links{grid-template-columns:1fr 1fr}
+    }
+    @media (max-width: 640px){
+      .grid{grid-template-columns:1fr}
+      .links{grid-template-columns:1fr}
+      .nav-wrap{flex-wrap:wrap}
+      .h1{font-size:28px}
+    }
+  </style>
 </head>
 <body>
+  <!-- Mystical rune particles -->
+  <div id="particles"></div>
+
   <!-- NAV -->
   <nav class="nav">
     <div class="nav-wrap container">
       <a class="brand" href="#top" aria-label="Home">
-        <div class="logo" aria-hidden="true">🪄</div>
+        <div class="logo" aria-hidden="true">🔮</div>
         <div>
-          <div class="title">Beaver Works</div>
-          <div class="subtitle">Arcane Engineering & AI</div>
+          <div class="title">Arcane Codex</div>
+          <div class="subtitle">APPLIED ENGINEERING & AI</div>
         </div>
       </a>
       <div class="nav-actions">
-        <button class="btn" id="themeToggle" aria-label="Toggle theme">🌗 Theme</button>
-        <a class="btn btn-primary" href="#projects">🚀 Projects</a>
+        <button class="btn" id="themeToggle" aria-label="Toggle theme">✨ Realm</button>
+        <a class="btn btn-primary" href="#projects">🐉 Quests</a>
       </div>
     </div>
   </nav>
@@ -32,51 +297,55 @@
   <header id="top" class="hero container">
     <div class="hero-grid">
       <div>
-        <span class="badge">🐉 Arcane Engineering Student</span>
+        <span class="badge">⚡ Wizard's Chronicle</span>
         <h1 class="h1">
-          Greetings, I am <span id="name">David</span> — conjuring
+          Greetings, I'm <span id="name">David</span> — conjuring
           <span class="gradient" id="typewriter" aria-live="polite"></span>
         </h1>
-        <p class="kicker">Welcome to my magical Beaver Works portfolio. Here you’ll find my projects, experiments, and artifacts from the <strong>Applied Engineering & AI</strong> track — from enchanted Arduino builds and self-aware ML models to web apps that feel alive.</p>
+        <p class="kicker">Welcome to my arcane grimoire. Within these enchanted pages lie my projects, spell‑crafting experiments, and artifacts from the <strong>Applied Engineering & AI</strong> realm — from mystical Arduino contraptions and data divination to enchanted web apps and dragon‑powered ML models.</p>
         <div class="cta">
-          <a class="btn btn-primary" href="#about">📜 About</a>
-          <a class="btn" href="#links">🔗 Outputs</a>
-          <a class="btn" href="#projects">🧪 Experiments</a>
+          <a class="btn btn-primary" href="#about">📜 My Saga</a>
+          <a class="btn" href="#links">🔗 Artifacts</a>
+          <a class="btn" href="#projects">⚗️ Experiments</a>
         </div>
       </div>
       <div class="hero-card fade-in" style="animation-delay:.15s">
-        <div class="mini">Starter checklist for apprentices</div>
+        <div class="mini">⭐ Apprentice Checklist</div>
         <div class="hero-list">
-          <div class="hero-item">✅ GitHub grimoire prepared</div>
-          <div class="hero-item">✅ Resume scroll exported</div>
-          <div class="hero-item">✅ Tinkercad enchantments shared</div>
-          <div class="hero-item">✅ Colab spellbooks published</div>
+          <div class="hero-item">✅ Spellbook (GitHub) initialized</div>
+          <div class="hero-item">✅ Scroll of deeds exported</div>
+          <div class="hero-item">✅ Magical circuit inscribed</div>
+          <div class="hero-item">✅ Prophecy notebook published</div>
         </div>
-        <div class="mini" style="margin-top:10px">Tip: replace placeholders below to publish your portfolio in ~10 minutes.</div>
+        <div class="mini" style="margin-top:12px">🧙‍♂️ Tip: Customize your grimoire in ~10 minutes of enchantment.</div>
       </div>
     </div>
   </header>
+
+  <!-- Dragon guardian - enhanced -->
+  <div class="dragon" style="top:12%; right:8%;">🐉</div>
+  <div class="dragon" style="bottom:15%; left:5%; animation-delay:5s; font-size:80px; opacity:.25">🐲</div>
 
   <!-- ABOUT -->
   <section id="about" class="container">
     <div class="section-head">
       <div>
-        <div class="section-title">About</div>
-        <h2>Who I Am</h2>
+        <div class="section-title">Origins</div>
+        <h2>The Wizard's Tale</h2>
       </div>
-      <a class="btn" href="#links">View Outputs →</a>
+      <a class="btn" href="#links">View Relics →</a>
     </div>
     <div class="about">
       <div class="card">
-        <img class="profile" src="profile.jpg" alt="Portrait of David, the Arcane Engineer" />
-        <p class="mini" style="margin-top:10px">Replace <code>profile.jpg</code> with your mystical portrait.</p>
+        <img class="profile" src="profile.jpg" alt="Portrait of the wizard" />
+        <p class="mini" style="margin-top:12px">🖼️ Replace <code>profile.jpg</code> with your mystical portrait.
       </div>
       <div class="card">
-        <p>I'm a Beaver Works student blending <strong>applied engineering</strong> with <strong>arcane AI</strong>. I delight in building things from scratch: enchanted hardware prototypes, interactive dashboards, and self-explaining ML experiments. This portfolio reveals a few of my favorite spells and constructs.</p>
+        <p>I am a practitioner of the arcane arts at Beaver Works, specializing in <strong>applied engineering sorcery</strong> and <strong>artificial intelligence magic</strong>. I revel in crafting complete enchantments: hardware talismans, interactive crystal balls, and machine learning familiars. This grimoire showcases my most potent spells and learned wisdom.</p>
         <ul>
-          <li>🧰 Skills: Python, JavaScript, Arduino, Data Viz, Git</li>
-          <li>🧪 Interests: Edge AI, Robotics, Earth Data, Health Tech</li>
-          <li>🎯 Goal this term: Conjure 3 polished project demos</li>
+          <li>🔮 Mastered Arts: Python Spells, JavaScript Incantations, Arduino Runes, Data Scrying, Git Enchantments</li>
+          <li>⚗️ Pursuits: Edge AI Alchemy, Robotic Golems, Earth Divination, Healing Potions</li>
+          <li>🎯 Quest this season: Manifest 3 legendary demonstrations</li>
         </ul>
       </div>
     </div>
@@ -86,15 +355,15 @@
   <section id="projects" class="container">
     <div class="section-head">
       <div>
-        <div class="section-title">Projects & Labs</div>
-        <h2>Featured Work</h2>
+        <div class="section-title">Epic Quests</div>
+        <h2>Featured Sorcery</h2>
       </div>
       <div class="filters" role="tablist" aria-label="Project filters">
-        <button class="chip active" data-filter="all" role="tab" aria-selected="true">All</button>
-        <button class="chip" data-filter="ai" role="tab">AI/ML</button>
-        <button class="chip" data-filter="hw" role="tab">Arduino/EE</button>
-        <button class="chip" data-filter="web" role="tab">Web</button>
-        <button class="chip" data-filter="data" role="tab">Data</button>
+        <button class="chip active" data-filter="all" role="tab" aria-selected="true">All Magic</button>
+        <button class="chip" data-filter="ai" role="tab">AI Spells</button>
+        <button class="chip" data-filter="hw" role="tab">Runes & Circuits</button>
+        <button class="chip" data-filter="web" role="tab">Web Enchantments</button>
+        <button class="chip" data-filter="data" role="tab">Data Divination</button>
       </div>
     </div>
     <div class="grid" id="projectsGrid" aria-live="polite"></div>
@@ -104,50 +373,181 @@
   <section id="links" class="container">
     <div class="section-head">
       <div>
-        <div class="section-title">Outputs</div>
-        <h2>Profiles & Spellbooks</h2>
+        <div class="section-title">Magical Artifacts</div>
+        <h2>Codex & Relics</h2>
       </div>
     </div>
     <div class="links">
       <a class="link-card" href="https://github.com/yourgithub" target="_blank" rel="noopener">
-        <strong>GitHub</strong>
-        <div class="mini">Code grimoire & commits</div>
+        <strong>📚 Spellbook</strong>
+        <div class="mini">Code repositories & enchantments</div>
       </a>
       <a class="link-card" href="https://deepnote.com/yourprofile" target="_blank" rel="noopener">
-        <strong>Deepnote</strong>
-        <div class="mini">Data spellbooks & exploration</div>
+        <strong>🔬 Alchemy Lab</strong>
+        <div class="mini">Notebooks & mystical exploration</div>
       </a>
       <a class="link-card" href="https://colab.research.google.com" target="_blank" rel="noopener">
-        <strong>Google Colab</strong>
+        <strong>🧪 Potion Brewery</strong>
         <div class="mini">Interactive ML experiments</div>
       </a>
       <a class="link-card" href="https://www.tinkercad.com/" target="_blank" rel="noopener">
-        <strong>Tinkercad</strong>
-        <div class="mini">Circuits & enchanted demos</div>
+        <strong>⚡ Rune Forge</strong>
+        <div class="mini">Circuits & Arduino incantations</div>
       </a>
       <a class="link-card" href="resume.pdf" target="_blank" rel="noopener">
-        <strong>Resume (PDF)</strong>
-        <div class="mini">One-page latest scroll</div>
+        <strong>📜 Scroll of Deeds</strong>
+        <div class="mini">One‑page chronicle</div>
       </a>
       <a class="link-card" href="mailto:your.email@example.com">
-        <strong>Email</strong>
+        <strong>🦉 Owl Post</strong>
         <div class="mini">your.email@example.com</div>
       </a>
       <div class="link-card">
-        <strong>Office Hours</strong>
-        <div class="mini">Add your mystical booking link</div>
+        <strong>🕐 Divination Hours</strong>
+        <div class="mini">Schedule mystical consultations</div>
       </div>
       <div class="link-card">
-        <strong>Certificates & Badges</strong>
-        <div class="mini">Link your achievements here</div>
+        <strong>🏆 Wizard Badges</strong>
+        <div class="mini">Achievements & honors</div>
       </div>
     </div>
   </section>
 
   <footer class="container">
-    <div class="mini">© <span id="year"></span> Beaver Works — Arcane Engineering & AI · Built with vanilla HTML/CSS/JS. Customize and publish to GitHub Pages.</div>
+    <div class="mini">✨ © <span id="year"></span> Beaver Works Arcane Codex — Applied Engineering & AI · Forged with vanilla HTML/CSS/JS. Customize and deploy via GitHub Pages. 🐉</div>
   </footer>
 
-  <script src="script.js"></script>
+  <script>
+    // Create magical rune particles
+    const runes = ['ᚠ', 'ᚢ', 'ᚦ', 'ᚨ', 'ᚱ', 'ᚲ', 'ᚷ', 'ᚹ', 'ᚺ', 'ᚾ', 'ᛁ', 'ᛃ', 'ᛇ', 'ᛈ', 'ᛉ', 'ᛊ', 'ᛏ', 'ᛒ', 'ᛖ', 'ᛗ', 'ᛚ', 'ᛜ', 'ᛞ', 'ᛟ'];
+    const particles = document.getElementById('particles');
+    for(let i=0; i<25; i++){
+      const p = document.createElement('div');
+      p.className = 'magic-particle';
+      p.textContent = runes[Math.floor(Math.random() * runes.length)];
+      p.style.left = Math.random() * 100 + '%';
+      p.style.top = Math.random() * 100 + '%';
+      p.style.animationDelay = Math.random() * 12 + 's';
+      p.style.animationDuration = (10 + Math.random() * 8) + 's';
+      particles.appendChild(p);
+    }
+
+    // Theme Toggle
+    const themeBtn = document.getElementById('themeToggle');
+    const saved = localStorage.getItem('theme');
+    if(saved){ document.documentElement.setAttribute('data-theme', saved); }
+    themeBtn.addEventListener('click', ()=>{
+      const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    });
+
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Typewriter enchantment
+    const phrases = [
+      'spells with lines of code',
+      'Arduino golems that pulse with life',
+      'ML oracles that speak truth',
+      'enchanted portals that shimmer',
+      'data prophecies that guide us'
+    ];
+    let idx = 0, ptr = 0, rev = false;
+    const tw = document.getElementById('typewriter');
+    function tick(){
+      const text = phrases[idx];
+      if(!rev){
+        ptr++;
+        if(ptr === text.length + 6) rev = true;
+      } else {
+        ptr--;
+        if(ptr <= 0){ rev = false; idx = (idx+1) % phrases.length; }
+      }
+      tw.textContent = text.slice(0, Math.max(0, Math.min(ptr, text.length)));
+      setTimeout(tick, rev ? 50 : 80);
+    }
+    tick();
+
+    // Projects grimoire - CUSTOMIZE WITH YOUR OWN PROJECTS!
+    const projects = [
+      {
+        title: 'Project Title 1',
+        desc: 'Describe your first project here. What did you build? What technologies did you use? Keep it concise but compelling.',
+        tags: ['ai','data'],
+        link: '#', // Replace with your project link
+        call: 'View Project',
+        thumb: '🔮' // Choose an emoji: 🐉⚡🔮📊🤖🧪⚗️🛡️⚔️🏰📜🗡️
+      },
+      {
+        title: 'Project Title 2',
+        desc: 'Another amazing project you worked on. Explain the problem you solved and the impact it had.',
+        tags: ['hw','web'],
+        link: '#',
+        call: 'View Project',
+        thumb: '⚡'
+      },
+      {
+        title: 'Project Title 3',
+        desc: 'Third project description goes here. Make it sound exciting and showcase your skills!',
+        tags: ['data','web'],
+        link: '#',
+        call: 'View Project',
+        thumb: '📊'
+      },
+      {
+        title: 'Project Title 4',
+        desc: 'Fourth project - add as many as you want! Just copy this format and customize the details.',
+        tags: ['web'],
+        link: '#',
+        call: 'View Project',
+        thumb: '🌐'
+      },
+      {
+        title: 'Project Title 5',
+        desc: 'Fifth project placeholder. Feel free to delete projects you don\'t need or add more!',
+        tags: ['ai','hw'],
+        link: '#',
+        call: 'View Project',
+        thumb: '🤖'
+      },
+      {
+        title: 'Project Title 6',
+        desc: 'Final project example. Remember to update the tags array to filter properly: ai, hw, web, data',
+        tags: ['data'],
+        link: '#',
+        call: 'View Project',
+        thumb: '📱'
+      }
+    ];
+
+    const grid = document.getElementById('projectsGrid');
+    function render(list){
+      grid.innerHTML = '';
+      list.forEach(p => {
+        const el = document.createElement('article');
+        el.className = 'proj fade-in';
+        el.innerHTML = `
+          <div class="thumb" aria-hidden="true" style="font-size:48px">${p.thumb}</div>
+          <div class="proj-body">
+            <h3 style="margin:0 0 8px; font-size:18px; font-family:Cinzel, serif">${p.title}</h3>
+            <p style="margin:0 0 12px; color:var(--muted); font-size:14px">${p.desc}</p>
+            <div class="tags">${p.tags.map(t=>`<span class="tag">#${t}</span>`).join('')}</div>
+            <a class="btn" href="${p.link}" target="_blank" rel="noopener">${p.call} →</a>
+          </div>`;
+        grid.appendChild(el);
+      });
+    }
+    render(projects);
+
+    // Filter enchantments
+    const chips = Array.from(document.querySelectorAll('.chip'));
+    chips.forEach(ch => ch.addEventListener('click', () => {
+      chips.forEach(c=>c.classList.remove('active')); ch.classList.add('active');
+      const f = ch.dataset.filter;
+      if(f === 'all') return render(projects);
+      render(projects.filter(p => p.tags.includes(f)));
+    }));
+  </script>
 </body>
 </html>
