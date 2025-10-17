@@ -42,13 +42,16 @@
     html,body{height:100%}
     body{
       margin:0; font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      background: 
-        radial-gradient(ellipse 1400px 900px at 90% -15%, rgba(217,70,239,.18), transparent 55%),
-        radial-gradient(ellipse 1000px 700px at 10% 100%, rgba(245,158,11,.15), transparent 50%),
-        radial-gradient(ellipse 800px 600px at 50% 50%, rgba(16,185,129,.08), transparent 60%),
-        var(--bg);
+      background: radial-gradient(1200px 800px at 80% -10%, rgba(198,26,26,.12), transparent 60%),
+                  radial-gradient(900px 600px at 0% 0%, rgba(127,42,255,.10), transparent 40%),
+                  var(--bg);
       color:var(--text); line-height:1.6; letter-spacing:.2px;
       background-attachment: fixed;
+    }
+    [data-theme="six-eyes"] body{
+      background: radial-gradient(1200px 800px at 80% -10%, rgba(77,166,255,.18), transparent 60%),
+                  radial-gradient(900px 600px at 0% 0%, rgba(0,217,255,.15), transparent 40%),
+                  var(--bg);
     }
     a{color:inherit; text-decoration:none}
     .container{max-width:1100px; margin:0 auto; padding:24px}
@@ -258,52 +261,30 @@
     }
     .dragon:hover{transform:scale(1.2) !important; filter:drop-shadow(0 0 60px rgba(245,158,11,1)) !important}
     
-    /* Battle stats HUD - collapsible */
-    .battle-hud{
-      position:fixed; top:80px; right:-200px; z-index:40;
-      background:linear-gradient(135deg, rgba(139,92,246,.2), rgba(245,158,11,.15));
-      border:1px solid var(--glass-brd); border-radius:16px 0 0 16px; padding:16px 20px;
-      backdrop-filter:blur(12px); box-shadow:var(--shadow);
-      font-size:13px; min-width:200px; transition:right .4s ease;
+    /* Limitless cursor effect */
+    .limitless-effect{
+      position:fixed; pointer-events:none; z-index:9999;
+      width:120px; height:120px; border-radius:50%;
+      background:radial-gradient(circle, rgba(77,166,255,.3), rgba(0,217,255,.1), transparent);
+      transform:translate(-50%, -50%);
+      transition:opacity .3s ease;
+      opacity:0;
+      mix-blend-mode:screen;
     }
-    .battle-hud:hover, .battle-hud.show{
-      right:0;
+    [data-theme="six-eyes"] .limitless-effect{opacity:1}
+    
+    /* Makima eyes */
+    @keyframes makimaAppear{
+      0%{opacity:0; transform:scale(0.5)}
+      10%{opacity:1; transform:scale(1)}
+      90%{opacity:1; transform:scale(1)}
+      100%{opacity:0; transform:scale(0.5)}
     }
-    .battle-hud::before{
-      content:'📊'; position:absolute; left:-40px; top:50%; transform:translateY(-50%);
-      background:linear-gradient(135deg, rgba(139,92,246,.9), rgba(245,158,11,.8));
-      border:1px solid var(--glass-brd); border-radius:12px 0 0 12px;
-      padding:10px 8px; font-size:20px; cursor:pointer;
-      box-shadow:var(--shadow);
+    .makima-eye{
+      position:fixed; pointer-events:none; z-index:9998;
+      font-size:60px; animation:makimaAppear 4s ease-in-out;
+      filter:drop-shadow(0 0 20px rgba(255,200,0,.6));
     }
-    .stat-bar{
-      height:10px; background:rgba(0,0,0,.4); border-radius:999px; margin:8px 0;
-      overflow:hidden; position:relative; border:1px solid rgba(0,0,0,.2);
-    }
-    .stat-fill{
-      height:100%; border-radius:999px; transition:width .5s ease;
-      background:linear-gradient(90deg, var(--brand), var(--brand-2));
-      box-shadow:0 0 12px var(--brand);
-    }
-    .stat-label{
-      display:flex; justify-content:space-between; font-size:12px;
-      color:var(--text); margin-bottom:3px; font-family:'Cinzel', serif;
-      font-weight:600;
-    }
-
-    /* Spell book floating action */
-    @keyframes bookFloat{
-      0%, 100%{transform:translateY(0px) rotate(-3deg)}
-      50%{transform:translateY(-10px) rotate(3deg)}
-    }
-    .spell-book{
-      position:fixed; bottom:36px; right:36px; z-index:50;
-      font-size:56px; cursor:pointer; animation:bookFloat 4s infinite ease-in-out;
-      filter:drop-shadow(0 6px 25px rgba(217,70,239,.6));
-      transition:all .3s ease;
-    }
-    .spell-book:hover{transform:scale(1.2) rotate(8deg) !important; filter:drop-shadow(0 10px 35px rgba(217,70,239,.9)) !important}
-    .spell-book:active{transform:scale(1.1) rotate(-5deg) !important}
 
     /* Weapon icons floating - more subtle */
     @keyframes weaponFloat{
@@ -336,9 +317,9 @@
       100%{transform:translateX(400px); opacity:0}
     }
     .achievement{
-      position:fixed; top:120px; right:24px; z-index:60;
+      position:fixed; top:100px; right:24px; z-index:60;
       background:linear-gradient(135deg, rgba(16,185,129,.95), rgba(5,150,105,.9));
-      border:2px solid var(--accent); border-radius:14px; padding:12px 16px;
+      border:2px solid var(--brand); border-radius:14px; padding:12px 16px;
       box-shadow:0 10px 40px rgba(16,185,129,.6);
       animation:achievementSlide 4s ease-in-out;
       display:flex; align-items:center; gap:10px; color:#fff;
@@ -368,27 +349,34 @@
       .nav-wrap{flex-wrap:wrap}
       .h1{font-size:28px}
     }
+
+    /* Fortune orb - floating */
+    @keyframes orbFloat{
+      0%, 100%{transform:translateY(0px) rotate(0deg)}
+      50%{transform:translateY(-12px) rotate(10deg)}
+    }
+    .fortune-orb{
+      position:fixed; bottom:36px; right:36px; z-index:50;
+      font-size:64px; cursor:pointer; animation:orbFloat 4s infinite ease-in-out;
+      filter:drop-shadow(0 6px 25px rgba(147,51,234,.6));
+      transition:all .3s ease; text-decoration:none;
+    }
+    .fortune-orb:hover{
+      transform:scale(1.2) rotate(15deg) !important; 
+      filter:drop-shadow(0 10px 35px rgba(147,51,234,.9)) drop-shadow(0 0 50px rgba(217,70,239,.7)) !important;
+    }
+    .fortune-orb:active{transform:scale(1.1) rotate(-8deg) !important}
   </style>
 </head>
 <body>
   <!-- Mystical rune particles -->
   <div id="particles"></div>
 
+  <!-- Limitless cursor effect -->
+  <div class="limitless-effect" id="limitless"></div>
+
   <!-- Lightning flash effect -->
   <div class="lightning" id="lightning"></div>
-
-  <!-- Battle HUD -->
-  <div class="battle-hud">
-    <div class="stat-label"><span>⚔️ Power</span><span id="powerLevel">87</span></div>
-    <div class="stat-bar"><div class="stat-fill" style="width:87%"></div></div>
-    <div class="stat-label"><span>🔮 Mana</span><span id="manaLevel">92</span></div>
-    <div class="stat-bar"><div class="stat-fill" style="width:92%; background:linear-gradient(90deg, #a855f7, #10b981)"></div></div>
-    <div class="stat-label"><span>🛡️ Defense</span><span id="defenseLevel">78</span></div>
-    <div class="stat-bar"><div class="stat-fill" style="width:78%; background:linear-gradient(90deg, #f59e0b, #ef4444)"></div></div>
-  </div>
-
-  <!-- Floating spell book -->
-  <div class="spell-book" id="spellBook" title="Open Spell Grimoire">📕</div>
 
   <!-- NAV -->
   <nav class="nav">
@@ -401,7 +389,6 @@
         </div>
       </a>
       <div class="nav-actions">
-        <a class="btn" href="tarot.html">🔮 Arcane Divination</a>
         <button class="btn" id="themeToggle" aria-label="Toggle theme">✨ Realm</button>
         <a class="btn btn-primary" href="#projects">🐉 Quests</a>
       </div>
@@ -420,7 +407,6 @@
         <p class="kicker">Welcome to my arcane grimoire. Within these enchanted pages lie my projects, spell‑crafting experiments, and artifacts from the <strong>Applied Engineering & AI</strong> realm — from mystical Arduino contraptions and data divination to enchanted web apps and dragon‑powered ML models.</p>
         <div class="cta">
           <a class="btn btn-primary" href="#about">📜 My Saga</a>
-          <a class="btn" href="#prophecy">🔮 Divine Future</a>
           <a class="btn" href="#links">🗝️ Artifacts</a>
           <a class="btn" href="#projects">⚗️ Experiments</a>
         </div>
@@ -441,6 +427,9 @@
   <!-- Dragon emojis - simple and clean -->
   <div class="dragon" style="top:10%; right:5%; font-size:80px;">🐉</div>
   <div class="dragon" style="bottom:12%; left:4%; animation-delay:5s; font-size:70px; opacity:0.75">🐲</div>
+
+  <!-- Fortune orb - floating portal to tarot -->
+  <a href="tarot.html" class="fortune-orb" title="Seek the Arcane Divination">🔮</a>
 
   <!-- Floating weapons -->
   <div class="weapon" style="top:25%; left:10%; animation-delay:1s">⚔️</div>
@@ -464,7 +453,7 @@
     <div class="about">
       <div class="card">
         <img class="profile" src="profile.jpg" alt="Portrait of the wizard" />
-        <p class="mini" style="margin-top:12px">🖼️ Replace <code>profile.jpg</code> with your mystical portrait.
+        <p class="mini" style="margin-top:12px">🖼️ Replace <code>profile.jpg</code> with your mystical portrait.</p>
       </div>
       <div class="card">
         <p>I am a practitioner of the arcane arts at Beaver Works, specializing in <strong>applied engineering sorcery</strong> and <strong>artificial intelligence magic</strong>. I revel in crafting complete enchantments: hardware talismans, interactive crystal balls, and machine learning familiars. This grimoire showcases my most potent spells and learned wisdom.</p>
@@ -558,6 +547,27 @@
       particles.appendChild(p);
     }
 
+    // Limitless cursor effect (Six Eyes theme)
+    const limitless = document.getElementById('limitless');
+    document.addEventListener('mousemove', (e) => {
+      limitless.style.left = e.clientX + 'px';
+      limitless.style.top = e.clientY + 'px';
+    });
+
+    // Makima eyes randomly appear
+    function spawnMakimaEye(){
+      if(Math.random() > 0.98){ // 2% chance every interval
+        const eye = document.createElement('div');
+        eye.className = 'makima-eye';
+        eye.textContent = '👁️';
+        eye.style.left = (20 + Math.random() * 60) + '%';
+        eye.style.top = (20 + Math.random() * 60) + '%';
+        document.body.appendChild(eye);
+        setTimeout(() => eye.remove(), 4000);
+      }
+    }
+    setInterval(spawnMakimaEye, 2000);
+
     // Lightning effect on scroll - more subtle
     let lastScroll = 0;
     window.addEventListener('scroll', () => {
@@ -568,56 +578,6 @@
         setTimeout(() => lightning.style.animation = 'none', 400);
       }
       lastScroll = window.scrollY;
-    });
-
-    // Battle HUD toggle
-    const battleHud = document.querySelector('.battle-hud');
-    battleHud.addEventListener('mouseenter', () => battleHud.classList.add('show'));
-    battleHud.addEventListener('mouseleave', () => battleHud.classList.remove('show'));
-
-    // Spell book interaction
-    const spellBook = document.getElementById('spellBook');
-    let achievements = 0;
-    spellBook.addEventListener('click', () => {
-      achievements++;
-      const messages = [
-        '🎖️ Achievement: Spell Discovered!',
-        '⚡ New Power: Lightning Bolt!',
-        '🔮 Wisdom Gained: +10 XP',
-        '🏆 Title Earned: Code Wizard!',
-        '✨ Magical Artifact Found!',
-        '🐉 Dragon Tamed: +15 XP',
-        '⚔️ Mastery: Combat Training!',
-        '📚 Knowledge: Ancient Tome!'
-      ];
-      
-      const achieve = document.createElement('div');
-      achieve.className = 'achievement';
-      achieve.innerHTML = `<span style="font-size:24px">🎉</span><span>${messages[achievements % messages.length]}</span>`;
-      document.body.appendChild(achieve);
-      
-      // Update battle stats
-      const powerEl = document.getElementById('powerLevel');
-      const manaEl = document.getElementById('manaLevel');
-      const defenseEl = document.getElementById('defenseLevel');
-      
-      const newPower = Math.min(100, parseInt(powerEl.textContent) + Math.floor(Math.random() * 4) + 1);
-      const newMana = Math.min(100, parseInt(manaEl.textContent) + Math.floor(Math.random() * 3) + 1);
-      const newDefense = Math.min(100, parseInt(defenseEl.textContent) + Math.floor(Math.random() * 3) + 1);
-      
-      powerEl.textContent = newPower;
-      manaEl.textContent = newMana;
-      defenseEl.textContent = newDefense;
-      
-      powerEl.parentElement.nextElementSibling.firstElementChild.style.width = newPower + '%';
-      manaEl.parentElement.nextElementSibling.firstElementChild.style.width = newMana + '%';
-      defenseEl.parentElement.nextElementSibling.firstElementChild.style.width = newDefense + '%';
-      
-      // Show battle HUD temporarily
-      battleHud.classList.add('show');
-      setTimeout(() => battleHud.classList.remove('show'), 3000);
-      
-      setTimeout(() => achieve.remove(), 4000);
     });
 
     // Dragon click interaction - more subtle
@@ -644,14 +604,31 @@
       });
     });
 
-    // Theme Toggle
+    // Theme Toggle with Six Eyes option (fixed)
     const themeBtn = document.getElementById('themeToggle');
+    const themes = ['dark', 'light', 'six-eyes'];
+    let currentThemeIndex = 0;
+    
+    // restore saved theme if exists
     const saved = localStorage.getItem('theme');
-    if(saved){ document.documentElement.setAttribute('data-theme', saved); }
+    if(saved && themes.includes(saved)){ 
+      document.documentElement.setAttribute('data-theme', saved);
+      currentThemeIndex = themes.indexOf(saved);
+    } else {
+      // ensure a valid default
+      document.documentElement.setAttribute('data-theme', themes[currentThemeIndex]);
+    }
+    
+    const themeNames = {dark: '✨ Realm', light: '☀️ Light', 'six-eyes': '👁️ Six Eyes'};
+    // set initial button label based on current theme
+    themeBtn.textContent = themeNames[themes[currentThemeIndex]] || themeBtn.textContent;
+
     themeBtn.addEventListener('click', ()=>{
-      const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
+      currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+      const nextTheme = themes[currentThemeIndex];
+      document.documentElement.setAttribute('data-theme', nextTheme);
+      localStorage.setItem('theme', nextTheme);
+      themeBtn.textContent = themeNames[nextTheme];
     });
 
     // Year
@@ -671,6 +648,7 @@
       const text = phrases[idx];
       if(!rev){
         ptr++;
+        // small pause at end
         if(ptr === text.length + 6) rev = true;
       } else {
         ptr--;
@@ -763,4 +741,3 @@
   </script>
 </body>
 </html>
-
