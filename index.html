@@ -52,7 +52,6 @@
       --glow: 0 0 30px rgba(0,229,255,.22);
       --glass: rgba(0,180,255,.04);
       --glass-brd: rgba(0,180,255,.12);
-      /* image-sharpness, higher contrast to mimic heightened perception */
       filter: contrast(1.18) saturate(1.25) hue-rotate(2deg);
     }
 
@@ -68,7 +67,6 @@
       transition:filter .35s linear, background .35s linear;
     }
     [data-theme="six-eyes"] body{
-      /* give the overall page a subtle cyan tint and a centered focus ring */
       background:
         radial-gradient(600px 300px at 50% 40%, rgba(0,229,255,.06), transparent 20%),
         radial-gradient(1200px 800px at 80% -10%, rgba(0,179,255,.05), transparent 60%),
@@ -292,6 +290,7 @@
       display:grid; place-items:center;
       will-change:transform, left, top;
       backdrop-filter: blur(2px) saturate(1.4);
+      display:none; /* hidden by default; only show when six-eyes active */
     }
     /* core glow */
     .limitless-effect::before{
@@ -317,19 +316,7 @@
       from{transform: rotate(0deg) scale(.98)}
       to{transform: rotate(360deg) scale(0.98)}
     }
-    /* when six-eyes theme active make it more visible */
-    [data-theme="six-eyes"] .limitless-effect{opacity:1; filter: drop-shadow(0 6px 30px rgba(0,229,255,.25));}
-
-    /* Eye trail (Six Eyes) */
-    .eye-trail { position:fixed; left:0; top:0; pointer-events:none; z-index:9998; mix-blend-mode:screen; }
-    .eye-trail .trail-eye {
-      position:absolute; font-size:22px; transform-origin:center;
-      filter: drop-shadow(0 2px 10px rgba(0,180,255,.35)) blur(.3px);
-      opacity:.92; transition:transform .12s linear, opacity .18s linear;
-      will-change:transform, left, top;
-    }
-    .eye-trail .trail-eye.small{ font-size:16px; opacity:.65 }
-    .eye-trail .trail-eye.faded{ opacity:.45; filter: drop-shadow(0 1px 8px rgba(0,100,150,.18)) blur(.6px) }
+    [data-theme="six-eyes"] .limitless-effect{opacity:1; filter: drop-shadow(0 6px 30px rgba(0,229,255,.25)); display:grid;}
 
     /* Six-eyes vignette / HUD */
     .six-eyes-vignette{
@@ -350,74 +337,17 @@
     }
     [data-theme="six-eyes"] .six-eyes-hud{ opacity:1; transform:translate(-50%, -38%) scale(1.02) }
     .six-eyes-hud::before{
-      content: '👁️👁️👁️👁️👁️👁️';
-      letter-spacing:12px; font-size:28px; color:rgba(174,252,255,.18);
-      mix-blend-mode:screen;
+      /* removed emoji content so HUD is subtle and non-emoji */
+      content: '';
+      display:block;
+      width:84%;
+      height:1px;
+      background: linear-gradient(90deg, rgba(174,252,255,.18), rgba(0,229,255,.06), rgba(174,252,255,.08));
+      border-radius:2px;
+      opacity:.85;
     }
 
-    /* Makima eyes */
-    @keyframes makimaAppear{
-      0%{opacity:0; transform:scale(0.5)}
-      10%{opacity:1; transform:scale(1)}
-      90%{opacity:1; transform:scale(1)}
-      100%{opacity:0; transform:scale(0.5)}
-    }
-    .makima-eye{
-      position:fixed; pointer-events:none; z-index:9998;
-      font-size:60px; animation:makimaAppear 4s ease-in-out;
-      filter:drop-shadow(0 0 20px rgba(255,200,0,.6));
-    }
-
-    /* Weapon icons floating - more subtle */
-    @keyframes weaponFloat{
-      0%, 100%{transform:translateY(0) rotate(0deg)}
-      50%{transform:translateY(-20px) rotate(15deg)}
-    }
-    .weapon{
-      position:absolute; font-size:36px; opacity:.15;
-      animation:weaponFloat 8s infinite ease-in-out;
-      pointer-events:none; z-index:0;
-      filter:drop-shadow(0 2px 8px rgba(139,92,246,.3));
-    }
-
-    /* Lightning effect on scroll - more subtle */
-    @keyframes lightning{
-      0%, 100%{opacity:0}
-      15%, 35%{opacity:.3}
-      25%{opacity:0}
-    }
-    .lightning{
-      position:fixed; top:0; left:0; right:0; bottom:0;
-      background:radial-gradient(ellipse at 50% 0%, rgba(245,158,11,.2), transparent 50%);
-      pointer-events:none; z-index:999; opacity:0;
-    }
-
-    /* Achievement badge popup */
-    @keyframes achievementSlide{
-      0%{transform:translateX(400px); opacity:0}
-      10%, 90%{transform:translateX(0); opacity:1}
-      100%{transform:translateX(400px); opacity:0}
-    }
-    .achievement{
-      position:fixed; top:100px; right:24px; z-index:60;
-      background:linear-gradient(135deg, rgba(16,185,129,.95), rgba(5,150,105,.9));
-      border:2px solid var(--brand); border-radius:14px; padding:12px 16px;
-      box-shadow:0 10px 40px rgba(16,185,129,.6);
-      animation:achievementSlide 4s ease-in-out;
-      display:flex; align-items:center; gap:10px; color:#fff;
-    }
-
-    /* Magic circle decoration */
-    @keyframes rotate{
-      from{transform:rotate(0deg)}
-      to{transform:rotate(360deg)}
-    }
-    .magic-circle{
-      position:absolute; width:300px; height:300px; opacity:.08;
-      background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="100" cy="100" r="80" fill="none" stroke="%23d946ef" stroke-width="2"/><circle cx="100" cy="100" r="60" fill="none" stroke="%23f59e0b" stroke-width="1.5"/><circle cx="100" cy="100" r="40" fill="none" stroke="%2310b981" stroke-width="1"/><path d="M100,20 L105,95 L100,100 L95,95 Z M180,100 L105,105 L100,100 L105,95 Z M100,180 L95,105 L100,100 L105,105 Z M20,100 L95,95 L100,100 L95,105 Z" fill="%23d946ef"/></svg>') center/contain no-repeat;
-      animation:rotate 30s linear infinite;
-      pointer-events:none;
-    }
+    /* Makima eyes removed */
 
     @media (max-width: 980px){
       .hero-grid{grid-template-columns:1fr}
@@ -456,11 +386,8 @@
   <!-- Mystical rune particles -->
   <div id="particles"></div>
 
-  <!-- Limitless cursor effect -->
+  <!-- Limitless cursor effect (orb only; only visible/active in Six Eyes theme) -->
   <div class="limitless-effect" id="limitless" aria-hidden="true"></div>
-
-  <!-- Eye trail container (created/used by JS for six-eyes) -->
-  <div class="eye-trail" id="eyeTrail" aria-hidden="true"></div>
 
   <!-- Six-eyes vignette/hud -->
   <div class="six-eyes-vignette" id="sixVignette" aria-hidden="true"></div>
@@ -639,135 +566,106 @@
     }
 
     // --------------------------
-    // Limitless cursor effect (smoother & cooler)
-    // - replaces simple mousemove assignment with an eased RAF loop
-    // - rings + core already created via CSS::before/::after
+    // Limitless cursor orb: ONLY active when "six-eyes" theme is enabled.
+    // - orb remains hidden and inert in other themes (no event listeners or movement).
+    // - the code starts/stops the RAF loop and mouse listener when the theme toggles.
     // --------------------------
     const limitless = document.getElementById('limitless');
     let mouseX = window.innerWidth/2, mouseY = window.innerHeight/2;
     let limX = mouseX, limY = mouseY;
     const ease = 0.18;
+    let limitlessRunning = false;
+    let limitRAF = null;
+    let mouseHandler = null;
 
-    // track actual mouse targets
-    document.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      // make limitless slightly offset upward like an aura center
+    function startLimitless() {
+      if (limitlessRunning) return;
+      // show element (CSS also shows when data-theme is six-eyes, but ensure JS enabled)
+      limitless.style.display = 'grid';
       limitless.style.opacity = '1';
+      // add mousemove listener to update mouse target
+      mouseHandler = (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+      };
+      window.addEventListener('mousemove', mouseHandler);
+      // start RAF loop
+      function loop(){
+        limX += (mouseX - limX) * ease;
+        limY += (mouseY - limY) * ease;
+        limitless.style.transform = `translate(${limX}px, ${limY}px) translate(-50%, -50%) scale(1)`;
+        limitRAF = requestAnimationFrame(loop);
+      }
+      limitRAF = requestAnimationFrame(loop);
+      limitlessRunning = true;
+    }
+
+    function stopLimitless() {
+      if (!limitlessRunning) return;
+      if (mouseHandler) window.removeEventListener('mousemove', mouseHandler);
+      mouseHandler = null;
+      if (limitRAF) cancelAnimationFrame(limitRAF);
+      limitRAF = null;
+      limitless.style.opacity = '0';
+      limitless.style.display = 'none';
+      limitlessRunning = false;
+    }
+
+    // --------------------------
+    // Theme Toggle with Six Eyes option
+    // --------------------------
+    const themeBtn = document.getElementById('themeToggle');
+    const themes = ['dark', 'light', 'six-eyes'];
+    let currentThemeIndex = 0;
+
+    // restore saved theme if exists
+    const saved = localStorage.getItem('theme');
+    if(saved && themes.includes(saved)){ 
+      document.documentElement.setAttribute('data-theme', saved);
+      currentThemeIndex = themes.indexOf(saved);
+    } else {
+      document.documentElement.setAttribute('data-theme', themes[currentThemeIndex]);
+    }
+
+    const themeNames = {dark: '✨ Realm', light: '☀️ Light', 'six-eyes': '👁️ Six Eyes'};
+    themeBtn.textContent = themeNames[themes[currentThemeIndex]] || themeBtn.textContent;
+
+    // apply initial state: only start orb if theme already six-eyes
+    if (themes[currentThemeIndex] === 'six-eyes') {
+      startLimitless();
+    } else {
+      stopLimitless();
+    }
+
+    themeBtn.addEventListener('click', ()=>{
+      currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+      const nextTheme = themes[currentThemeIndex];
+      document.documentElement.setAttribute('data-theme', nextTheme);
+      localStorage.setItem('theme', nextTheme);
+      themeBtn.textContent = themeNames[nextTheme];
+      if (nextTheme === 'six-eyes') {
+        startLimitless();
+        // brief HUD pulse
+        const sixHud = document.getElementById('sixHud');
+        if (sixHud) {
+          sixHud.animate([{ transform: 'translate(-50%, -42%) scale(0.98)', opacity: 0 }, { transform: 'translate(-50%, -38%) scale(1.02)', opacity: 1 }], { duration: 350, easing: 'cubic-bezier(.2,.9,.2,1)' });
+        }
+      } else {
+        stopLimitless();
+      }
     });
 
-    // hide when mouse leaves viewport
-    document.addEventListener('mouseleave', ()=>{ limitless.style.opacity = '0'; });
-    document.addEventListener('mouseenter', ()=>{ limitless.style.opacity = '1'; });
-
-    function animateLimitless(){
-      limX += (mouseX - limX) * ease;
-      limY += (mouseY - limY) * ease;
-      // put it using transform for subpixel smoothness
-      limitless.style.transform = `translate(${limX}px, ${limY}px) translate(-50%, -50%) scale(1)`;
-      requestAnimationFrame(animateLimitless);
-    }
-    requestAnimationFrame(animateLimitless);
+    // hide orb when the tab loses focus (good hygiene)
+    window.addEventListener('blur', () => { if (limitlessRunning) limitless.style.opacity = '0'; });
+    window.addEventListener('focus', () => { if (limitlessRunning) limitless.style.opacity = '1'; });
 
     // --------------------------
-    // Six-Eyes: eye-trail + HUD + vignette
-    // - create 6 little eyes orbiting the cursor, with lag and fading
-    // - activate only when [data-theme="six-eyes"]
+    // Removed: Eye trail and random eye emojis (Makima). No random eye glyphs are spawned anymore.
     // --------------------------
-    const eyeTrail = document.getElementById('eyeTrail');
-    const sixVignette = document.getElementById('sixVignette');
-    const sixHud = document.getElementById('sixHud');
-
-    // create 6 eye nodes upfront
-    const NUM_EYES = 6;
-    const eyes = [];
-    for(let i=0;i<NUM_EYES;i++){
-      const d = document.createElement('div');
-      d.className = 'trail-eye';
-      // use subtle differences in size / opacity to feel organic
-      if(i % 2 === 0) d.classList.add('small');
-      if(i === 2 || i === 5) d.classList.add('faded');
-      d.textContent = '👁️';
-      eyeTrail.appendChild(d);
-      eyes.push({
-        el: d,
-        x: window.innerWidth/2,
-        y: window.innerHeight/2,
-        vx: 0,
-        vy: 0
-      });
-    }
-
-    // animation loop that positions eyes in a rotating circle around cursor with smoothing
-    let angleOffset = 0;
-    function animateEyes(){
-      // increase base angle slowly for rotation
-      angleOffset += 0.025;
-      const radius = 44; // orbit radius around cursor
-      for(let i=0;i<NUM_EYES;i++){
-        const t = (i / NUM_EYES) * Math.PI * 2 + angleOffset;
-        const targetX = mouseX + Math.cos(t) * radius;
-        const targetY = mouseY + Math.sin(t) * (radius * 0.7);
-        // simple spring smoothing
-        const eye = eyes[i];
-        eye.vx += (targetX - eye.x) * 0.16;
-        eye.vy += (targetY - eye.y) * 0.16;
-        eye.vx *= 0.78;
-        eye.vy *= 0.78;
-        eye.x += eye.vx;
-        eye.y += eye.vy;
-        // apply small tilt/rotation for each eye based on its velocity for liveliness
-        const rot = (eye.vx) * 0.08;
-        eye.el.style.left = eye.x + 'px';
-        eye.el.style.top = eye.y + 'px';
-        eye.el.style.transform = `translate(-50%, -50%) rotate(${rot}deg)`;
-        // subtle pulsation on a per-eye basis
-        const pulse = 1 + Math.sin((angleOffset*2) + i) * 0.025;
-        eye.el.style.opacity = (0.75 + Math.abs(Math.sin(angleOffset + i*0.4)) * 0.2) ;
-        eye.el.style.fontSize = (22 * pulse) + 'px';
-      }
-      requestAnimationFrame(animateEyes);
-    }
-    // start the eyes animation regardless (they're invisible unless theme enabled)
-    requestAnimationFrame(animateEyes);
-
-    // Toggle visibility of six-eyes overlays based on theme
-    function setSixEyesActive(active){
-      if(active){
-        eyeTrail.style.display = 'block';
-        sixVignette.style.display = 'block';
-        sixHud.style.display = 'block';
-        // strengthen the limitless glow
-        limitless.style.opacity = '1';
-        limitless.style.filter = 'drop-shadow(0 10px 40px rgba(0,190,255,.25))';
-      } else {
-        eyeTrail.style.display = 'none';
-        sixVignette.style.display = 'none';
-        sixHud.style.display = 'none';
-        limitless.style.filter = '';
-      }
-    }
-
-    // Initially hide the trail/hud (they will be toggled by theme)
-    setSixEyesActive(false);
 
     // --------------------------
-    // Makima eyes randomly appear (unchanged)
+    // Lightning effect on scroll - unchanged
     // --------------------------
-    function spawnMakimaEye(){
-      if(Math.random() > 0.98){ // 2% chance every interval
-        const eye = document.createElement('div');
-        eye.className = 'makima-eye';
-        eye.textContent = '👁️';
-        eye.style.left = (20 + Math.random() * 60) + '%';
-        eye.style.top = (20 + Math.random() * 60) + '%';
-        document.body.appendChild(eye);
-        setTimeout(() => eye.remove(), 4000);
-      }
-    }
-    setInterval(spawnMakimaEye, 2000);
-
-    // Lightning effect on scroll - more subtle (unchanged)
     let lastScroll = 0;
     window.addEventListener('scroll', () => {
       const scrollDiff = Math.abs(window.scrollY - lastScroll);
@@ -779,7 +677,7 @@
       lastScroll = window.scrollY;
     });
 
-    // Dragon click interaction - more subtle (unchanged)
+    // Dragon click interaction - unchanged
     document.querySelectorAll('.dragon').forEach(dragon => {
       dragon.addEventListener('click', () => {
         const roars = ['🔥', '💥', '⚡'];
@@ -796,49 +694,10 @@
         document.body.appendChild(roar);
         setTimeout(() => roar.remove(), 1200);
         
-        // Lightning flash
         const lightning = document.getElementById('lightning');
         lightning.style.animation = 'lightning 0.5s ease-out';
         setTimeout(() => lightning.style.animation = 'none', 500);
       });
-    });
-
-    // --------------------------
-    // Theme Toggle with Six Eyes option (fixed)
-    // --------------------------
-    const themeBtn = document.getElementById('themeToggle');
-    const themes = ['dark', 'light', 'six-eyes'];
-    let currentThemeIndex = 0;
-    
-    // restore saved theme if exists
-    const saved = localStorage.getItem('theme');
-    if(saved && themes.includes(saved)){ 
-      document.documentElement.setAttribute('data-theme', saved);
-      currentThemeIndex = themes.indexOf(saved);
-    } else {
-      // ensure a valid default
-      document.documentElement.setAttribute('data-theme', themes[currentThemeIndex]);
-    }
-    
-    const themeNames = {dark: '✨ Realm', light: '☀️ Light', 'six-eyes': '👁️ Six Eyes'};
-    // set initial button label based on current theme
-    themeBtn.textContent = themeNames[themes[currentThemeIndex]] || themeBtn.textContent;
-
-    // apply six-eyes state on initial load
-    setSixEyesActive(themes[currentThemeIndex] === 'six-eyes');
-
-    themeBtn.addEventListener('click', ()=>{
-      currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-      const nextTheme = themes[currentThemeIndex];
-      document.documentElement.setAttribute('data-theme', nextTheme);
-      localStorage.setItem('theme', nextTheme);
-      themeBtn.textContent = themeNames[nextTheme];
-      // toggle six-eyes visual helpers
-      setSixEyesActive(nextTheme === 'six-eyes');
-      // subtle extra: when enabling six-eyes, give a brief pulse to the HUD
-      if(nextTheme === 'six-eyes'){
-        sixHud.animate([{ transform: 'translate(-50%, -42%) scale(0.98)', opacity: 0 }, { transform: 'translate(-50%, -38%) scale(1.02)', opacity: 1 }], { duration: 350, easing: 'cubic-bezier(.2,.9,.2,1)' });
-      }
     });
 
     // --------------------------
@@ -862,7 +721,6 @@
       const text = phrases[idx];
       if(!rev){
         ptr++;
-        // small pause at end
         if(ptr === text.length + 6) rev = true;
       } else {
         ptr--;
@@ -881,9 +739,9 @@
         title: 'Project Title 1',
         desc: 'Describe your first project here. What did you build? What technologies did you use? Keep it concise but compelling.',
         tags: ['ai','data'],
-        link: '#', // Replace with your project link
+        link: '#',
         call: 'View Project',
-        thumb: '🔮' // Choose an emoji: 🐉⚡🔮📊🤖🧪⚗️🛡️⚔️🏰📜🗡️
+        thumb: '🔮'
       },
       {
         title: 'Project Title 2',
