@@ -1,381 +1,595 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Arcane Divination · Tarot Reading (No overlap, with spreads)</title>
+  <title>Arcane Divination · Tarot Reading</title>
+  <meta name="theme-color" content="#0f0f13" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Cinzel:wght@400;600;700;900&display=swap" rel="stylesheet">
+
   <style>
     :root{
-      --bg:#0a0612;
-      --panel:#120a1f;
-      --text:#e8e4f0;
-      --muted:#9b8fb8;
-      --brand:#d946ef;
-      --brand-2:#f59e0b;
-      --glass-brd: rgba(139,92,246,.25);
+      --bg: #0a0612;
+      --panel: #120a1f;
+      --muted: #9b8fb8;
+      --text: #e8e4f0;
+      --brand: #d946ef;
+      --brand-2: #f59e0b;
+      --accent: #10b981;
+      --ring: 0 0 0 2px rgba(217,70,239,.35);
       --shadow: 0 10px 40px rgba(217,70,239,.25);
+      --glow: 0 0 20px rgba(217,70,239,.4);
+      --glass: rgba(139,92,246,.08);
+      --glass-brd: rgba(139,92,246,.25);
+    }
+    [data-theme="light"]{
+      --bg: #faf8fc;
+      --panel: #ffffff;
+      --muted: #6b5c8a;
+      --text: #1e1433;
+      --brand: #a855f7;
+      --brand-2: #f59e0b;
+      --accent: #059669;
+      --shadow: 0 8px 30px rgba(168,85,247,.15);
+      --glow: 0 0 15px rgba(168,85,247,.2);
+      --glass: rgba(168,85,247,.05);
+      --glass-brd: rgba(168,85,247,.15);
     }
 
-    *{box-sizing:border-box;margin:0;padding:0}
+    *{box-sizing:border-box; margin:0; padding:0}
     html,body{height:100%}
     body{
-      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
       background:
-        radial-gradient(ellipse 1400px 900px at 90% -15%, rgba(217,70,239,.18), transparent 55%),
-        radial-gradient(ellipse 1000px 700px at 10% 100%, rgba(245,158,11,.12), transparent 50%),
+        radial-gradient(ellipse 1400px 900px at 90% -15%, rgba(217,70,239,.12), transparent 55%),
+        radial-gradient(ellipse 1000px 700px at 10% 100%, rgba(245,158,11,.10), transparent 50%),
         var(--bg);
-      color:var(--text);
-      padding:20px;
-      -webkit-font-smoothing:antialiased;
+      color:var(--text); line-height:1.6; letter-spacing:.2px;
+      background-attachment: fixed; padding:20px;
     }
 
-    .container{max-width:960px;margin:0 auto}
+    .container{max-width:980px; margin:0 auto}
+    .header{text-align:center; padding:36px 20px 12px}
+    .header h1{
+      font-family:'Cinzel', serif; font-size:clamp(30px, 5vw, 48px);
+      background:linear-gradient(120deg, var(--brand), var(--brand-2), var(--accent));
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+      margin-bottom:8px; font-weight:900;
+    }
+    .header p{color:var(--muted); font-size:15px}
 
-    .header{text-align:center;padding:32px 12px 6px}
-    .header h1{font-family:Cinzel,serif;font-size:clamp(28px,5vw,42px);font-weight:900;
-      background:linear-gradient(120deg,var(--brand),var(--brand-2)); -webkit-background-clip:text; color:transparent;}
-    .header p{color:var(--muted);margin-top:6px}
+    .controls{display:flex; gap:12px; align-items:center; justify-content:center; flex-wrap:wrap; margin-top:12px}
+    .back-btn{
+      display:inline-flex; align-items:center; gap:8px; padding:8px 12px;
+      background:var(--glass); border:1px solid var(--glass-brd); border-radius:10px;
+      color:var(--text); text-decoration:none; transition:all .2s ease; font-weight:500;
+    }
+    .toggle{
+      display:inline-flex; gap:8px; align-items:center; padding:8px 12px;
+      background:var(--panel); border-radius:12px; border:1px solid rgba(255,255,255,.04);
+      color:var(--text);
+    }
 
-    /* reading selector */
     .reading-selector{
-      display:flex;
-      gap:12px;
-      justify-content:center;
-      margin:14px 0;
-      flex-wrap:wrap;
+      display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
+      gap:12px; margin:28px 0;
     }
     .spread-card{
-      padding:10px 14px;
-      border-radius:12px;
-      background:linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border:1px solid var(--glass-brd);
-      cursor:pointer;
-      min-width:140px;
-      text-align:center;
-      user-select:none;
-      transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
-      font-weight:600;
+      background:linear-gradient(135deg, rgba(139,92,246,.06), rgba(245,158,11,.05));
+      border:1px solid var(--glass-brd); border-radius:16px; padding:18px;
+      cursor:pointer; transition:all .25s ease; text-align:center;
     }
-    .spread-card:hover{transform:translateY(-3px); box-shadow:0 8px 32px rgba(0,0,0,.25)}
-    .spread-card.active{border-color:var(--brand); box-shadow:0 12px 36px rgba(217,70,239,.12); background:linear-gradient(135deg, rgba(217,70,239,.04), rgba(245,158,11,.02));}
+    .spread-card:hover{transform:translateY(-4px); border-color:var(--brand); box-shadow:var(--shadow)}
+    .spread-card.active{border-color:var(--brand); box-shadow:0 20px 60px rgba(217,70,239,.18)}
+    .spread-icon{font-size:40px; margin-bottom:10px}
+    .spread-title{font-family:'Cinzel', serif; font-size:18px; font-weight:700; margin-bottom:4px}
+    .spread-desc{font-size:13px; color:var(--muted)}
 
-    .controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:14px 0}
-    .control{background:rgba(255,255,255,0.02);border:1px solid var(--glass-brd);padding:8px 12px;border-radius:12px;color:var(--text);font-size:14px}
+    .btn{
+      display:inline-flex; align-items:center; gap:10px; padding:14px 26px;
+      background:linear-gradient(135deg, var(--brand), var(--brand-2));
+      border:none; border-radius:12px; color:#fff; font-size:15px;
+      font-weight:700; cursor:pointer; transition:all .25s ease;
+      box-shadow:var(--shadow);
+    }
+    .btn:hover{transform:translateY(-3px); box-shadow:0 18px 48px rgba(217,70,239,.45)}
+    .btn:disabled{opacity:.5; cursor:not-allowed; transform:none}
 
-    .btn{display:inline-block;margin:12px auto;padding:12px 26px;border-radius:12px;background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;border:none;font-weight:700;cursor:pointer;box-shadow:var(--shadow)}
+    .controls-right{display:flex; gap:12px; align-items:center; margin-left:auto}
 
-    /* IMPORTANT: keep both containers in normal document flow (no forced stacking), and reserve space for cards */
     .cards-container{
-      display:flex;
-      gap:16px;
-      flex-wrap:wrap;
-      justify-content:center;
-      align-items:center;
-      min-height:320px; /* reserve vertical space so interpretation will not overlap */
-      margin:26px 0;
-      position:relative; /* not absolute/fixed */
+      display:flex; justify-content:center; gap:18px; flex-wrap:wrap;
+      margin:34px 0; min-height:360px; align-items:center;
+      perspective:1400px;
     }
 
     .tarot-card{
-      width:170px;height:270px;perspective:1000px;cursor:pointer;position:relative;
-      transition:transform .2s ease,opacity .25s ease;
-      opacity:0; /* become visible when flipped */
-      will-change:transform,opacity;
+      width:170px; height:270px; perspective:1000px; cursor:pointer;
+      transform-style:preserve-3d; transition:transform .18s ease;
+      position:relative;
     }
-
-    .card-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .75s ease;border-radius:14px}
+    .card-inner{
+      width:100%; height:100%; position:relative; transition:transform .9s;
+      transform-style:preserve-3d;
+    }
     .tarot-card.flipped .card-inner{transform:rotateY(180deg)}
-    .card-face{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px;border:2px solid var(--glass-brd);box-shadow:var(--shadow);overflow:hidden}
-
-    .card-back{background:linear-gradient(135deg, rgba(139,92,246,.22), rgba(245,158,11,.12));display:flex;align-items:center;justify-content:center;font-size:64px}
-    .card-front{background:linear-gradient(135deg,var(--panel),rgba(18,10,31,.95));transform:rotateY(180deg);text-align:center}
-
-    .card-art{width:100%;height:110px;border-radius:10px;overflow:hidden;margin-bottom:8px}
-    .card-art img{width:100%;height:100%;object-fit:cover}
-    .card-name{font-family:Cinzel,serif;font-size:15px;color:var(--brand-2);margin-bottom:6px}
-    .card-meaning{font-size:13px;color:var(--muted)}
-
-    .reversed-indicator{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.35);padding:6px 8px;border-radius:999px;color:var(--brand-2);font-weight:700}
-
-    /* Interpretation sits below cardsContainer, and CSS reserves vertical space so they don't overlap */
-    .interpretation{
-      background:linear-gradient(135deg, rgba(139,92,246,.08), rgba(245,158,11,.06));
-      border:1px solid var(--glass-brd);
-      border-radius:14px;
-      padding:20px;
-      margin-top:8px;
-      transition:opacity .35s ease,transform .35s ease;
-      opacity:0; transform:translateY(8px);
-      position:relative; /* normal flow */
+    .card-face{
+      position:absolute; width:100%; height:100%; backface-visibility:hidden;
+      border-radius:14px; display:flex; flex-direction:column; align-items:center;
+      justify-content:center; padding:18px; border:2px solid var(--glass-brd);
+      box-shadow:var(--shadow); overflow:hidden;
     }
-    .interpretation.show{opacity:1;transform:none}
+    .card-back{
+      background:linear-gradient(135deg, rgba(139,92,246,.18), rgba(245,158,11,.12));
+      backdrop-filter:blur(6px);
+      display:flex; align-items:center; justify-content:center;
+      font-size:72px; opacity:.8;
+    }
+    .card-front{
+      background:linear-gradient(135deg, var(--panel), rgba(18,10,31,.95));
+      transform:rotateY(180deg); text-align:center; color:var(--text);
+      position:relative;
+    }
 
-    .card-detail{margin:12px 0;padding:12px;border-radius:10px;background:rgba(0,0,0,.12);border-left:4px solid var(--brand)}
-    .card-detail h3{font-family:Cinzel,serif;color:var(--brand);margin-bottom:8px}
+    .card-emoji{font-size:56px; margin-bottom:12px}
+    .card-name{
+      font-family:'Cinzel', serif; font-size:15px; font-weight:800;
+      margin-bottom:8px; color:var(--brand-2);
+    }
+    .card-meaning{font-size:12px; color:var(--muted); line-height:1.4; min-height:40px}
 
-    /* keep canvas (fool particles) behind content */
-    #foolCanvas{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:0;mix-blend-mode:screen}
+    /* subtle reveal shimmer */
+    .card-front::after{
+      content:''; position:absolute; inset:0; pointer-events:none;
+      background:linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.03));
+      mix-blend-mode:overlay; opacity:0.9;
+    }
+
+    .interpretation{
+      background:linear-gradient(135deg, rgba(139,92,246,.10), rgba(245,158,11,.08));
+      border:1px solid var(--glass-brd); border-radius:14px; padding:22px;
+      margin:24px 0; backdrop-filter:blur(6px); box-shadow:var(--shadow);
+      opacity:0; transform:translateY(14px); transition:all .5s ease;
+    }
+    .interpretation.show{opacity:1; transform:translateY(0)}
+    .interpretation h2{
+      font-family:'Cinzel', serif; font-size:22px; margin-bottom:12px; color:var(--brand-2);
+    }
+    .card-detail{
+      margin:14px 0; padding:14px; background:rgba(0,0,0,.12);
+      border-radius:10px; border-left:4px solid var(--brand);
+    }
+    .card-detail h3{
+      font-family:'Cinzel', serif; font-size:16px; color:var(--brand); margin-bottom:8px;
+      display:flex; align-items:center; gap:10px;
+    }
+    .card-detail p{color:var(--text); line-height:1.7; font-size:14px}
+
+    /* Fool mode visuals */
+    .fool-mode-body{
+      --fool-accent: linear-gradient(90deg,#711cf6,#ef4444 50%, #f59e0b);
+      animation:backgroundPulse 3.5s infinite;
+    }
+    @keyframes backgroundPulse{
+      0%{filter:hue-rotate(0deg) saturate(1)}
+      50%{filter:hue-rotate(20deg) saturate(1.05) brightness(1.02)}
+      100%{filter:hue-rotate(0deg) saturate(1)}
+    }
+    .fool-banner{
+      text-align:center; font-family:'Cinzel', serif; font-weight:900; margin:16px 0;
+      color:transparent; -webkit-background-clip:text; background-clip:text;
+      background:var(--fool-accent); font-size:28px;
+      animation:shimmer 2.5s linear infinite;
+    }
+    @keyframes shimmer{0%{filter:hue-rotate(0)}100%{filter:hue-rotate(360deg)}}
+
+    /* confetti (simple) */
+    .confetti-piece{
+      width:8px;height:12px;border-radius:2px;position:fixed;top:-20px;
+      opacity:0.95; transform:translateY(0);
+      animation:confettiFall linear forwards;
+      z-index:9999;
+    }
+    @keyframes confettiFall{
+      to{transform:translateY(120vh) rotate(720deg); opacity:0.95}
+    }
+
+    /* reversed styling */
+    .reversed .card-inner{transform:rotateZ(180deg)}
+    .reversed .card-front{transform:rotateY(180deg) rotate(180deg)}
+    .reversed .card-emoji{transform:rotate(180deg)}
 
     @media (max-width:640px){
       .tarot-card{width:150px;height:240px}
-      .cards-container{min-height:300px}
-      .reading-selector{gap:8px}
+      .spread-icon{font-size:32px}
     }
   </style>
 </head>
-<body>
-  <canvas id="foolCanvas" aria-hidden="true"></canvas>
-
+<body id="pageBody">
   <div class="container">
-    <header class="header">
+    <a href="index.html" class="back-btn">← Return to Grimoire</a>
+
+    <div class="header">
       <h1>🔮 Arcane Divination</h1>
-      <p>Cards and text will no longer overlap — the layout reserves space for the cards.</p>
-    </header>
-
-    <!-- READING SELECTOR (ADDED BACK) -->
-    <div class="reading-selector" id="readingSelector" role="tablist" aria-label="Choose spread">
-      <div class="spread-card active" data-spread="single" role="tab" aria-selected="true">Single Card<br><small style="color:var(--muted)">Quick insight</small></div>
-      <div class="spread-card" data-spread="three" role="tab">Three Card<br><small style="color:var(--muted)">Past / Present / Future</small></div>
-      <div class="spread-card" data-spread="celtic" role="tab">Celtic Cross<br><small style="color:var(--muted)">Detailed reading</small></div>
+      <p>Draw from the Major and Minor Arcana. Enable reversals to unlock shadow meanings. The Fool may sometimes bless you — expect strange effects.</p>
     </div>
 
-    <div class="controls" aria-hidden="false">
-      <label class="control"><input id="includeMinor" type="checkbox"> Include Minor Arcana</label>
-      <label class="control"><input id="showReversals" type="checkbox" checked> Allow Reversals</label>
-      <label class="control"><input id="enableSound" type="checkbox"> Ambient Sound</label>
+    <div class="controls" role="region" aria-label="reading controls">
+      <div class="reading-selector" style="flex:1">
+        <div class="spread-card active" data-spread="single" role="button" tabindex="0">
+          <div class="spread-icon">🃏</div>
+          <div class="spread-title">Single Card</div>
+          <div class="spread-desc">Quick insight into your question</div>
+        </div>
+        <div class="spread-card" data-spread="three" role="button" tabindex="0">
+          <div class="spread-icon">🎴</div>
+          <div class="spread-title">Three Card</div>
+          <div class="spread-desc">Past · Present · Future</div>
+        </div>
+        <div class="spread-card" data-spread="celtic" role="button" tabindex="0">
+          <div class="spread-icon">✨</div>
+          <div class="spread-title">Celtic Cross</div>
+          <div class="spread-desc">Deep, layered reading (simplified)</div>
+        </div>
+        <div class="spread-card" data-spread="full" role="button" tabindex="0">
+          <div class="spread-icon">🔮</div>
+          <div class="spread-title">Full Reading</div>
+          <div class="spread-desc">Majors + Minors + optional reversals</div>
+        </div>
+      </div>
+
+      <div class="controls-right">
+        <label class="toggle" title="Include Minor Arcana">
+          <input id="includeMinors" type="checkbox" aria-label="Include Minor Arcana" /> Include Minors
+        </label>
+        <label class="toggle" title="Allow reversed card meanings">
+          <input id="allowReversals" type="checkbox" aria-label="Allow Reversals" /> Allow Reversals
+        </label>
+        <button class="btn" id="drawBtn">✨ Divine Your Fate ✨</button>
+      </div>
     </div>
 
-    <div style="text-align:center"><button id="drawBtn" class="btn">✨ Divine Your Fate ✨</button></div>
+    <div class="cards-container" id="cardsContainer" aria-live="polite"></div>
 
-    <!-- cards container: always occupies space, preventing overlap -->
-    <div id="cardsContainer" class="cards-container" aria-live="polite" aria-atomic="true"></div>
-
-    <!-- interpretation is below cardsContainer, and CSS reserves vertical space so they don't overlap -->
-    <div id="interpretation" class="interpretation" aria-live="polite"></div>
+    <div class="interpretation" id="interpretation" aria-live="polite"></div>
   </div>
 
   <script>
-    // simplified deck (keeps structure; swap in your full deck as needed)
+    // --- Major Arcana with improved descriptions ---
     const majorArcana = [
-      {name:'The Fool',emoji:'🃏',meaning:'New beginnings, spontaneity',detail:'A threshold of possibility. Small step > perfect plan.',reversed:'Recklessness or hesitation.'},
-      {name:'The Magician',emoji:'🎩',meaning:'Manifestation, resourcefulness',detail:'Agency and focused action — choose one measurable step to start.',reversed:'Scattered energies.'},
-      {name:'The High Priestess',emoji:'🌙',meaning:'Intuition, inner knowledge',detail:'Listen to dreams and quiet prompts; journal symbols.',reversed:'Blocked inner voice.'},
-      {name:'The Empress',emoji:'👑',meaning:'Nurturing, abundance',detail:'Tend a creative project like a garden; nurture systems.',reversed:'Creative block.'},
-      {name:'The World',emoji:'🌍',meaning:'Completion, fulfillment',detail:'Celebrate completion, close cycles before new ones.',reversed:'Unfinished business.'}
+      {slug:'fool', name:'The Fool', emoji:'🃏', detailed: "Beginnings, leaps of faith, innocence in the face of the unknown. The Fool asks you to step with curiosity rather than fear — a threshold between what was and what may be."},
+      {slug:'magician', name:'The Magician', emoji:'🎩', detailed: "Manifestation through focused will. You possess the tools to create change; intention and action align to transform ideas into reality."},
+      {slug:'high-priestess', name:'The High Priestess', emoji:'🌙', detailed: "Hidden knowledge, intuition, and inner voice. The High Priestess invites silence — answers emerge from reflection and dreams rather than outward noise."},
+      {slug:'empress', name:'The Empress', emoji:'👑', detailed: "Fertility, abundance, and creative nurture. A time to cultivate, care, and let projects or relationships ripen into form through tenderness."},
+      {slug:'emperor', name:'The Emperor', emoji:'⚔️', detailed: "Structure, boundaries, and leadership. The Emperor recommends discipline and the wise application of power to bring order and safety."},
+      {slug:'hierophant', name:'The Hierophant', emoji:'📿', detailed: "Tradition, mentorship and communal wisdom. Seek counsel or anchor yourself in values that have stood the test of time."},
+      {slug:'lovers', name:'The Lovers', emoji:'💕', detailed: "Relationship, alignment of values, and soulful choices. This card asks you to choose with authenticity and to honor the bonds that reflect your truth."},
+      {slug:'chariot', name:'The Chariot', emoji:'🏇', detailed: "Triumph by focused determination. Harness conflicting forces through discipline and confidence; momentum and conquest are possible when you steer clearly."},
+      {slug:'strength', name:'Strength', emoji:'🦁', detailed: "Gentle courage, resilience, and compassionate power. True influence comes from patience and quiet resolve rather than force."},
+      {slug:'hermit', name:'The Hermit', emoji:'🕯️', detailed: "Solitude for inner search. Pull back to illuminate your path; wisdom emerges from focused introspection and honest solitude."},
+      {slug:'wheel', name:'Wheel of Fortune', emoji:'🎡', detailed: "Cycles and turning points beyond your control. Accept change as a teacher — fortunes shift and new chapters begin."},
+      {slug:'justice', name:'Justice', emoji:'⚖️', detailed: "Karma, truth, and balanced accountability. Clear, righteous choices restore balance; consequence and fairness shape outcomes."},
+      {slug:'hanged-man', name:'The Hanged Man', emoji:'🙃', detailed: "Surrender and perspective-shift. Release attachment to old positions; suspension can reveal unexpected insight and spiritual growth."},
+      {slug:'death', name:'Death', emoji:'💀', detailed: "Transformation, endings that birth renewal. Letting go clears the way for authentic reinvention rather than literal destruction."},
+      {slug:'temperance', name:'Temperance', emoji:'⚗️', detailed: "Integration and moderation. Synthesis of opposites yields harmony — patience and balanced blending heal extremes."},
+      {slug:'devil', name:'The Devil', emoji:'😈', detailed: "Bindings, temptation, and shadow patterns. Name the chains and reclaim agency; liberation begins with honest admission."},
+      {slug:'tower', name:'The Tower', emoji:'🏰', detailed: "Sudden upheaval and revelation. Structures built on illusion crumble; catastrophe opens space for genuine rebuilding."},
+      {slug:'star', name:'The Star', emoji:'⭐', detailed: "Hope, healing, and renewed faith. Quiet blessings soothe the spirit and guide toward meaning and restoration."},
+      {slug:'moon', name:'The Moon', emoji:'🌕', detailed: "Illusion, dreams, and the deep subconscious. Navigate uncertainties carefully — intuition and introspection reveal shadowed truths."},
+      {slug:'sun', name:'The Sun', emoji:'☀️', detailed: "Joy, clarity, and vitality. Success and warmth shine; this is a time of celebration and life-affirming energy."},
+      {slug:'judgement', name:'Judgement', emoji:'🎺', detailed: "Awakening and reckoning. A call to self-evaluate and answer your deeper vocation; rebirth follows honest appraisal."},
+      {slug:'world', name:'The World', emoji:'🌍', detailed: "Completion, synthesis, and travel into new cycles. Celebrate endings as accomplishments; prepare for broader horizons."}
     ];
 
+    // --- Minor arcana generation (ranks + suits with generic meanings) ---
     const suits = [
-      {name:'Wands',emoji:'🔥',tone:'will, inspiration'},
-      {name:'Cups',emoji:'💧',tone:'emotion, relationships'},
-      {name:'Swords',emoji:'💨',tone:'mind, conflict'},
-      {name:'Pentacles',emoji:'🌿',tone:'material, craft'}
+      {key:'Wands', element:'Fire', base:'action, ambition, and creative energy'},
+      {key:'Cups', element:'Water', base:'emotion, relationships, and intuition'},
+      {key:'Swords', element:'Air', base:'thought, conflict, and clarity'},
+      {key:'Pentacles', element:'Earth', base:'material matters, work, and body'}
     ];
     const ranks = ['Ace','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Page','Knight','Queen','King'];
 
-    function buildMinor(){
-      const arr=[];
-      for(const s of suits){
-        for(const r of ranks){
-          const name = `${r} of ${s.name}`;
-          const meaning = `${r} energy in ${s.tone}`;
-          const detail = `${meaning}. Ask: what concrete step, conversation, or craft will express this today?`;
-          const reversed = `Shadow of the ${r.toLowerCase()}: blocked or misapplied ${s.tone}.`;
-          arr.push({name,emoji:s.emoji,meaning,detail,suit:s.name,rank:r,reversed});
-        }
-      }
-      return arr;
+    function makeMinorDeck(){
+      const deck = [];
+      suits.forEach(s => {
+        ranks.forEach((r,i) => {
+          const name = `${r} of ${s.key}`;
+          deck.push({
+            slug: `${r.toLowerCase()}-${s.key.toLowerCase()}`,
+            name,
+            suit: s.key,
+            rank: r,
+            element: s.element,
+            emoji: s.key === 'Cups' ? '🥛' : s.key === 'Wands' ? '🔥' : s.key === 'Swords' ? '⚔️' : '🏵️',
+            // brief template; final wording produced by minorMeaning()
+            detailed: ''
+          });
+        });
+      });
+      return deck;
     }
-    const minorArcana = buildMinor();
 
-    // refs & state
-    const cardsContainer = document.getElementById('cardsContainer');
-    const interpretation = document.getElementById('interpretation');
-    const includeMinor = document.getElementById('includeMinor');
-    const showReversals = document.getElementById('showReversals');
-    const enableSound = document.getElementById('enableSound');
-    const drawBtn = document.getElementById('drawBtn');
-    const readingSelector = document.getElementById('readingSelector');
-    const foolCanvas = document.getElementById('foolCanvas');
-    const ctx = foolCanvas.getContext ? foolCanvas.getContext('2d') : null;
+    const minorDeck = makeMinorDeck();
 
+    // Utility: shuffle an array copy
+    function shuffle(arr){
+      const copy = arr.slice();
+      for(let i = copy.length -1; i>0; i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function minorMeaning(card, reversed){
+      // Generic meanings depending on rank + suit theme
+      const baseSuit = suits.find(s => s.key === card.suit);
+      const rank = card.rank;
+      let meaning = '';
+
+      // simple rank-based tonal mapping (concise)
+      if(rank === 'Ace') meaning = `A new beginning in ${baseSuit.base}. Fresh potential and the seed of something meaningful.`;
+      else if(rank === 'Two') meaning = `Partnership, alignment, or a choice related to ${baseSuit.base}.`;
+      else if(rank === 'Three') meaning = `Collaboration and growth in matters of ${baseSuit.base}.`;
+      else if(rank === 'Four') meaning = `Stability, foundation, or a pause to consolidate gains in ${baseSuit.base}.`;
+      else if(rank === 'Five') meaning = `Conflict or challenge testing your resources within ${baseSuit.base}.`;
+      else if(rank === 'Six') meaning = `Support, small victories, or reconciliation concerning ${baseSuit.base}.`;
+      else if(rank === 'Seven') meaning = `Defending a position or reassessing choices tied to ${baseSuit.base}.`;
+      else if(rank === 'Eight') meaning = `Rapid movement, skill at work, or aptitude moving ${baseSuit.base} forward.`;
+      else if(rank === 'Nine') meaning = `Fruition approaching — near completion or a watchful moment for ${baseSuit.base}.`;
+      else if(rank === 'Ten') meaning = `Culmination and the burden or reward that comes with completion in ${baseSuit.base}.`;
+      else if(rank === 'Page') meaning = `A message, spark of curiosity or a young energy regarding ${baseSuit.base}.`;
+      else if(rank === 'Knight') meaning = `Focused pursuit or journey related to ${baseSuit.base}. Movement with intent.`;
+      else if(rank === 'Queen') meaning = `Nurturing mastery and receptivity in ${baseSuit.base}; wise steward of the domain.`;
+      else if(rank === 'King') meaning = `Commanding authority and practical leadership in matters of ${baseSuit.base}.`;
+
+      if(reversed){
+        // Simple reversed modifiers
+        return `${meaning} (Reversed: block, delay, or shadow expression of this card — ask what resists you.)`;
+      }
+      return meaning;
+    }
+
+    // UI state
     let currentSpread = 'single';
+    let foolMode = false;
+    let readingCount = 0;
 
-    // add spread selector handlers (restore functionality)
-    readingSelector.querySelectorAll('.spread-card').forEach(card => {
+    // spread selector
+    document.querySelectorAll('.spread-card').forEach(card => {
       card.addEventListener('click', () => {
-        readingSelector.querySelectorAll('.spread-card').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.spread-card').forEach(c => c.classList.remove('active'));
         card.classList.add('active');
-        currentSpread = card.dataset.spread || 'single';
-        // clear previous reading UI
-        cardsContainer.innerHTML = '';
-        interpretation.classList.remove('show');
-        interpretation.innerHTML = '';
+        currentSpread = card.dataset.spread;
+        clearOutput();
+      });
+      card.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' || e.key === ' ') card.click();
       });
     });
 
-    // helper: pool builder
-    function pool(){
-      let p = [...majorArcana];
-      if(includeMinor.checked) p = p.concat(minorArcana);
-      return p;
-    }
-
-    function drawOne(p, forceFool=false){
-      if(forceFool) return {...majorArcana[0],reversed:false};
-      const idx = Math.floor(Math.random()*p.length);
-      const card = p[idx];
-      const reversed = showReversals.checked && Math.random() < 0.35;
-      return {...card, reversed};
-    }
-
-    // small svg placeholder generator
-    function svgArtFor(name){
-      const seed = [...String(name)].reduce((s,c)=>s+c.charCodeAt(0), 0);
-      const hue = 220 + (seed % 100);
-      const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 200'><defs><linearGradient id='g${seed}' x1='0' x2='1'><stop offset='0' stop-color='hsl(${hue},70%,60%)'/><stop offset='1' stop-color='hsl(${(hue+40)%360},60%,45%)'/></linearGradient></defs><rect width='100%' height='100%' rx='12' fill='url(#g${seed})'/><text x='200' y='110' font-family='Cinzel, serif' font-size='44' text-anchor='middle' fill='rgba(255,255,255,0.9)'>${String(name).split(' ').map(x=>x[0]||'').slice(0,2).join('')}</text></svg>`;
-      return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
-    }
-
-    // tilt effect
-    function enableTilt(cardEl){
-      const inner = cardEl.querySelector('.card-inner');
-      cardEl.addEventListener('mousemove', e => {
-        const r = cardEl.getBoundingClientRect();
-        const px = (e.clientX - r.left)/r.width;
-        const py = (e.clientY - r.top)/r.height;
-        const rx = (py - 0.5) * -8;
-        const ry = (px - 0.5) * 8;
-        inner.style.transform = `rotateY(${ry}deg) rotateX(${rx}deg) ${cardEl.classList.contains('flipped') ? 'rotateY(180deg)' : ''}`;
-      });
-      cardEl.addEventListener('mouseleave', () => {
-        inner.style.transform = cardEl.classList.contains('flipped') ? 'rotateY(180deg)' : 'none';
-      });
-    }
-
-    // audio minimal
-    function playChime(type='soft'){
-      if(!enableSound.checked || !window.AudioContext) return;
-      try{
-        const a = new (window.AudioContext||window.webkitAudioContext)();
-        const now = a.currentTime;
-        if(type==='fool'){
-          [220,266.5,311.1].forEach((f,i)=>{ const o=a.createOscillator(); const g=a.createGain(); o.type='sine'; o.frequency.setValueAtTime(f,now); o.connect(g); g.connect(a.destination); g.gain.setValueAtTime(0.0001, now); g.gain.exponentialRampToValueAtTime(0.12/(i+1), now+0.02); g.gain.exponentialRampToValueAtTime(0.0001, now+1.2); o.start(now); o.stop(now+1.25);});
-        } else {
-          const o=a.createOscillator(); const g=a.createGain(); o.type='sine'; o.frequency.setValueAtTime(660,now); o.connect(g); g.connect(a.destination); g.gain.setValueAtTime(0.0001, now); g.gain.exponentialRampToValueAtTime(0.12, now+0.02); g.gain.exponentialRampToValueAtTime(0.0001, now+1.0); o.start(now); o.stop(now+1.1);
-        }
-      }catch(e){}
-    }
-
-    // canvas resizing
-    function resizeCanvas(){
-      if(!ctx) return;
-      foolCanvas.width = innerWidth * devicePixelRatio;
-      foolCanvas.height = innerHeight * devicePixelRatio;
-      foolCanvas.style.width = innerWidth + 'px';
-      foolCanvas.style.height = innerHeight + 'px';
-      ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    // flip-only reveal with guaranteed no-overlap
-    drawBtn.addEventListener('click', () => {
-      const foolProbability = 0.10;
-      const foolMode = Math.random() < foolProbability;
-
-      const deck = pool();
-      cardsContainer.innerHTML = '';
-      interpretation.classList.remove('show');
+    // helper to clear output
+    function clearOutput(){
+      document.getElementById('cardsContainer').innerHTML = '';
+      const interpretation = document.getElementById('interpretation');
       interpretation.innerHTML = '';
+      interpretation.classList.remove('show');
+      document.getElementById('pageBody').classList.remove('fool-mode-body');
+    }
 
-      let numCards = 1, positions = ['Your Answer'];
-      if(currentSpread === 'three'){ numCards = 3; positions = ['Past','Present','Future']; }
-      if(currentSpread === 'celtic'){ numCards = 5; positions = ['Present','Challenge','Past','Future','Outcome']; }
+    // draw logic
+    document.getElementById('drawBtn').addEventListener('click', () => {
+      readingCount++;
+      clearOutput();
 
-      playChime(foolMode ? 'fool' : 'soft');
+      // Every 3-5 readings, possible fool blessing
+      const shouldActivateFool = readingCount % (3 + Math.floor(Math.random()*3)) === 0;
+      // Slight chance only if using Major-focused readings but we keep allowed for fun
+      foolMode = shouldActivateFool;
 
-      // draw all cards, append immediately (no layout-shifting drop)
-      const drawn = [];
-      for(let i=0;i<numCards;i++){
-        const c = drawOne(deck, foolMode);
-        drawn.push(c);
+      const includeMinors = document.getElementById('includeMinors').checked;
+      const allowReversals = document.getElementById('allowReversals').checked;
+
+      // choose how many cards
+      let numCards, positions;
+      if(currentSpread === 'single'){
+        numCards = 1; positions = ['Answer'];
+      } else if(currentSpread === 'three'){
+        numCards = 3; positions = ['Past','Present','Future'];
+      } else if(currentSpread === 'celtic'){
+        numCards = 5; positions = ['Present','Challenge','Past','Future','Outcome'];
+      } else { // full reading
+        numCards = 7; positions = ['Anchor','Obstacle','Heart','Mind','Near Future','Advice','Outcome'];
       }
 
-      drawn.forEach((card, idx) => {
+      // build deck pool
+      let pool = majorArcana.map(m => ({...m, arcana:'major'}));
+      if(includeMinors || currentSpread === 'full') {
+        // include minor arcana in the pool for selection
+        const minors = minorDeck.map(m => ({...m, arcana:'minor'}));
+        pool = pool.concat(minors);
+      }
+
+      // if foolMode: thematic effect - we still draw but alter presentation
+      const selection = [];
+      const shuffled = shuffle(pool);
+      for(let i=0,j=0; i<numCards && j<shuffled.length; j++){
+        const candidate = {...shuffled[j]};
+
+        // When in foolMode, do a special treatment:
+        // - Either replace with The Fool (majorArcana[0]) OR keep but tag with foolBlessed true for visual
+        if(foolMode){
+          // 60% chance the card becomes The Fool; otherwise it's marked as touched by the Fool
+          if(Math.random() < 0.6){
+            const fool = {...majorArcana[0], arcana:'major', foolBless:true};
+            // allow reversal optionally
+            fool.reversed = allowReversals ? (Math.random() < 0.5) : false;
+            fool.position = positions[i] || `Position ${i+1}`;
+            selection.push(fool);
+            i++;
+            continue;
+          } else {
+            candidate.foolTouched = true;
+          }
+        }
+
+        // otherwise normal draw
+        candidate.reversed = allowReversals ? (Math.random() < 0.45) : false;
+        candidate.position = positions[i] || `Position ${i+1}`;
+
+        // for minors, produce detailed description on the fly
+        if(candidate.arcana === 'minor'){
+          candidate.detailed = minorMeaning(candidate, candidate.reversed);
+          candidate.emoji = candidate.emoji || '🔹';
+        }
+
+        selection.push(candidate);
+        i++;
+      }
+
+      renderCards(selection, foolMode);
+      // show interpretation after animations
+      setTimeout(() => showInterpretation(selection, foolMode), numCards * 320 + 600);
+    });
+
+    // Render selected cards to DOM with flip animation and reversal visual
+    function renderCards(selection, isFool){
+      const container = document.getElementById('cardsContainer');
+      container.innerHTML = '';
+
+      // apply global fool visuals
+      if(isFool){
+        document.getElementById('pageBody').classList.add('fool-mode-body');
+        triggerConfetti(18);
+      } else {
+        document.getElementById('pageBody').classList.remove('fool-mode-body');
+      }
+
+      selection.forEach((card, idx) => {
         const cardEl = document.createElement('div');
         cardEl.className = 'tarot-card';
-        cardEl.setAttribute('tabindex','0');
-        cardEl.style.opacity = '0';
-        const reversedBadge = card.reversed ? '<div class="reversed-indicator">↷ Reversed</div>' : '';
-        const svg = svgArtFor(card.name || ('Card'+idx));
+        if(card.reversed) cardEl.classList.add('reversed');
+
+        const isMajor = card.arcana === 'major';
+        const name = card.name || card.title || (isMajor ? card.name : card.name);
+
+        const emoji = card.emoji || (isMajor ? '🔮' : '🔹');
+        const meaningSnippet = isMajor ? (card.detailed ? card.detailed.split('.')[0] : '') : (card.detailed || '');
+
         cardEl.innerHTML = `
-          <div class="card-inner" aria-hidden="false">
-            <div class="card-face card-back" aria-hidden="true"><div style="font-size:28px;opacity:.6">🔮</div></div>
-            <div class="card-face card-front">
-              ${reversedBadge}
-              <div class="card-art"><img src="${svg}" alt="${card.name} art" /></div>
-              <div class="card-name">${card.name}</div>
-              <div class="card-meaning">${card.meaning || ''}</div>
+          <div class="card-inner">
+            <div class="card-face card-back" aria-hidden="true">🔮</div>
+            <div class="card-face card-front ${card.foolBless ? 'fool-mode' : ''}">
+              <div class="card-emoji">${emoji}</div>
+              <div class="card-name">${name}</div>
+              <div class="card-meaning">${meaningSnippet}</div>
             </div>
           </div>
         `;
-        cardEl._card = card;
-        cardEl.addEventListener('click', () => showCardDetail(cardEl._card));
-        cardEl.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showCardDetail(cardEl._card); }});
-        cardsContainer.appendChild(cardEl);
-        enableTilt(cardEl);
-      });
 
-      // flip all cards at once (no staggering) to avoid overlap and layout shifts
-      requestAnimationFrame(() => {
-        document.querySelectorAll('.tarot-card').forEach(el => {
-          setTimeout(() => {
-            el.classList.add('flipped');
-            el.style.opacity = '1';
-          }, 80);
+        // small interactive tilt
+        cardEl.addEventListener('mousemove', (e)=>{
+          const rect = cardEl.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width - 0.5;
+          const y = (e.clientY - rect.top) / rect.height - 0.5;
+          cardEl.style.transform = `rotateX(${(-y*6)}deg) rotateY(${(x*8)}deg)`;
         });
+        cardEl.addEventListener('mouseleave', ()=>cardEl.style.transform = '');
+
+        // append then flip with stagger
+        setTimeout(()=> {
+          container.appendChild(cardEl);
+          setTimeout(()=> cardEl.classList.add('flipped'), 120);
+        }, idx * 260);
       });
-
-      // show interpretation after flip completes; because cardsContainer reserves vertical space there is no overlap
-      const flipDurationMs = 820;
-      setTimeout(() => {
-        if(foolMode){
-          interpretation.innerHTML = `
-            <div style="font-weight:900;font-family:Cinzel,serif;font-size:20px;color:var(--brand-2);margin-bottom:8px">🃏 THE FOOL'S BLESSING</div>
-            <div class="card-detail"><h3>🔮 The Fool as Cipher</h3><p>The Fool reframes events as possible signs and signals. Keep a motif log and watch for symbols repeating across days. This reading nudges you to treat curiosities as potential clues.</p></div>
-            <div class="card-detail"><h3>🕯️ Use the Blessing</h3><p>Record repeated names, numbers, and places. Revisit them in a week and look for patterns — the Fool rewards patient curiosity.</p></div>
-          `;
-        } else {
-          let html = '<h2 style="font-family:Cinzel,serif;color:var(--brand-2);margin-bottom:8px">✨ Your Reading</h2>';
-          drawn.forEach((card, i) => {
-            const pos = positions[i] || `Position ${i+1}`;
-            html += `<div class="card-detail"><h3>${card.emoji || ''} ${pos}: ${card.name}</h3><p>${card.detail || card.meaning || ''}</p>${card.reversed ? `<p style="color:var(--muted);margin-top:6px"><strong>Reversed:</strong> ${card.reversed}</p>` : ''}</div>`;
-          });
-          interpretation.innerHTML = html;
-        }
-        interpretation.classList.add('show');
-        interpretation.scrollIntoView({behavior:'smooth', block:'start'});
-      }, flipDurationMs + 100);
-    });
-
-    function showCardDetail(card){
-      const rev = card.reversed ? `<p style="color:var(--muted);margin-top:8px"><strong>Reversed:</strong> ${card.reversed}</p>` : '';
-      interpretation.innerHTML = `<h2 style="font-family:Cinzel,serif;color:var(--brand-2)">${card.name}</h2><div class="card-detail"><h3>${card.emoji || ''} ${card.position || ''}</h3><p>${card.detail || card.meaning || ''}</p>${rev}</div>`;
-      interpretation.classList.add('show');
-      interpretation.scrollIntoView({behavior:'smooth', block:'start'});
     }
 
-    // initial hint
-    setTimeout(()=> {
-      const hint = document.createElement('div');
-      hint.className = 'control';
-      hint.style.textAlign = 'center';
-      hint.style.margin = '10px auto';
-      hint.textContent = 'Spread selection restored — pick Single, Three, or Celtic Cross above the controls.';
-      document.querySelector('.container').insertBefore(hint, document.getElementById('readingSelector'));
-      setTimeout(()=>hint.remove(),9000);
-    }, 600);
+    // Show interpretation panel with detailed text and fool-mode narrative
+    function showInterpretation(selection, isFool){
+      const interpretation = document.getElementById('interpretation');
+      interpretation.innerHTML = '';
+      interpretation.classList.remove('show');
+
+      if(isFool){
+        // Fool blessing - updated to reference "Lord of the Mysteries" thematically without quoting
+        const banner = `<div class="fool-banner">🃏 PRAISE THE FOOL — THE LIGHT IN CHAOS 🃏</div>`;
+        const intro = `<p style="text-align:center; color:var(--muted); font-style:italic; margin-bottom:12px;">
+          You have been touched by The Fool. As in modern mythic tales like "Lord of the Mysteries", this is more than whimsy:
+          the Fool signifies rupture, revelation, and the strange grace that reorders destiny. Expect paradox, uncanny luck, and riddles that lead to wisdom.</p>`;
+
+        let details = '';
+        // Render each card but with Fool interpretation tone
+        selection.forEach(c => {
+          // If the card is explicitly the Fool, give a special, vibrant message
+          if(c.slug === 'fool' || c.foolBless){
+            details += `
+              <div class="card-detail">
+                <h3>🃏 ${c.position}: ${c.name}</h3>
+                <p>The Fool stands at the hinge of your story. Here the usual rules bend: certainties unravel and secrets are given as jokes.
+                The path forward may appear absurd, but that absurdity is a gateway. Hold contradiction gently — meaning will unfold in surprising forms.</p>
+              </div>
+            `;
+          } else {
+            // other cards touched by fool
+            const base = c.arcana === 'major' ? (c.detailed || '') : (c.detailed || minorMeaning(c, c.reversed));
+            details += `
+              <div class="card-detail">
+                <h3>${c.emoji || ''} ${c.position}: ${c.name}${c.reversed ? ' (Reversed)' : ''}</h3>
+                <p>${c.foolTouched ? ('Marked by The Fool — ' + base) : base}</p>
+              </div>
+            `;
+          }
+        });
+
+        interpretation.innerHTML = banner + intro + details +
+          `<p style="color:var(--muted); font-size:13px; margin-top:8px;">Note: The Fool's blessing often introduces playful distortion — double-check choices, and expect the unexpected.</p>`;
+
+        // add a small soundless theatrical confetti and extended visual (confetti already triggered)
+      } else {
+        // Normal reading: include each card's expanded description + reversal nuance
+        let html = '<h2>✨ Your Reading</h2>';
+        selection.forEach(card => {
+          const title = `${card.emoji || ''} ${card.position}: ${card.name}${card.reversed ? ' (Reversed)' : ''}`;
+          const detail = card.arcana === 'major' ? (card.detailed || '') : (card.detailed || minorMeaning(card, card.reversed));
+          const reversedNote = card.reversed ? '<em style="color:var(--muted); display:block; margin-top:6px;">This reversal suggests a blockage, internalization, or the need to reframe the energy.</em>' : '';
+          html += `
+            <div class="card-detail">
+              <h3>${title}</h3>
+              <p>${detail}</p>
+              ${reversedNote}
+            </div>
+          `;
+        });
+        interpretation.innerHTML = html;
+      }
+
+      interpretation.classList.add('show');
+    }
+
+    // Simple confetti generator (DOM nodes with random colors, fall animation)
+    function triggerConfetti(count=12){
+      const colors = ['#ef4444','#d946ef','#f59e0b','#10b981','#60a5fa','#fde68a'];
+      for(let i=0;i<count;i++){
+        const el = document.createElement('div');
+        el.className = 'confetti-piece';
+        el.style.left = Math.random() * 100 + 'vw';
+        el.style.background = colors[Math.floor(Math.random()*colors.length)];
+        el.style.transform = `rotate(${Math.random()*360}deg)`;
+        const duration = 2500 + Math.random()*2500;
+        el.style.animationDuration = duration + 'ms';
+        el.style.animationDelay = (Math.random()*300) + 'ms';
+        document.body.appendChild(el);
+        // clean up
+        setTimeout(()=> {
+          el.remove();
+        }, duration + 800);
+      }
+    }
+
+    // Initialize: fill major arcana details
+    // (Already set in majorArcana array)
   </script>
 </body>
 </html>
