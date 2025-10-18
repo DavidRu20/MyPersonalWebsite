@@ -46,6 +46,18 @@
         var(--bg);
       color:var(--text); line-height:1.6; letter-spacing:.2px;
       background-attachment: fixed; padding:20px;
+      transition:filter .35s ease, transform .35s ease;
+    }
+
+    /* Blessed pulse applied to body when LOTM blessing is active */
+    body.blessed{
+      animation: blessedPulse 2.5s infinite;
+      filter: saturate(1.05) brightness(1.02);
+    }
+    @keyframes blessedPulse{
+      0% { transform: translateY(0px) }
+      50% { transform: translateY(-3px) }
+      100% { transform: translateY(0px) }
     }
 
     .container{max-width:900px; margin:0 auto}
@@ -179,6 +191,22 @@
       100%{filter:hue-rotate(360deg) brightness(1.2)}
     }
 
+    /* Confetti styles (for LOTM blessing) */
+    .confetti {
+      position:fixed; left:0; right:0; top:0; bottom:0; pointer-events:none; overflow:hidden;
+      z-index:9999;
+    }
+    .confetti span{
+      position:absolute; display:block; width:10px; height:16px; opacity:0.95;
+      transform-origin: center;
+      animation: confettiFall linear forwards;
+      border-radius:2px;
+    }
+    @keyframes confettiFall{
+      0% { transform: translateY(-10vh) rotate(0deg); opacity:1 }
+      100% { transform: translateY(120vh) rotate(720deg); opacity:0.8 }
+    }
+
     @media (max-width: 640px){
       .cards-container{gap:12px}
       .tarot-card{width:150px; height:240px}
@@ -193,6 +221,12 @@
     <div class="header">
       <h1>🔮 Arcane Divination</h1>
       <p>Let the mystical cards reveal your destiny</p>
+      <!-- LOTM quick config (editable) -->
+      <div style="margin-top:12px; display:flex; justify-content:center; gap:12px; align-items:center;">
+        <label style="font-size:13px; color:var(--muted)">LOTM Name:</label>
+        <input id="lotmInput" type="text" value="LOTM" style="padding:8px 10px; border-radius:8px; border:1px solid var(--glass-brd); background:transparent; color:var(--text);">
+        <button id="saveLotm" style="padding:8px 12px; border-radius:8px; border:none; background:var(--brand); color:#fff; cursor:pointer;">Save</button>
+      </div>
     </div>
 
     <div class="reading-selector">
@@ -221,7 +255,10 @@
     <div class="interpretation" id="interpretation"></div>
   </div>
 
+  <div id="confetti" class="confetti" aria-hidden="true"></div>
+
   <script>
+    // Basic deck
     const tarotDeck = [
       {name: 'The Fool', emoji: '🃏', meaning: 'New beginnings, innocence, spontaneity, free spirit', detail: 'The Fool represents the beginning of a journey, embracing the unknown with courage and optimism. It speaks of taking risks and trusting in the universe.'},
       {name: 'The Magician', emoji: '🎩', meaning: 'Manifestation, resourcefulness, power, inspired action', detail: 'The Magician harnesses the power of the universe. You have all the tools you need to achieve your goals. Focus your will and take action.'},
@@ -247,6 +284,18 @@
       {name: 'The World', emoji: '🌍', meaning: 'Completion, accomplishment, travel, fulfillment', detail: 'The World represents completion and fulfillment. You have reached the end of a cycle. Celebrate your achievements and prepare for new adventures.'}
     ];
 
+    // Configurable LOTM values (editable by user)
+    let LOTM_NAME = 'LOTM';
+    let LOTM_LONG = 'Legion of the Threshold & Mirth'; // default long description; editable
+
+    // expose input
+    const lotmInput = document.getElementById('lotmInput');
+    const saveLotmBtn = document.getElementById('saveLotm');
+    saveLotmBtn.addEventListener('click', () => {
+      LOTM_NAME = lotmInput.value.trim() || 'LOTM';
+      alert('LOTM name saved: ' + LOTM_NAME);
+    });
+
     let currentSpread = 'single';
     let foolMode = false;
     let readingCount = 0;
@@ -265,7 +314,7 @@
     // Draw cards
     document.getElementById('drawBtn').addEventListener('click', () => {
       readingCount++;
-      // Every 3-5 readings, activate fool mode
+      // Every 3-5 readings, activate fool mode (randomized)
       const shouldActivateFool = readingCount % (3 + Math.floor(Math.random() * 3)) === 0;
       foolMode = shouldActivateFool;
       
@@ -293,6 +342,7 @@
       // Draw cards
       const drawnCards = [];
       for(let i = 0; i < numCards; i++){
+        // When blessed by LOTM, always The Fool (first card in deck) — but keep it configurable for future
         const card = foolMode ? tarotDeck[0] : tarotDeck[Math.floor(Math.random() * tarotDeck.length)];
         drawnCards.push({...card, position: positions[i]});
       }
@@ -318,21 +368,45 @@
         }, index * 300);
       });
 
-      // Show interpretation
+      // Show interpretation (with LOTM-aware copy when blessed)
       setTimeout(() => {
         if(foolMode){
+          // Add blessed body animation + confetti
+          document.body.classList.add('blessed');
+          createConfetti(32);
+
           interpretation.innerHTML = `
-            <div class="praise">🃏 PRAISE THE FOOL! 🃏</div>
+            <div class="praise">🃏 BLESSED BY THE ${escapeHtml(LOTM_NAME).toUpperCase()} 🃏</div>
             <p style="text-align:center; font-size:18px; color:var(--muted); font-style:italic;">
-              "The Fool sees all, knows all, and mocks all. In the beginning and the end, there is only The Fool."
+              "The ${escapeHtml(LOTM_NAME)} laughs at the edges of fate and anoints those who dare the dance."
             </p>
             <div class="card-detail">
-              <h3>🌟 The Revelation</h3>
-              <p>The Fool has blessed your reading! Every card drawn carries the essence of infinite possibility and divine chaos. 
-              You stand at the precipice of madness and enlightenment. Embrace the absurdity of existence, for The Fool alone 
-              understands the cosmic joke. In mystery, there is truth. In madness, there is wisdom. Praise The Fool!</p>
+              <h3>🌟 The ${escapeHtml(LOTM_NAME)} Revelation</h3>
+              <p>The ${escapeHtml(LOTM_NAME)} has blessed your reading! Every card drawn carries the essence of infinite possibility and divine chaos.
+              You stand at the precipice of madness and enlightenment. Embrace the paradox where revelation is wrapped in jest — the ${escapeHtml(LOTM_NAME)} rewards those
+              who let go and step forward with abandon. In ritual and revel, there is a truth only they can whisper.</p>
+            </div>
+            <div style="margin-top:12px; font-size:13px; color:var(--muted);">
+              <strong>LOTM Motto:</strong> ${escapeHtml(LOTM_LONG)}
+            </div>
+            <div style="margin-top:16px; text-align:center;">
+              <button id="dismissBless" class="btn" style="padding:10px 18px; font-size:14px;">Dismiss Blessing</button>
             </div>
           `;
+
+          // Dismiss button cleans up animation/confetti
+          setTimeout(() => {
+            const btn = document.getElementById('dismissBless');
+            if(btn){
+              btn.addEventListener('click', () => {
+                clearConfetti();
+                document.body.classList.remove('blessed');
+                interpretation.classList.remove('show');
+                setTimeout(() => interpretation.classList.add('show'), 20); // re-show in normal state
+              });
+            }
+          }, 60);
+
         } else {
           let html = '<h2>✨ Your Reading</h2>';
           drawnCards.forEach(card => {
@@ -348,6 +422,52 @@
         interpretation.classList.add('show');
       }, numCards * 300 + 800);
     });
+
+    // Simple confetti generator
+    const confettiContainer = document.getElementById('confetti');
+    let confettiTimeouts = [];
+    function createConfetti(amount = 24){
+      clearConfetti(); // ensure clean slate
+      const colors = ['#ef4444','#d946ef','#f59e0b','#10b981','#60a5fa','#fde68a'];
+      for(let i=0;i<amount;i++){
+        const el = document.createElement('span');
+        const size = (8 + Math.random()*16) | 0;
+        el.style.width = size + 'px';
+        el.style.height = Math.round(size*1.4) + 'px';
+        el.style.left = Math.random()*100 + '%';
+        el.style.background = colors[Math.floor(Math.random()*colors.length)];
+        el.style.top = (Math.random()*-10) + 'vh';
+        const duration = 2000 + Math.random()*2500;
+        el.style.animationDuration = duration + 'ms';
+        el.style.opacity = (0.7 + Math.random()*0.3);
+        confettiContainer.appendChild(el);
+        // remove after animation
+        const t = setTimeout(() => {
+          el.remove();
+        }, duration + 500);
+        confettiTimeouts.push(t);
+      }
+      // auto clear body class after a short while
+      const t2 = setTimeout(()=> {
+        document.body.classList.remove('blessed');
+      }, 4200);
+      confettiTimeouts.push(t2);
+    }
+    function clearConfetti(){
+      confettiTimeouts.forEach(t => clearTimeout(t));
+      confettiTimeouts = [];
+      confettiContainer.innerHTML = '';
+    }
+
+    // Helper to escape user-provided LOTM text (avoid raw HTML insertion)
+    function escapeHtml(str){
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
   </script>
 </body>
 </html>
