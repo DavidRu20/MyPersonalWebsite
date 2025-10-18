@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0f0f13" />
-  <title>Arcane Engineering & AI · Beaver Works Grimoire</title>
-  <meta name="description" content="A mystical portfolio chronicling my journey through the realms of Applied Engineering & AI." />
+  <title>Arcane Engineering & AI · Beaver Works Portfolio</title>
+  <meta name="description" content="A portfolio documenting work in Applied Engineering & AI." />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Cinzel:wght@400;600;700;900&display=swap" rel="stylesheet">
   <style>
@@ -86,7 +86,7 @@
       50%{opacity:.35; text-shadow:0 0 15px var(--brand), 0 0 25px var(--brand-2)}
     }
     .magic-particle{
-      position:fixed; font-size:18px; color:var(--brand); 
+      position:fixed; font-size:18px; color:var(--brand);
       pointer-events:none; font-family:'Cinzel', serif;
       animation:float 12s infinite ease-in-out, runeGlow 4s infinite ease-in-out;
     }
@@ -102,9 +102,9 @@
     .brand{display:flex; align-items:center; gap:12px; text-decoration:none; transition:transform .3s ease}
     .brand:hover{transform:scale(1.03)}
     .logo{
-      width:42px; height:42px; border-radius:14px; display:grid; place-items:center; 
+      width:42px; height:42px; border-radius:14px; display:grid; place-items:center;
       font-weight:900; font-size:20px;
-      background: conic-gradient(from 200deg, var(--brand), var(--brand-2), var(--accent), var(--brand)); 
+      background: conic-gradient(from 200deg, var(--brand), var(--brand-2), var(--accent), var(--brand));
       color:#000; box-shadow:var(--glow);
       animation:pulse 3s infinite ease-in-out;
     }
@@ -117,12 +117,12 @@
     .nav-actions{display:flex; gap:10px; align-items:center}
     .btn{
       border:1px solid var(--glass-brd); background:var(--glass); color:var(--text);
-      padding:10px 16px; border-radius:12px; cursor:pointer; 
+      padding:10px 16px; border-radius:12px; cursor:pointer;
       transition:all .2s ease; font-weight:500; font-size:14px;
     }
     .btn:hover{transform:translateY(-2px); border-color:var(--brand); box-shadow:var(--shadow)}
     .btn-primary{
-      background:linear-gradient(135deg, var(--brand), var(--brand-2)); 
+      background:linear-gradient(135deg, var(--brand), var(--brand-2));
       border:none; color:#fff; font-weight:600;
     }
     .btn-primary:hover{box-shadow:0 8px 25px rgba(0,215,255,.25)}
@@ -131,17 +131,17 @@
     .hero{padding:80px 24px 32px}
     .hero-grid{display:grid; grid-template-columns:1.1fr .9fr; gap:32px; align-items:center}
     .badge{
-      display:inline-flex; align-items:center; gap:8px; font-weight:600; color:#fff; 
+      display:inline-flex; align-items:center; gap:8px; font-weight:600; color:#fff;
       background:linear-gradient(90deg, var(--brand), var(--brand-2));
-      border-radius:999px; padding:9px 14px; box-shadow:var(--shadow); 
+      border-radius:999px; padding:9px 14px; box-shadow:var(--shadow);
       font-size:12px; letter-spacing:.5px; font-family:'Cinzel', serif;
     }
     .h1{
-      font-size: clamp(30px, 4.5vw, 48px); line-height:1.15; margin:18px 0 12px; 
+      font-size: clamp(30px, 4.5vw, 48px); line-height:1.15; margin:18px 0 12px;
       font-weight:900; font-family:'Cinzel', serif; text-shadow:0 2px 10px rgba(0,0,0,.3);
     }
     .h1 span.gradient{
-      background:linear-gradient(120deg, var(--brand), var(--brand-2), var(--accent)); 
+      background:linear-gradient(120deg, var(--brand), var(--brand-2), var(--accent));
       -webkit-background-clip:text; background-clip:text; color:transparent;
       animation:shimmer 3s infinite linear;
     }
@@ -152,14 +152,14 @@
     .kicker{color:var(--muted); max-width:58ch; font-size:15px}
     .cta{margin-top:20px; display:flex; gap:12px; flex-wrap:wrap}
     .hero-card{
-      border:1px solid var(--glass-brd); 
+      border:1px solid var(--glass-brd);
       background:linear-gradient(135deg, rgba(139,92,246,.12), rgba(245,158,11,.1));
       border-radius:20px; padding:20px; box-shadow:var(--shadow);
       backdrop-filter:blur(10px);
     }
     .hero-list{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:14px}
     .hero-item{
-      border:1px dashed var(--glass-brd); border-radius:14px; padding:12px; 
+      border:1px dashed var(--glass-brd); border-radius:14px; padding:12px;
       background:var(--glass); font-size:13px;
       transition:all .2s ease;
     }
@@ -169,56 +169,56 @@
     /* SECTIONS */
     section{padding:40px 24px}
     .section-title{
-      font-size:13px; letter-spacing:.3em; color:var(--brand-2); 
+      font-size:13px; letter-spacing:.3em; color:var(--brand-2);
       text-transform:uppercase; font-weight:700; font-family:'Cinzel', serif;
     }
     .section-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:18px}
     .section-head h2{
-      margin:6px 0 0; font-size:28px; font-family:'Cinzel', serif; 
+      margin:6px 0 0; font-size:28px; font-family:'Cinzel', serif;
       font-weight:700; text-shadow:0 2px 8px rgba(0,0,0,.2);
     }
 
     /* ABOUT */
     .about{display:grid; grid-template-columns:.8fr 1.2fr; gap:24px; align-items:start}
     .card{
-      border:1px solid var(--glass-brd); background:var(--panel); 
+      border:1px solid var(--glass-brd); background:var(--panel);
       border-radius:18px; padding:20px; box-shadow:var(--shadow);
       transition:all .3s ease;
     }
     .card:hover{border-color:var(--brand); box-shadow:0 12px 40px rgba(217,70,239,.3)}
     .profile{
-      width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:16px; 
+      width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:16px;
       border:2px solid var(--glass-brd); box-shadow:0 4px 20px rgba(0,0,0,.3);
     }
 
     /* PROJECTS */
     .filters{display:flex; gap:10px; flex-wrap:wrap}
     .chip{
-      padding:9px 14px; border-radius:999px; border:1px solid var(--glass-brd); 
+      padding:9px 14px; border-radius:999px; border:1px solid var(--glass-brd);
       background:var(--glass); cursor:pointer; font-size:13px; font-weight:500;
       transition:all .2s ease;
     }
     .chip:hover{border-color:var(--brand); background:rgba(139,92,246,.15)}
     .chip.active{
-      background:linear-gradient(135deg, var(--brand), var(--brand-2)); 
+      background:linear-gradient(135deg, var(--brand), var(--brand-2));
       border-color:transparent; color:#fff; box-shadow:var(--shadow);
     }
 
     .grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px}
     .proj{
-      position:relative; overflow:hidden; border-radius:18px; 
+      position:relative; overflow:hidden; border-radius:18px;
       border:1px solid var(--glass-brd);
       background:linear-gradient(135deg, rgba(139,92,246,.08), rgba(245,158,11,.06));
       box-shadow:var(--shadow); transition:all .3s ease;
     }
     .proj:hover{
-      transform:translateY(-6px) scale(1.02); 
-      border-color:var(--brand); 
+      transform:translateY(-6px) scale(1.02);
+      border-color:var(--brand);
       box-shadow:0 18px 50px rgba(217,70,239,.45);
     }
     .thumb{
-      height:170px; 
-      background:linear-gradient(135deg, rgba(217,70,239,.25), rgba(245,158,11,.25)); 
+      height:170px;
+      background:linear-gradient(135deg, rgba(217,70,239,.25), rgba(245,158,11,.25));
       display:grid; place-items:center; font-weight:800;
       position:relative; overflow:hidden;
     }
@@ -231,7 +231,7 @@
     .proj-body{padding:16px}
     .tags{display:flex; gap:8px; flex-wrap:wrap; margin:8px 0}
     .tag{
-      font-size:11px; padding:5px 10px; border-radius:999px; 
+      font-size:11px; padding:5px 10px; border-radius:999px;
       background:rgba(139,92,246,.12); border:1px solid var(--glass-brd);
       font-weight:500;
     }
@@ -240,7 +240,7 @@
     /* OUTPUTS */
     .links{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px}
     .link-card{
-      border:1px solid var(--glass-brd); background:var(--glass); 
+      border:1px solid var(--glass-brd); background:var(--glass);
       border-radius:16px; padding:16px; transition:all .3s ease;
     }
     .link-card:hover{
@@ -250,7 +250,7 @@
 
     /* FOOTER */
     footer{
-      padding:36px 24px; color:var(--muted); 
+      padding:36px 24px; color:var(--muted);
       border-top:1px solid var(--glass-brd); margin-top:32px;
       background:linear-gradient(180deg, transparent, rgba(0,0,0,.2));
     }
@@ -273,13 +273,13 @@
       50%{filter:drop-shadow(0 0 40px rgba(245,158,11,.8)) drop-shadow(0 0 25px rgba(239,68,68,.6)) drop-shadow(0 0 50px rgba(217,70,239,.4))}
     }
     .dragon{
-      position:absolute; 
+      position:absolute;
       animation:dragonFly 15s infinite ease-in-out, dragonBreath 3s infinite ease-in-out;
       pointer-events:auto; z-index:1;
       transition:transform .3s ease; cursor:pointer;
     }
     .dragon:hover{transform:scale(1.2) !important; filter:drop-shadow(0 0 60px rgba(245,158,11,1)) !important}
-    
+
     /* Limitless cursor effect (rewritten) */
     .limitless-effect{
       position:fixed; pointer-events:none; z-index:9999;
@@ -337,7 +337,6 @@
     }
     [data-theme="six-eyes"] .six-eyes-hud{ opacity:1; transform:translate(-50%, -38%) scale(1.02) }
     .six-eyes-hud::before{
-      /* removed emoji content so HUD is subtle and non-emoji */
       content: '';
       display:block;
       width:84%;
@@ -346,8 +345,6 @@
       border-radius:2px;
       opacity:.85;
     }
-
-    /* Makima eyes removed */
 
     @media (max-width: 980px){
       .hero-grid{grid-template-columns:1fr}
@@ -376,14 +373,14 @@
       transition:all .3s ease; text-decoration:none;
     }
     .fortune-orb:hover{
-      transform:scale(1.2) rotate(15deg) !important; 
+      transform:scale(1.2) rotate(15deg) !important;
       filter:drop-shadow(0 10px 35px rgba(147,51,234,.9)) drop-shadow(0 0 50px rgba(217,70,239,.7)) !important;
     }
     .fortune-orb:active{transform:scale(1.1) rotate(-8deg) !important}
   </style>
 </head>
 <body>
-  <!-- Mystical rune particles -->
+  <!-- Decorative rune particles -->
   <div id="particles"></div>
 
   <!-- Limitless cursor effect (orb only; only visible/active in Six Eyes theme) -->
@@ -402,13 +399,13 @@
       <a class="brand" href="#top" aria-label="Home">
         <div class="logo" aria-hidden="true">🔮</div>
         <div>
-          <div class="title">Arcane Codex</div>
-          <div class="subtitle">APPLIED ENGINEERING & AI</div>
+          <div class="title">Arcane Engineering</div>
+          <div class="subtitle">Applied Engineering & AI</div>
         </div>
       </a>
       <div class="nav-actions">
-        <button class="btn" id="themeToggle" aria-label="Toggle theme">✨ Realm</button>
-        <a class="btn btn-primary" href="#projects">🐉 Quests</a>
+        <button class="btn" id="themeToggle" aria-label="Toggle theme">Theme</button>
+        <a class="btn btn-primary" href="#projects">Projects</a>
       </div>
     </div>
   </nav>
@@ -417,45 +414,45 @@
   <header id="top" class="hero container">
     <div class="hero-grid">
       <div>
-        <span class="badge">⚡ Wizard's Chronicle</span>
+        <span class="badge">Overview</span>
         <h1 class="h1">
-          Greetings, I'm <span id="name">David</span> — conjuring
+          Hello, I'm <span id="name">David</span> — building
           <span class="gradient" id="typewriter" aria-live="polite"></span>
         </h1>
-        <p class="kicker">Welcome to my arcane grimoire. Within these enchanted pages lie my projects, spell‑crafting experiments, and artifacts from the <strong>Applied Engineering & AI</strong> realm — from mystical Arduino contraptions and data divination to enchanted web apps and dragon‑powered ML models.</p>
+        <p class="kicker">I design and develop end-to-end systems in applied engineering and artificial intelligence. My work includes hardware prototypes, embedded systems, web applications, and machine learning models focused on practical deployments and research-driven results.</p>
         <div class="cta">
-          <a class="btn btn-primary" href="#about">📜 My Saga</a>
-          <a class="btn" href="#links">🗝️ Artifacts</a>
-          <a class="btn" href="#projects">⚗️ Experiments</a>
+          <a class="btn btn-primary" href="#about">About</a>
+          <a class="btn" href="#links">Resources</a>
+          <a class="btn" href="#projects">Projects</a>
         </div>
       </div>
       <div class="hero-card fade-in" style="animation-delay:.15s">
-        <div class="mini">⭐ Apprentice Checklist</div>
+        <div class="mini">Highlights</div>
         <div class="hero-list">
-          <div class="hero-item">✅ Spellbook (GitHub) initialized</div>
-          <div class="hero-item">✅ Scroll of deeds exported</div>
-          <div class="hero-item">✅ Magical circuit inscribed</div>
-          <div class="hero-item">✅ Prophecy notebook published</div>
+          <div class="hero-item">GitHub repositories and documentation maintained</div>
+          <div class="hero-item">Project reports and demonstrations published</div>
+          <div class="hero-item">Hardware prototypes developed and tested</div>
+          <div class="hero-item">Notebooks and model evaluations available</div>
         </div>
-        <div class="mini" style="margin-top:12px">🧙‍♂️ Tip: Customize your grimoire in ~10 minutes of enchantment.</div>
+        <div class="mini" style="margin-top:12px">Tip: Replace placeholder content with your details and links.</div>
       </div>
     </div>
   </header>
 
-  <!-- Dragon emojis - simple and clean -->
-  <div class="dragon" style="top:10%; right:5%; font-size:80px;">🐉</div>
-  <div class="dragon" style="bottom:12%; left:4%; animation-delay:5s; font-size:70px; opacity:0.75">🐲</div>
+  <!-- Decorative elements (kept for stylistic background) -->
+  <div class="dragon" style="top:10%; right:5%; font-size:80px;" aria-hidden="true">🐉</div>
+  <div class="dragon" style="bottom:12%; left:4%; animation-delay:5s; font-size:70px; opacity:0.75" aria-hidden="true">🐲</div>
 
-  <!-- Fortune orb - floating portal to tarot -->
-  <a href="tarot.html" class="fortune-orb" title="Seek the Arcane Divination">🔮</a>
+  <!-- Floating portal (kept as decorative link) -->
+  <a href="tarot.html" class="fortune-orb" title="Visual showcase (decorative link)">🔮</a>
 
-  <!-- Floating weapons -->
-  <div class="weapon" style="top:25%; left:10%; animation-delay:1s">⚔️</div>
-  <div class="weapon" style="top:60%; right:12%; animation-delay:3s">🗡️</div>
-  <div class="weapon" style="bottom:30%; left:15%; animation-delay:2s">🛡️</div>
-  <div class="weapon" style="top:45%; right:8%; animation-delay:4s; font-size:28px">🏹</div>
+  <!-- Floating decorative icons -->
+  <div class="weapon" style="top:25%; left:10%; animation-delay:1s" aria-hidden="true">⚔️</div>
+  <div class="weapon" style="top:60%; right:12%; animation-delay:3s" aria-hidden="true">🗡️</div>
+  <div class="weapon" style="bottom:30%; left:15%; animation-delay:2s" aria-hidden="true">🛡️</div>
+  <div class="weapon" style="top:45%; right:8%; animation-delay:4s; font-size:28px" aria-hidden="true">🏹</div>
 
-  <!-- Magic circles -->
+  <!-- Subtle background circles -->
   <div class="magic-circle" style="top:30%; left:-10%"></div>
   <div class="magic-circle" style="bottom:20%; right:-8%; animation-duration:40s; animation-direction:reverse"></div>
 
@@ -463,22 +460,22 @@
   <section id="about" class="container">
     <div class="section-head">
       <div>
-        <div class="section-title">Origins</div>
-        <h2>The Wizard's Tale</h2>
+        <div class="section-title">Background</div>
+        <h2>About</h2>
       </div>
-      <a class="btn" href="#links">View Relics →</a>
+      <a class="btn" href="#links">View Resources →</a>
     </div>
     <div class="about">
       <div class="card">
-        <img class="profile" src="profile.jpg" alt="Portrait of the wizard" />
-        <p class="mini" style="margin-top:12px">🖼️ Replace <code>profile.jpg</code> with your mystical portrait.</p>
+        <img class="profile" src="profile.jpg" alt="Profile portrait" />
+        <p class="mini" style="margin-top:12px">Replace <code>profile.jpg</code> with your portrait.</p>
       </div>
       <div class="card">
-        <p>I am a practitioner of the arcane arts at Beaver Works, specializing in <strong>applied engineering sorcery</strong> and <strong>artificial intelligence magic</strong>. I revel in crafting complete enchantments: hardware talismans, interactive crystal balls, and machine learning familiars. This grimoire showcases my most potent spells and learned wisdom.</p>
+        <p>I am an engineer and researcher at Beaver Works focusing on applied engineering and artificial intelligence. I work on full-stack systems that integrate hardware, firmware, cloud services, and machine learning to deliver reproducible, deployable results.</p>
         <ul>
-          <li>🔮 Mastered Arts: Python Spells, JavaScript Incantations, Arduino Runes, Data Scrying, Git Enchantments</li>
-          <li>⚗️ Pursuits: Edge AI Alchemy, Robotic Golems, Earth Divination, Healing Potions</li>
-          <li>🎯 Quest this season: Manifest 3 legendary demonstrations</li>
+          <li>Core skills: Python, JavaScript, C/C++, Embedded Systems, Machine Learning, Data Analysis</li>
+          <li>Interests: Edge AI, Robotics, Sensing, Environmental Systems, Model Deployment</li>
+          <li>Current focus: Deliver three demonstration systems this term</li>
         </ul>
       </div>
     </div>
@@ -488,70 +485,70 @@
   <section id="projects" class="container">
     <div class="section-head">
       <div>
-        <div class="section-title">Epic Quests</div>
-        <h2>Featured Sorcery</h2>
+        <div class="section-title">Projects</div>
+        <h2>Featured Projects</h2>
       </div>
       <div class="filters" role="tablist" aria-label="Project filters">
-        <button class="chip active" data-filter="all" role="tab" aria-selected="true">All Magic</button>
-        <button class="chip" data-filter="ai" role="tab">AI Spells</button>
-        <button class="chip" data-filter="hw" role="tab">Runes & Circuits</button>
-        <button class="chip" data-filter="web" role="tab">Web Enchantments</button>
-        <button class="chip" data-filter="data" role="tab">Data Divination</button>
+        <button class="chip active" data-filter="all" role="tab" aria-selected="true">All</button>
+        <button class="chip" data-filter="ai" role="tab">AI</button>
+        <button class="chip" data-filter="hw" role="tab">Hardware</button>
+        <button class="chip" data-filter="web" role="tab">Web</button>
+        <button class="chip" data-filter="data" role="tab">Data</button>
       </div>
     </div>
     <div class="grid" id="projectsGrid" aria-live="polite"></div>
   </section>
 
-  <!-- OUTPUT LINKS -->
+  <!-- RESOURCES -->
   <section id="links" class="container">
     <div class="section-head">
       <div>
-        <div class="section-title">Magical Artifacts</div>
-        <h2>Codex & Relics</h2>
+        <div class="section-title">Resources</div>
+        <h2>Repositories & Links</h2>
       </div>
     </div>
     <div class="links">
       <a class="link-card" href="https://github.com/yourgithub" target="_blank" rel="noopener">
-        <strong>📚 Spellbook</strong>
-        <div class="mini">Code repositories & enchantments</div>
+        <strong>GitHub</strong>
+        <div class="mini">Code repositories and projects</div>
       </a>
       <a class="link-card" href="https://deepnote.com/yourprofile" target="_blank" rel="noopener">
-        <strong>🔬 Alchemy Lab</strong>
-        <div class="mini">Notebooks & mystical exploration</div>
+        <strong>Notebooks</strong>
+        <div class="mini">Interactive analysis and experiments</div>
       </a>
       <a class="link-card" href="https://colab.research.google.com" target="_blank" rel="noopener">
-        <strong>🧪 Potion Brewery</strong>
-        <div class="mini">Interactive ML experiments</div>
+        <strong>Colab</strong>
+        <div class="mini">Model training and demonstrations</div>
       </a>
       <a class="link-card" href="https://www.tinkercad.com/" target="_blank" rel="noopener">
-        <strong>⚡ Rune Forge</strong>
-        <div class="mini">Circuits & Arduino incantations</div>
+        <strong>Circuit Design</strong>
+        <div class="mini">Hardware prototypes and schematics</div>
       </a>
       <a class="link-card" href="resume.pdf" target="_blank" rel="noopener">
-        <strong>📜 Scroll of Deeds</strong>
-        <div class="mini">One‑page chronicle</div>
+        <strong>Resume</strong>
+        <div class="mini">PDF overview of experience</div>
       </a>
       <a class="link-card" href="mailto:your.email@example.com">
-        <strong>🦉 Owl Post</strong>
+        <strong>Contact</strong>
         <div class="mini">your.email@example.com</div>
       </a>
       <div class="link-card">
-        <strong>🕐 Divination Hours</strong>
-        <div class="mini">Schedule mystical consultations</div>
+        <strong>Office Hours</strong>
+        <div class="mini">Schedule consultations and demos</div>
       </div>
       <div class="link-card">
-        <strong>🏆 Wizard Badges</strong>
-        <div class="mini">Achievements & honors</div>
+        <strong>Awards & Honors</strong>
+        <div class="mini">Selected recognitions</div>
       </div>
     </div>
   </section>
 
   <footer class="container">
-    <div class="mini">✨ © <span id="year"></span> Beaver Works Arcane Codex — Applied Engineering & AI · Forged with vanilla HTML/CSS/JS. Customize and deploy via GitHub Pages. 🐉</div>
+    <div class="mini">© <span id="year"></span> Beaver Works — Arcane Engineering & AI. Built with HTML, CSS, and JavaScript. Deploy via GitHub Pages.</div>
   </footer>
 
   <script>
-    // Create magical rune particles
+    // Create decorative rune particles
     const runes = ['ᚠ', 'ᚢ', 'ᚦ', 'ᚨ', 'ᚱ', 'ᚲ', 'ᚷ', 'ᚹ', 'ᚺ', 'ᚾ', 'ᛁ', 'ᛃ', 'ᛇ', 'ᛈ', 'ᛉ', 'ᛊ', 'ᛏ', 'ᛒ', 'ᛖ', 'ᛗ', 'ᛚ', 'ᛜ', 'ᛞ', 'ᛟ'];
     const particles = document.getElementById('particles');
     for(let i=0; i<25; i++){
@@ -565,11 +562,7 @@
       particles.appendChild(p);
     }
 
-    // --------------------------
-    // Limitless cursor orb: ONLY active when "six-eyes" theme is enabled.
-    // - orb remains hidden and inert in other themes (no event listeners or movement).
-    // - the code starts/stops the RAF loop and mouse listener when the theme toggles.
-    // --------------------------
+    // Limitless cursor orb logic (only enabled for six-eyes theme)
     const limitless = document.getElementById('limitless');
     let mouseX = window.innerWidth/2, mouseY = window.innerHeight/2;
     let limX = mouseX, limY = mouseY;
@@ -580,16 +573,13 @@
 
     function startLimitless() {
       if (limitlessRunning) return;
-      // show element (CSS also shows when data-theme is six-eyes, but ensure JS enabled)
       limitless.style.display = 'grid';
       limitless.style.opacity = '1';
-      // add mousemove listener to update mouse target
       mouseHandler = (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
       };
       window.addEventListener('mousemove', mouseHandler);
-      // start RAF loop
       function loop(){
         limX += (mouseX - limX) * ease;
         limY += (mouseY - limY) * ease;
@@ -611,26 +601,22 @@
       limitlessRunning = false;
     }
 
-    // --------------------------
     // Theme Toggle with Six Eyes option
-    // --------------------------
     const themeBtn = document.getElementById('themeToggle');
     const themes = ['dark', 'light', 'six-eyes'];
     let currentThemeIndex = 0;
 
-    // restore saved theme if exists
     const saved = localStorage.getItem('theme');
-    if(saved && themes.includes(saved)){ 
+    if(saved && themes.includes(saved)){
       document.documentElement.setAttribute('data-theme', saved);
       currentThemeIndex = themes.indexOf(saved);
     } else {
       document.documentElement.setAttribute('data-theme', themes[currentThemeIndex]);
     }
 
-    const themeNames = {dark: '✨ Realm', light: '☀️ Light', 'six-eyes': '👁️ Six Eyes'};
+    const themeNames = {dark: 'Dark', light: 'Light', 'six-eyes': 'Six Eyes'};
     themeBtn.textContent = themeNames[themes[currentThemeIndex]] || themeBtn.textContent;
 
-    // apply initial state: only start orb if theme already six-eyes
     if (themes[currentThemeIndex] === 'six-eyes') {
       startLimitless();
     } else {
@@ -645,7 +631,6 @@
       themeBtn.textContent = themeNames[nextTheme];
       if (nextTheme === 'six-eyes') {
         startLimitless();
-        // brief HUD pulse
         const sixHud = document.getElementById('sixHud');
         if (sixHud) {
           sixHud.animate([{ transform: 'translate(-50%, -42%) scale(0.98)', opacity: 0 }, { transform: 'translate(-50%, -38%) scale(1.02)', opacity: 1 }], { duration: 350, easing: 'cubic-bezier(.2,.9,.2,1)' });
@@ -655,17 +640,10 @@
       }
     });
 
-    // hide orb when the tab loses focus (good hygiene)
     window.addEventListener('blur', () => { if (limitlessRunning) limitless.style.opacity = '0'; });
     window.addEventListener('focus', () => { if (limitlessRunning) limitless.style.opacity = '1'; });
 
-    // --------------------------
-    // Removed: Eye trail and random eye emojis (Makima). No random eye glyphs are spawned anymore.
-    // --------------------------
-
-    // --------------------------
-    // Lightning effect on scroll - unchanged
-    // --------------------------
+    // Lightning effect on scroll (visual flourish)
     let lastScroll = 0;
     window.addEventListener('scroll', () => {
       const scrollDiff = Math.abs(window.scrollY - lastScroll);
@@ -677,7 +655,7 @@
       lastScroll = window.scrollY;
     });
 
-    // Dragon click interaction - unchanged
+    // Decorative dragon click interaction (visual only)
     document.querySelectorAll('.dragon').forEach(dragon => {
       dragon.addEventListener('click', () => {
         const roars = ['🔥', '💥', '⚡'];
@@ -693,27 +671,23 @@
         roar.style.animation = 'fade 1.2s ease-out forwards';
         document.body.appendChild(roar);
         setTimeout(() => roar.remove(), 1200);
-        
+
         const lightning = document.getElementById('lightning');
         lightning.style.animation = 'lightning 0.5s ease-out';
         setTimeout(() => lightning.style.animation = 'none', 500);
       });
     });
 
-    // --------------------------
     // Year
-    // --------------------------
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // --------------------------
-    // Typewriter enchantment
-    // --------------------------
+    // Typewriter phrases (professional)
     const phrases = [
-      'spells with lines of code',
-      'Arduino golems that pulse with life',
-      'ML oracles that speak truth',
-      'enchanted portals that shimmer',
-      'data prophecies that guide us'
+      'software systems and embedded devices',
+      'edge ML models for sensing and inference',
+      'machine learning research and applications',
+      'interactive web applications and dashboards',
+      'data-driven insights and visualizations'
     ];
     let idx = 0, ptr = 0, rev = false;
     const tw = document.getElementById('typewriter');
@@ -731,57 +705,55 @@
     }
     tick();
 
-    // --------------------------
-    // Projects grimoire (unchanged)
-    // --------------------------
+    // Projects list (placeholder professional descriptions)
     const projects = [
       {
-        title: 'Project Title 1',
-        desc: 'Describe your first project here. What did you build? What technologies did you use? Keep it concise but compelling.',
-        tags: ['ai','data'],
+        title: 'Embedded Sensor Platform',
+        desc: 'Design and implementation of an embedded sensing platform with on-device preprocessing and secure data transmission.',
+        tags: ['hw','data'],
         link: '#',
         call: 'View Project',
-        thumb: '🔮'
+        thumb: '📡'
       },
       {
-        title: 'Project Title 2',
-        desc: 'Another amazing project you worked on. Explain the problem you solved and the impact it had.',
-        tags: ['hw','web'],
-        link: '#',
-        call: 'View Project',
-        thumb: '⚡'
-      },
-      {
-        title: 'Project Title 3',
-        desc: 'Third project description goes here. Make it sound exciting and showcase your skills!',
-        tags: ['data','web'],
-        link: '#',
-        call: 'View Project',
-        thumb: '📊'
-      },
-      {
-        title: 'Project Title 4',
-        desc: 'Fourth project - add as many as you want! Just copy this format and customize the details.',
-        tags: ['web'],
-        link: '#',
-        call: 'View Project',
-        thumb: '🌐'
-      },
-      {
-        title: 'Project Title 5',
-        desc: 'Fifth project placeholder. Feel free to delete projects you don\'t need or add more!',
+        title: 'Edge ML for Anomaly Detection',
+        desc: 'Developed and deployed an edge machine learning pipeline for real-time anomaly detection in environmental data.',
         tags: ['ai','hw'],
         link: '#',
         call: 'View Project',
         thumb: '🤖'
       },
       {
-        title: 'Project Title 6',
-        desc: 'Final project example. Remember to update the tags array to filter properly: ai, hw, web, data',
-        tags: ['data'],
+        title: 'Interactive Data Dashboard',
+        desc: 'Web application for exploring time-series telemetry with server-side APIs and visual analytics.',
+        tags: ['web','data'],
         link: '#',
         call: 'View Project',
-        thumb: '📱'
+        thumb: '📊'
+      },
+      {
+        title: 'Model Evaluation Framework',
+        desc: 'Framework for benchmarking models, tracking experiments, and reproducible evaluation across datasets.',
+        tags: ['ai','data'],
+        link: '#',
+        call: 'View Project',
+        thumb: '🧪'
+      },
+      {
+        title: 'Prototype Automation System',
+        desc: 'Hardware and firmware integration for an automated prototype, including control loops and safety checks.',
+        tags: ['hw','web'],
+        link: '#',
+        call: 'View Project',
+        thumb: '⚙️'
+      },
+      {
+        title: 'Web API & Service Integration',
+        desc: 'Backend services and APIs supporting device management, telemetry ingestion, and user-facing dashboards.',
+        tags: ['web'],
+        link: '#',
+        call: 'View Project',
+        thumb: '🌐'
       }
     ];
 
@@ -804,7 +776,7 @@
     }
     render(projects);
 
-    // Filter enchantments
+    // Filter controls
     const chips = Array.from(document.querySelectorAll('.chip'));
     chips.forEach(ch => ch.addEventListener('click', () => {
       chips.forEach(c=>c.classList.remove('active')); ch.classList.add('active');
