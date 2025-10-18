@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0f0f13" />
-  <title>Arcane Divination · Tarot Reading</title>
+  <title>Arcane Divination · Tarot Reading (Upgraded)</title>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Cinzel:wght@400;600;700;900&display=swap" rel="stylesheet">
   <style>
@@ -22,20 +22,6 @@
       --glass: rgba(139,92,246,.08);
       --glass-brd: rgba(139,92,246,.25);
     }
-    [data-theme="light"]{
-      --bg: #faf8fc;
-      --panel: #ffffff;
-      --muted: #6b5c8a;
-      --text: #1e1433;
-      --brand: #a855f7;
-      --brand-2: #f59e0b;
-      --accent: #059669;
-      --shadow: 0 8px 30px rgba(168,85,247,.15);
-      --glow: 0 0 15px rgba(168,85,247,.2);
-      --glass: rgba(168,85,247,.05);
-      --glass-brd: rgba(168,85,247,.15);
-    }
-
     *{box-sizing:border-box; margin:0; padding:0}
     html,body{height:100%}
     body{
@@ -49,7 +35,7 @@
       overflow-x:hidden;
     }
 
-    .container{max-width:920px; margin:0 auto; position:relative; z-index:2}
+    .container{max-width:960px; margin:0 auto; position:relative; z-index:2}
 
     .header{text-align:center; padding:36px 20px 6px}
     .header h1{
@@ -112,7 +98,7 @@
 
     .cards-container{
       display:flex; justify-content:center; gap:18px; flex-wrap:wrap;
-      margin:30px 0; min-height:340px; align-items:center;
+      margin:30px 0; min-height:360px; align-items:center;
     }
 
     .tarot-card{
@@ -132,23 +118,49 @@
       justify-content:center; padding:16px; border:2px solid var(--glass-brd);
       box-shadow:var(--shadow); overflow:hidden;
     }
+    /* animated card-back with sigil rotate + shimmer */
     .card-back{
-      background:linear-gradient(135deg, rgba(139,92,246,.22), rgba(245,158,11,.14));
+      background:
+        radial-gradient(ellipse at 20% 10%, rgba(255,255,255,.03), transparent 12%),
+        linear-gradient(135deg, rgba(139,92,246,.22), rgba(245,158,11,.14));
       backdrop-filter:blur(8px);
       display:flex; align-items:center; justify-content:center; font-size:64px; color:rgba(255,255,255,.12);
+      position:relative; overflow:visible;
     }
-    .card-back::before{
-      content:'🔮'; font-size:72px; opacity:.65;
+    .card-back .sigil{
+      width:86%; height:86%;
+      border-radius:10px;
+      display:flex; align-items:center; justify-content:center;
+      background:linear-gradient(120deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+      transform-origin:center center;
+      animation:spinSigil 10s linear infinite;
+      box-shadow: inset 0 0 18px rgba(255,255,255,.02);
+      border:1px solid rgba(255,255,255,.02);
     }
+    .card-back .sigil svg{display:block; width:78%; height:78%}
+    @keyframes spinSigil{
+      from{transform:rotate(0deg)}
+      to{transform:rotate(360deg)}
+    }
+    .card-back::after{
+      content:''; position:absolute; left:-20%; top:-30%; width:180%; height:160%;
+      background:linear-gradient(90deg, rgba(255,255,255,.02), rgba(255,255,255,0), rgba(255,255,255,.02));
+      transform: skewX(-18deg);
+      animation:shimmer 3.4s linear infinite;
+      pointer-events:none; opacity:.7;
+    }
+
     .card-front{
       background:linear-gradient(135deg, var(--panel), rgba(18,10,31,.95));
-      transform:rotateY(180deg); text-align:center; padding:16px;
-      display:flex; flex-direction:column; justify-content:center; gap:8px;
+      transform:rotateY(180deg); text-align:center; padding:12px;
+      display:flex; flex-direction:column; justify-content:flex-start; gap:8px;
     }
-    .card-emoji{font-size:52px; margin-bottom:8px}
+    .card-emoji{font-size:46px; margin-top:8px}
+    .card-art{width:100%; height:110px; display:flex; align-items:center; justify-content:center; border-radius:10px; overflow:hidden; margin-top:6px}
+    .card-art svg{width:100%; height:100%}
     .card-name{
       font-family:'Cinzel', serif; font-size:15px; font-weight:700;
-      margin-bottom:6px; color:var(--brand-2);
+      margin-bottom:2px; color:var(--brand-2);
     }
     .card-meaning{font-size:12px; color:var(--muted); line-height:1.4}
 
@@ -196,20 +208,15 @@
       -webkit-background-clip:text; background-clip:text; color:transparent;
       animation:shimmer 3s infinite;
     }
-    @keyframes shimmer{
-      0%{filter:hue-rotate(0deg) brightness(1.1)}
-      100%{filter:hue-rotate(360deg) brightness(1.1)}
+
+    #foolCanvas{
+      position:fixed; left:0; top:0; width:100%; height:100%; pointer-events:none; z-index:1; mix-blend-mode:screen;
     }
 
     @media (max-width: 640px){
       .cards-container{gap:12px}
       .tarot-card{width:150px; height:240px}
       .spread-icon{font-size:36px}
-    }
-
-    /* canvas overlay for fool mode */
-    #foolCanvas{
-      position:fixed; left:0; top:0; width:100%; height:100%; pointer-events:none; z-index:1; mix-blend-mode:screen;
     }
   </style>
 </head>
@@ -256,7 +263,16 @@
   </div>
 
   <script>
-    // -- Major arcana (kept mostly unchanged, but extended with upright/reversed when appropriate)
+    /*
+      Upgrades implemented in this file:
+      1) Artwork placeholders + animated card back (rotating sigil).
+      2) Handcrafted minor-arcana meanings (constructed from curated rank+ suit templates).
+      3) Stronger "Lord of the Mysteries" flavored Fool's Blessing text (homage, not quotes).
+      4) Reduced probability of Fool's Blessing (rare).
+      5) Small UX improvements: click-to-open card detail, tilt effect, keyboard accessibility, audio option.
+    */
+
+    // ========== Major Arcana (unchanged content but with reversed fields added) ==========
     const majorArcana = [
       {name: 'The Fool', emoji: '🃏', meaning: 'New beginnings, innocence, spontaneity, free spirit', detail: 'The Fool represents the beginning of a journey, embracing the unknown with courage and optimism. It speaks of taking risks and trusting in the universe.', reversed: 'Recklessness, naivety, holding back from a new start.'},
       {name: 'The Magician', emoji: '🎩', meaning: 'Manifestation, resourcefulness, power, inspired action', detail: 'The Magician harnesses the elements. You have the tools to craft change; focus your will and move.', reversed: 'Scattered energies, untapped potential, manipulation.'},
@@ -282,36 +298,97 @@
       {name: 'The World', emoji: '🌍', meaning: 'Completion, accomplishment, travel, fulfillment', detail: 'Cycle complete — celebrate and open new chapters.', reversed: 'Unfinished business, delayed success.'}
     ];
 
-    // -- Generate a programmatic minor arcana (suits + ranks + compact meanings)
+    // ========== Handcrafted Minor Arcana construction ==========
+    // Suit definitions with evocative descriptions:
     const suits = [
-      {name:'Wands', emoji:'🔥', domain:'action, creativity, will'},
-      {name:'Cups', emoji:'💧', domain:'emotions, relationships, intuition'},
-      {name:'Swords', emoji:'💨', domain:'thought, conflict, clarity'},
-      {name:'Pentacles', emoji:'🌿', domain:'material, body, work'}
+      {name:'Wands', emoji:'🔥', domain:'will, inspiration, enterprise', tone: 'fiery urgency and creative impulse'},
+      {name:'Cups', emoji:'💧', domain:'heart, relationship, empathy', tone: 'fluid emotion and intimate nuance'},
+      {name:'Swords', emoji:'💨', domain:'mind, truth, conflict', tone: 'sharp clarity and decisive thought'},
+      {name:'Pentacles', emoji:'🌿', domain:'body, craft, provision', tone: 'earthly steadiness and material craft'}
     ];
 
-    const rankNames = ['Ace','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Page','Knight','Queen','King'];
-    function generateMinorArcana(){
+    // Handcrafted rank templates (upright + reversed). Curated wording for ritualized flavor.
+    const rankTemplates = {
+      'Ace': {
+        upright: 'A seed of potential; the first pulse of the suit’s energy manifests in a focused spark.',
+        reversed: 'Blocked inception or a gift unrecognized; the seed waits for fertile ground.'
+      },
+      'Two': {
+        upright: 'A partnership or crossroads; early balance between opposing forces begins to form.',
+        reversed: 'A stalemate or misalignment of intentions; choices remain unsettled.'
+      },
+      'Three': {
+        upright: 'The first fruits—cooperation after initiation creates visible growth.',
+        reversed: 'Early discord or plans that lack cohesion; promised growth stalls.'
+      },
+      'Four': {
+        upright: 'Foundations settle; a pause to consolidate gains and secure the structure.',
+        reversed: 'Stagnation or comfort that prevents necessary progress.'
+      },
+      'Five': {
+        upright: 'Conflict or necessary disturbance—old forms are tested to reveal truth.',
+        reversed: 'Avoided confrontation that festers; a hidden upset.'
+      },
+      'Six': {
+        upright: 'A return to harmony; assistance and small victories stabilize the path.',
+        reversed: 'Clinging to past glories or an immature reconciliation.'
+      },
+      'Seven': {
+        upright: 'Guarded stance—defense, strategy, and perseverance in ongoing trials.',
+        reversed: 'Paranoia, misapplied caution, or fear that becomes self-sabotage.'
+      },
+      'Eight': {
+        upright: 'Acceleration—skills, messages, or movement gain momentum.',
+        reversed: 'Overwhelm, misdirected haste, or stalled channels.'
+      },
+      'Nine': {
+        upright: 'A near-completion; resiliency and final refinements before culmination.',
+        reversed: 'Anxiety about completion or exhausted perseverance.'
+      },
+      'Ten': {
+        upright: 'Full manifestation—the weight of consequence and inheritance of labor.',
+        reversed: 'Burnout, collapse of a structure, or release from burden.'
+      },
+      'Page': {
+        upright: 'A messenger or novice who bears the suit’s message with curiosity.',
+        reversed: 'Immaturity or missed signs; the courier misreads the runes.'
+      },
+      'Knight': {
+        upright: 'A purposeful agent acting with the suit’s nature—bold, romantic, intellectual, or steady.',
+        reversed: 'Folly in action: rashness, cruelty, or misapplied force.'
+      },
+      'Queen': {
+        upright: 'Embodiment of mature trait—nurturing leadership, empathy, or skilled oversight.',
+        reversed: 'Smothering influence or a queen who has forgotten her domain.'
+      },
+      'King': {
+        upright: 'Mastery and authority; the suit’s power used with stewardship and judgment.',
+        reversed: 'Abuse of power, rigidity, or corrupted mastery.'
+      }
+    };
+
+    // Build minor arcana list programmatically, but using the handcrafted templates above for detail
+    function buildMinorArcana(){
       const arr = [];
-      suits.forEach(s => {
-        rankNames.forEach((rank, idx) => {
+      for(const s of suits){
+        for(const rank of Object.keys(rankTemplates)){
           const name = `${rank} of ${s.name}`;
-          const short = `${rank} • ${s.emoji}`;
-          const meaning = `${s.domain.split(',')[0].trim()} — ${rank.toLowerCase()} energy.`;
-          const detail = `A ${rank.toLowerCase()} expression in the realm of ${s.domain}. Consider how the suit's domain is currently active in your life.`;
-          arr.push({name, emoji: s.emoji, meaning, detail, suit: s.name, rank: rank, reversed: `Reversed: a shadow of the ${rank.toLowerCase()} in ${s.name.toLowerCase()}.`});
-        });
-      });
+          const emoji = s.emoji;
+          const tpl = rankTemplates[rank];
+          const detail = `${tpl.upright} In the realm of ${s.domain}, this card emphasizes ${s.tone}.`;
+          const reversed = tpl.reversed + ` In ${s.name.toLowerCase()} matters this warns against the shadow of the rank.`;
+          arr.push({name, emoji, meaning: `${s.tone} — ${tpl.upright}`, detail, suit: s.name, rank, reversed});
+        }
+      }
       return arr;
     }
-    const minorArcana = generateMinorArcana();
+    const minorArcana = buildMinorArcana();
 
-    // state
+    // ========== State & UI refs ==========
     let currentSpread = 'single';
     let readingCount = 0;
     let foolMode = false;
 
-    // ui refs
     const cardsContainer = document.getElementById('cardsContainer');
     const interpretation = document.getElementById('interpretation');
     const drawBtn = document.getElementById('drawBtn');
@@ -321,7 +398,7 @@
     const foolCanvas = document.getElementById('foolCanvas');
     const ctx = foolCanvas.getContext && foolCanvas.getContext('2d');
 
-    // responsive canvas
+    // Responsive canvas
     function resizeCanvas(){
       foolCanvas.width = innerWidth * devicePixelRatio;
       foolCanvas.height = innerHeight * devicePixelRatio;
@@ -332,7 +409,7 @@
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
-    // spread selector
+    // Spread selector interactions
     document.querySelectorAll('.spread-card').forEach(card => {
       card.addEventListener('click', () => {
         document.querySelectorAll('.spread-card').forEach(c => {
@@ -347,32 +424,52 @@
       });
     });
 
-    // helper: build pool
+    // Build pool (major + optional minor)
     function buildPool(){
       let pool = [...majorArcana];
       if(includeMinorToggle.checked) pool = pool.concat(minorArcana);
       return pool;
     }
 
-    // helper: pick random card with optional fool mode or reversals
+    // Draw card from pool; can force Fool or allow reversals
     function drawCardFromPool(pool, forceFool=false, allowReversal=true){
-      if(forceFool) {
-        // always return the Fool major card (the first entry in majorArcana)
-        const fool = majorArcana[0];
-        return {...fool, reversed:false};
-      }
+      if(forceFool) return {...majorArcana[0], reversed:false};
       const idx = Math.floor(Math.random() * pool.length);
       const card = pool[idx];
-      const reversed = allowReversal && Math.random() < 0.35; // ~35% reversed
+      const reversed = allowReversal && Math.random() < 0.35;
       return {...card, reversed};
     }
 
-    // mouse tilt handler for a card element
+    // Small dynamic SVG "artwork" placeholder generator (returns svg string)
+    function svgArtFor(name, accentHue=260){
+      // Simple decorative sigil with initials and gradient — deterministic-ish from name
+      const seed = [...name].reduce((s,c)=>s + c.charCodeAt(0), 0);
+      const hue = (accentHue + (seed % 60)) % 360;
+      const bg = `linearGradient-${seed}`;
+      const svg =
+        `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 200' preserveAspectRatio='xMidYMid slice'>
+          <defs>
+            <linearGradient id='g${seed}' x1='0' x2='1'>
+              <stop offset='0' stop-color='hsl(${hue},80%,60%)'/>
+              <stop offset='1' stop-color='hsl(${(hue+40)%360},70%,45%)'/>
+            </linearGradient>
+            <filter id='grain${seed}'><feTurbulence baseFrequency='0.9' numOctaves='1' stitchTiles='stitch'/></filter>
+          </defs>
+          <rect width='100%' height='100%' rx='12' fill='url(#g${seed})' opacity='0.95'/>
+          <g transform='translate(200,100)'>
+            <circle r='62' fill='rgba(255,255,255,0.06)'/>
+            <path d='M-48 16 C-28 36, 28 36, 48 16' stroke='rgba(255,255,255,0.16)' stroke-width='6' fill='none' stroke-linecap='round'/>
+            <text x='0' y='12' font-family='Cinzel, serif' font-size='44' fill='rgba(255,255,255,0.9)' text-anchor='middle'>${name.split(' ').map(n=>n[0]||'').slice(0,2).join('')}</text>
+          </g>
+        </svg>`;
+      return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+    }
+
+    // Tilt effect for each card
     function enableTilt(cardEl){
       const inner = cardEl.querySelector('.card-inner');
-      const rect = () => cardEl.getBoundingClientRect();
       cardEl.addEventListener('mousemove', (e) => {
-        const r = rect();
+        const r = cardEl.getBoundingClientRect();
         const px = (e.clientX - r.left) / r.width;
         const py = (e.clientY - r.top) / r.height;
         const rx = (py - 0.5) * -10;
@@ -384,55 +481,55 @@
       });
     }
 
-    // simple audio using WebAudio (no external files)
+    // WebAudio chime (soft or fool)
     function playChime(type='soft'){
       if(!enableSoundToggle.checked || !window.AudioContext) return;
       try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
         const now = ctx.currentTime;
-        const o = ctx.createOscillator();
-        const g = ctx.createGain();
-        o.type = 'sine';
         if(type === 'fool'){
-          // slightly dissonant cluster
-          const o2 = ctx.createOscillator();
-          const g2 = ctx.createGain();
-          o.frequency.setValueAtTime(220, now);
-          o2.frequency.setValueAtTime(277, now);
-          o.connect(g); o2.connect(g2);
-          g.connect(ctx.destination); g2.connect(ctx.destination);
-          g.gain.setValueAtTime(0.0001, now);
-          g2.gain.setValueAtTime(0.0001, now);
-          g.gain.exponentialRampToValueAtTime(0.18, now+0.02);
-          g2.gain.exponentialRampToValueAtTime(0.12, now+0.02);
-          g.gain.exponentialRampToValueAtTime(0.0001, now+1.2);
-          g2.gain.exponentialRampToValueAtTime(0.0001, now+1.2);
-          o.start(now); o2.start(now);
-          o.stop(now+1.25); o2.stop(now+1.25);
+          // cluster-ish chord
+          const freqs = [220, 266.5, 311.1];
+          const gains = freqs.map(() => ctx.createGain());
+          freqs.forEach((f,i) => {
+            const o = ctx.createOscillator();
+            o.type = 'sine';
+            o.frequency.setValueAtTime(f, now);
+            o.connect(gains[i]);
+            gains[i].connect(ctx.destination);
+            gains[i].gain.setValueAtTime(0.0001, now);
+            gains[i].gain.exponentialRampToValueAtTime(0.12/(i+1), now+0.02);
+            gains[i].gain.exponentialRampToValueAtTime(0.0001, now+1.2);
+            o.start(now);
+            o.stop(now+1.25);
+          });
         } else {
+          const o = ctx.createOscillator();
+          const g = ctx.createGain();
+          o.type = 'sine';
           o.frequency.setValueAtTime(660, now);
           o.connect(g); g.connect(ctx.destination);
           g.gain.setValueAtTime(0.0001, now);
           g.gain.exponentialRampToValueAtTime(0.12, now+0.02);
-          g.gain.exponentialRampToValueAtTime(0.0001, now+1.2);
-          o.start(now); o.stop(now+1.25);
+          g.gain.exponentialRampToValueAtTime(0.0001, now+1.0);
+          o.start(now); o.stop(now+1.1);
         }
-      } catch(e){ /* silently fail */ }
+      } catch(e) { /* silently fail on unsupported devices */ }
     }
 
-    // subtle canvas particle bloom for fool-mode
+    // Subtle canvas particle bloom for fool mode
     const particles = [];
     function spawnParticles(){
       particles.length = 0;
-      for(let i=0;i<60;i++){
+      for(let i=0;i<80;i++){
         particles.push({
           x: Math.random()*innerWidth,
           y: Math.random()*innerHeight,
-          vx: (Math.random()-0.5)*0.6,
-          vy: (Math.random()-0.5)*0.6 - 0.2,
+          vx: (Math.random()-0.5)*0.7,
+          vy: (Math.random()-0.5)*0.7 - 0.2,
           size: 1 + Math.random()*3,
-          hue: 280 + Math.random()*80,
-          life: 60 + Math.random()*180
+          hue: 260 + Math.random()*120,
+          life: 60 + Math.random()*160
         });
       }
     }
@@ -443,20 +540,20 @@
       const dpr = devicePixelRatio || 1;
       ctx.save();
       ctx.scale(dpr,dpr);
-      particles.forEach((p,i) => {
+      particles.forEach((p) => {
         p.x += p.vx;
         p.y += p.vy;
-        p.vy += 0.004;
+        p.vy += 0.002;
         p.life--;
-        const alpha = Math.max(0, Math.min(1, p.life/200));
+        const alpha = Math.max(0, Math.min(1, p.life/180));
         ctx.beginPath();
-        ctx.fillStyle = `hsla(${p.hue},85%,62%,${alpha*0.9})`;
+        ctx.fillStyle = `hsla(${p.hue},85%,62%,${alpha*0.85})`;
         ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
         ctx.fill();
         if(p.life <= 0){
           p.x = Math.random()*innerWidth;
           p.y = innerHeight + 10;
-          p.vx = (Math.random()-0.5)*0.6;
+          p.vx = (Math.random()-0.5)*0.7;
           p.vy = -(0.6+Math.random()*1.2);
           p.life = 60 + Math.random()*180;
         }
@@ -467,12 +564,27 @@
     function startFoolCanvas(){ spawnParticles(); if(particleAnimId==null) animateParticles(); foolCanvas.style.display = 'block'; }
     function stopFoolCanvas(){ foolCanvas.style.display = 'none'; if(particleAnimId!=null){ cancelAnimationFrame(particleAnimId); particleAnimId = null; } ctx && ctx.clearRect(0,0,foolCanvas.width,foolCanvas.height); }
 
-    // main draw handler
+    // Show card detail in interpretation panel
+    function showCardDetail(card){
+      const revNote = card.reversed ? `<p style="margin-top:8px;color:var(--muted)"><strong>Reversed:</strong> ${card.reversed}</p>` : '';
+      interpretation.innerHTML = `
+        <h2>🔎 ${card.name}</h2>
+        <div class="card-detail">
+          <h3>${card.emoji} ${card.position || ''}</h3>
+          <p>${card.detail}</p>
+          ${revNote}
+        </div>
+      `;
+      interpretation.classList.add('show');
+      interpretation.scrollIntoView({behavior:'smooth', block:'center'});
+    }
+
+    // Main draw handler (with rarer Fool's Blessing)
     drawBtn.addEventListener('click', () => {
       readingCount++;
-      // activate fool mode intermittently but with an element of randomness
-      const interval = 3 + Math.floor(Math.random()*3); // 3-5
-      const shouldActivateFool = readingCount % interval === 0 && Math.random() < 0.9;
+      // Lowered odds: small flat chance (~6%) per reading to trigger Fool mode
+      const foolProbability = 0.06;
+      const shouldActivateFool = Math.random() < foolProbability;
       foolMode = shouldActivateFool;
 
       const pool = buildPool();
@@ -481,62 +593,71 @@
       interpretation.classList.remove('show');
 
       let numCards, positions;
-      if(currentSpread === 'single'){
-        numCards = 1;
-        positions = ['Your Answer'];
-      } else if(currentSpread === 'three'){
-        numCards = 3;
-        positions = ['Past', 'Present', 'Future'];
-      } else {
-        numCards = 5; // simplified Celtic Cross
-        positions = ['Present', 'Challenge', 'Past', 'Future', 'Outcome'];
-      }
+      if(currentSpread === 'single'){ numCards = 1; positions = ['Your Answer']; }
+      else if(currentSpread === 'three'){ numCards = 3; positions = ['Past', 'Present', 'Future']; }
+      else { numCards = 5; positions = ['Present', 'Challenge', 'Past', 'Future', 'Outcome']; }
 
-      // play sound
+      // audio + canvas
       playChime(foolMode ? 'fool' : 'soft');
-
-      // handle canvas effect
       if(foolMode) startFoolCanvas(); else stopFoolCanvas();
 
-      // draw cards
+      // Draw cards from pool
       const drawn = [];
       for(let i=0;i<numCards;i++){
         const card = drawCardFromPool(pool, foolMode, showReversalsToggle.checked);
-        drawn.push({...card, position: positions[i] || `Position ${i+1}`});
+        drawn.push({...card, position: positions[i] || `Pos ${i+1}`});
       }
 
-      // Create card elements with staggered reveal
+      // Render card elements (staggered reveal)
       drawn.forEach((card, idx) => {
         const cardEl = document.createElement('div');
         cardEl.className = 'tarot-card';
         cardEl.setAttribute('tabindex','0');
-        // front/back content
-        const frontExtra = card.reversed ? `<div class="reversed-indicator">↷ Reversed</div>` : '';
+
+        const reversedBadge = card.reversed ? `<div class="reversed-indicator">↷ Reversed</div>` : '';
         const frontClass = foolMode ? 'fool-mode' : '';
+
+        // Use svg art data URI in an <img> for better rendering; fallback emoji remains
+        const svgUri = svgArtFor(card.name, 260 + (card.name.length % 90));
+
         cardEl.innerHTML = `
           <div class="card-inner">
-            <div class="card-face card-back" aria-hidden="true"></div>
+            <div class="card-face card-back" aria-hidden="true">
+              <div class="sigil" aria-hidden="true">
+                <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img">
+                  <defs>
+                    <linearGradient id="sg1" x1="0" x2="1">
+                      <stop offset="0" stop-color="rgba(255,255,255,0.09)"/>
+                      <stop offset="1" stop-color="rgba(255,255,255,0.02)"/>
+                    </linearGradient>
+                  </defs>
+                  <rect width="120" height="120" rx="10" fill="url(#sg1)"/>
+                  <g transform="translate(60,60)">
+                    <circle r="30" fill="rgba(255,255,255,0.03)"/>
+                    <path d="M-22 10 C-5 28, 5 28, 22 10" stroke="rgba(255,255,255,0.07)" stroke-width="2" fill="none" stroke-linecap="round"/>
+                    <text x="0" y="6" font-family="Cinzel, serif" font-size="22" fill="rgba(255,255,255,0.12)" text-anchor="middle">${card.name.split(' ').map(x=>x[0]||'').slice(0,2).join('')}</text>
+                  </g>
+                </svg>
+              </div>
+            </div>
             <div class="card-face card-front ${frontClass}">
-              ${frontExtra}
-              <div class="card-emoji">${card.emoji}</div>
+              ${reversedBadge}
+              <div class="card-art"><img src="${svgUri}" alt="${card.name} art" /></div>
+              <div class="card-emoji">${card.emoji || ''}</div>
               <div class="card-name">${card.name}</div>
               <div class="card-meaning">${card.meaning}</div>
             </div>
           </div>
         `;
-        // flip after insert
+
+        // timing of insertion & flip
         setTimeout(() => {
           cardsContainer.appendChild(cardEl);
-          // allow tilt interactions
           enableTilt(cardEl);
-          // flip animation
           setTimeout(() => cardEl.classList.add('flipped'), 90);
-          // store data for click
+          // attach card data and interaction handlers
           cardEl._card = card;
-          // clicking a specific card shows expanded detail; if reversed, show reversed text
-          cardEl.addEventListener('click', () => {
-            showCardDetail(cardEl._card);
-          });
+          cardEl.addEventListener('click', () => showCardDetail(cardEl._card));
           cardEl.addEventListener('keydown', (e) => {
             if(e.key === 'Enter' || e.key === ' ') {
               e.preventDefault(); showCardDetail(cardEl._card);
@@ -545,73 +666,55 @@
         }, idx * 240);
       });
 
-      // interpretation panel after reveal
+      // Interpretation panel after reveal
       setTimeout(() => {
         if(foolMode){
-          // LOTM-flavored fool presentation (homage, not canonical citation)
+          // Stronger LOTM-flavored homage text (no quotes, thematic)
           interpretation.innerHTML = `
             <div class="praise">🃏 THE FOOL'S BLESSING</div>
             <p style="text-align:center; font-size:16px; color:var(--muted); font-style:italic;">
-              The Fool steps in and the rules fray — a wink to the uncanny plays and secret histories you may have read in stories like "Lord of the Mysteries".
+              The Fool tugs a corner of the veil. Expect ciphers, orders, and motifs repeating like ritual marks — an atmosphere reminiscent of secret histories and odd societies such as those in "Lord of the Mysteries".
             </p>
             <div class="card-detail">
-              <h3>🔮 A Note from the Abyss</h3>
-              <p>In this reading, The Fool transforms the cards into cues in a larger, conspiratorial tapestry. Expect hidden agendas, strange orders, and sudden revelations — the kind that rearrange how you interpret causality. The Fool laughs where reason falters; what appears as chaos may be a deliberate cipher. Treat coincidences as clues and watch for motifs repeating across your life like a secret rite.</p>
+              <h3>🔮 The Fool as Cipher</h3>
+              <p>The Fool does not merely interrupt: it reframes. Under this blessing, patterns that once looked accidental may now read as intentional signatures. Consider masks, repeated numbers, seemingly harmless coincidences that anchor deeper plots. The Fool invites you to regard life as if you were reading a manual written in metaphor — symbolic acts, hidden directories, and the sense that a quiet society catalogs your steps.</p>
             </div>
             <div class="card-detail">
-              <h3>🕯️ How to Read This Blessing</h3>
-              <p>Take the Fool's presence as a nudge to re-examine assumptions, question friendly face-value "truths", and consider the role of narrative in your decisions. The Fool does not answer so much as point: look where the finger refuses to point, and you'll find the door.</p>
+              <h3>🕯️ How to Use this Reading</h3>
+              <p>Treat this reading like a dossier. Note recurring symbols and phrases. When the Fool appears, keep a small notebook of motifs and look for correspondences: people who act as 'agents', places where rituals repeat, and the recurring image that keeps showing up in your decisions. The blessing is not an answer — it's an invitation to decode.</p>
             </div>
           `;
         } else {
-          // standard interpretation — include upright/reversed details
           let html = '<h2>✨ Your Reading</h2>';
           drawn.forEach(card => {
-            const revNote = card.reversed ? `<p style="color:var(--muted); font-size:13px; margin-top:6px;"><em>${card.reversed}</em></p>` : '';
             html += `
               <div class="card-detail">
-                <h3>${card.emoji} ${card.position}: ${card.name}</h3>
+                <h3>${card.emoji} ${card.position || ''}: ${card.name}</h3>
                 <p>${card.detail}</p>
-                ${card.reversed ? `<p style="margin-top:8px;color:var(--muted)"><strong>Reversed meaning:</strong> ${card.reversed}</p>` : ''}
+                ${card.reversed ? `<p style="margin-top:8px;color:var(--muted)"><strong>Reversed:</strong> ${card.reversed}</p>` : ''}
               </div>
             `;
           });
           interpretation.innerHTML = html;
         }
         interpretation.classList.add('show');
-        // ensure focus is available for keyboard users
         interpretation.setAttribute('tabindex','-1');
         interpretation.focus({preventScroll:true});
-      }, numCards * 260 + 420);
+      }, numCards * 280 + 420);
     });
 
-    // show detail for a clicked card (single-card modal-style inside interpretation)
-    function showCardDetail(card){
-      const revText = card.reversed ? `<p style="margin-top:8px;color:var(--muted)"><strong>Reversed:</strong> ${card.reversed}</p>` : '';
-      interpretation.innerHTML = `
-        <h2>🔎 ${card.name}</h2>
-        <div class="card-detail">
-          <h3>${card.emoji} ${card.position || ''}</h3>
-          <p>${card.detail}</p>
-          ${revText}
-        </div>
-      `;
-      interpretation.classList.add('show');
-      interpretation.scrollIntoView({behavior:'smooth', block:'center'});
-    }
-
-    // initial small hint for users on first load
+    // initial UI hint
     setTimeout(() => {
       const hint = document.createElement('div');
       hint.className = 'control';
       hint.style.margin = '10px auto';
       hint.style.textAlign = 'center';
-      hint.textContent = 'Tip: Click a card to view an expanded interpretation. Toggle "Include Minor Arcana" for a larger pool.';
+      hint.textContent = 'Tip: Toggle Minor Arcana to expand the deck. Click any card for an expanded interpretation.';
       document.querySelector('.container').insertBefore(hint, document.querySelector('.container').children[4]);
       setTimeout(()=>hint.remove(), 10000);
     }, 700);
 
-    // ensure canvas hidden initially
+    // hide canvas at start
     stopFoolCanvas();
   </script>
 </body>
