@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Arcane Divination · Tarot Reading (No overlap)</title>
+  <title>Arcane Divination · Tarot Reading (No overlap, with spreads)</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Cinzel:wght@400;600;700;900&display=swap" rel="stylesheet">
   <style>
     :root{
@@ -37,6 +37,29 @@
       background:linear-gradient(120deg,var(--brand),var(--brand-2)); -webkit-background-clip:text; color:transparent;}
     .header p{color:var(--muted);margin-top:6px}
 
+    /* reading selector */
+    .reading-selector{
+      display:flex;
+      gap:12px;
+      justify-content:center;
+      margin:14px 0;
+      flex-wrap:wrap;
+    }
+    .spread-card{
+      padding:10px 14px;
+      border-radius:12px;
+      background:linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid var(--glass-brd);
+      cursor:pointer;
+      min-width:140px;
+      text-align:center;
+      user-select:none;
+      transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+      font-weight:600;
+    }
+    .spread-card:hover{transform:translateY(-3px); box-shadow:0 8px 32px rgba(0,0,0,.25)}
+    .spread-card.active{border-color:var(--brand); box-shadow:0 12px 36px rgba(217,70,239,.12); background:linear-gradient(135deg, rgba(217,70,239,.04), rgba(245,158,11,.02));}
+
     .controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:14px 0}
     .control{background:rgba(255,255,255,0.02);border:1px solid var(--glass-brd);padding:8px 12px;border-radius:12px;color:var(--text);font-size:14px}
 
@@ -52,7 +75,6 @@
       min-height:320px; /* reserve vertical space so interpretation will not overlap */
       margin:26px 0;
       position:relative; /* not absolute/fixed */
-      /* no z-index manipulations here -> follow normal stacking */
     }
 
     .tarot-card{
@@ -76,7 +98,7 @@
 
     .reversed-indicator{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.35);padding:6px 8px;border-radius:999px;color:var(--brand-2);font-weight:700}
 
-    /* Interpretation sits below cards and will never overlap because cards-container reserves space */
+    /* Interpretation sits below cardsContainer, and CSS reserves vertical space so they don't overlap */
     .interpretation{
       background:linear-gradient(135deg, rgba(139,92,246,.08), rgba(245,158,11,.06));
       border:1px solid var(--glass-brd);
@@ -98,6 +120,7 @@
     @media (max-width:640px){
       .tarot-card{width:150px;height:240px}
       .cards-container{min-height:300px}
+      .reading-selector{gap:8px}
     }
   </style>
 </head>
@@ -109,6 +132,13 @@
       <h1>🔮 Arcane Divination</h1>
       <p>Cards and text will no longer overlap — the layout reserves space for the cards.</p>
     </header>
+
+    <!-- READING SELECTOR (ADDED BACK) -->
+    <div class="reading-selector" id="readingSelector" role="tablist" aria-label="Choose spread">
+      <div class="spread-card active" data-spread="single" role="tab" aria-selected="true">Single Card<br><small style="color:var(--muted)">Quick insight</small></div>
+      <div class="spread-card" data-spread="three" role="tab">Three Card<br><small style="color:var(--muted)">Past / Present / Future</small></div>
+      <div class="spread-card" data-spread="celtic" role="tab">Celtic Cross<br><small style="color:var(--muted)">Detailed reading</small></div>
+    </div>
 
     <div class="controls" aria-hidden="false">
       <label class="control"><input id="includeMinor" type="checkbox"> Include Minor Arcana</label>
@@ -126,10 +156,10 @@
   </div>
 
   <script>
-    // simplified deck (keeps structure; use your full deck instead)
+    // simplified deck (keeps structure; swap in your full deck as needed)
     const majorArcana = [
       {name:'The Fool',emoji:'🃏',meaning:'New beginnings, spontaneity',detail:'A threshold of possibility. Small step > perfect plan.',reversed:'Recklessness or hesitation.'},
-      {name:'The Magician',emoji:'🎩',meaning:'Manifestation, resourcefulness',detail:'Agency and focused action — choose one measurable step.',reversed:'Scattered energy.'},
+      {name:'The Magician',emoji:'🎩',meaning:'Manifestation, resourcefulness',detail:'Agency and focused action — choose one measurable step to start.',reversed:'Scattered energies.'},
       {name:'The High Priestess',emoji:'🌙',meaning:'Intuition, inner knowledge',detail:'Listen to dreams and quiet prompts; journal symbols.',reversed:'Blocked inner voice.'},
       {name:'The Empress',emoji:'👑',meaning:'Nurturing, abundance',detail:'Tend a creative project like a garden; nurture systems.',reversed:'Creative block.'},
       {name:'The World',emoji:'🌍',meaning:'Completion, fulfillment',detail:'Celebrate completion, close cycles before new ones.',reversed:'Unfinished business.'}
@@ -158,20 +188,33 @@
     }
     const minorArcana = buildMinor();
 
-    // state & refs
+    // refs & state
     const cardsContainer = document.getElementById('cardsContainer');
     const interpretation = document.getElementById('interpretation');
     const includeMinor = document.getElementById('includeMinor');
     const showReversals = document.getElementById('showReversals');
     const enableSound = document.getElementById('enableSound');
     const drawBtn = document.getElementById('drawBtn');
+    const readingSelector = document.getElementById('readingSelector');
     const foolCanvas = document.getElementById('foolCanvas');
     const ctx = foolCanvas.getContext ? foolCanvas.getContext('2d') : null;
 
     let currentSpread = 'single';
-    document.querySelectorAll('.header, .controls').forEach(n => n.style.pointerEvents = 'auto');
 
-    // helper pool builder
+    // add spread selector handlers (restore functionality)
+    readingSelector.querySelectorAll('.spread-card').forEach(card => {
+      card.addEventListener('click', () => {
+        readingSelector.querySelectorAll('.spread-card').forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        currentSpread = card.dataset.spread || 'single';
+        // clear previous reading UI
+        cardsContainer.innerHTML = '';
+        interpretation.classList.remove('show');
+        interpretation.innerHTML = '';
+      });
+    });
+
+    // helper: pool builder
     function pool(){
       let p = [...majorArcana];
       if(includeMinor.checked) p = p.concat(minorArcana);
@@ -186,11 +229,11 @@
       return {...card, reversed};
     }
 
-    // svg placeholder
+    // small svg placeholder generator
     function svgArtFor(name){
-      const seed = [...name].reduce((s,c)=>s+c.charCodeAt(0),0);
+      const seed = [...String(name)].reduce((s,c)=>s+c.charCodeAt(0), 0);
       const hue = 220 + (seed % 100);
-      const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 200'><defs><linearGradient id='g${seed}' x1='0' x2='1'><stop offset='0' stop-color='hsl(${hue},70%,60%)'/><stop offset='1' stop-color='hsl(${(hue+40)%360},60%,45%)'/></linearGradient></defs><rect width='100%' height='100%' rx='12' fill='url(#g${seed})'/><text x='200' y='110' font-family='Cinzel, serif' font-size='44' text-anchor='middle' fill='rgba(255,255,255,0.9)'>${name.split(' ').map(x=>x[0]||'').slice(0,2).join('')}</text></svg>`;
+      const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 200'><defs><linearGradient id='g${seed}' x1='0' x2='1'><stop offset='0' stop-color='hsl(${hue},70%,60%)'/><stop offset='1' stop-color='hsl(${(hue+40)%360},60%,45%)'/></linearGradient></defs><rect width='100%' height='100%' rx='12' fill='url(#g${seed})'/><text x='200' y='110' font-family='Cinzel, serif' font-size='44' text-anchor='middle' fill='rgba(255,255,255,0.9)'>${String(name).split(' ').map(x=>x[0]||'').slice(0,2).join('')}</text></svg>`;
       return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
     }
 
@@ -224,7 +267,7 @@
       }catch(e){}
     }
 
-    // ensure canvas sizing
+    // canvas resizing
     function resizeCanvas(){
       if(!ctx) return;
       foolCanvas.width = innerWidth * devicePixelRatio;
@@ -236,10 +279,7 @@
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
-    // flip-only reveal and guarantee no overlap:
-    // - cardsContainer reserves vertical space via CSS min-height
-    // - we append all cards immediately, set them to invisible, flip them (opacity + transform)
-    // - interpretation is inserted AFTER flipping completes and is guaranteed to render below cardsContainer
+    // flip-only reveal with guaranteed no-overlap
     drawBtn.addEventListener('click', () => {
       const foolProbability = 0.10;
       const foolMode = Math.random() < foolProbability;
@@ -249,25 +289,24 @@
       interpretation.classList.remove('show');
       interpretation.innerHTML = '';
 
-      const spread = currentSpread || 'single';
       let numCards = 1, positions = ['Your Answer'];
-      if(spread === 'three'){ numCards = 3; positions = ['Past','Present','Future']; }
-      if(spread === 'celtic'){ numCards = 5; positions = ['Present','Challenge','Past','Future','Outcome']; }
+      if(currentSpread === 'three'){ numCards = 3; positions = ['Past','Present','Future']; }
+      if(currentSpread === 'celtic'){ numCards = 5; positions = ['Present','Challenge','Past','Future','Outcome']; }
 
       playChime(foolMode ? 'fool' : 'soft');
 
-      // draw
+      // draw all cards, append immediately (no layout-shifting drop)
       const drawn = [];
       for(let i=0;i<numCards;i++){
-        drawn.push(drawOne(deck, foolMode));
+        const c = drawOne(deck, foolMode);
+        drawn.push(c);
       }
 
-      // create elements and append immediately (no layout-shifting drop)
       drawn.forEach((card, idx) => {
         const cardEl = document.createElement('div');
         cardEl.className = 'tarot-card';
         cardEl.setAttribute('tabindex','0');
-        cardEl.style.opacity = '0'; // visible when flipped
+        cardEl.style.opacity = '0';
         const reversedBadge = card.reversed ? '<div class="reversed-indicator">↷ Reversed</div>' : '';
         const svg = svgArtFor(card.name || ('Card'+idx));
         cardEl.innerHTML = `
@@ -288,10 +327,9 @@
         enableTilt(cardEl);
       });
 
-      // force reflow and flip all simultaneously (no staggering)
+      // flip all cards at once (no staggering) to avoid overlap and layout shifts
       requestAnimationFrame(() => {
         document.querySelectorAll('.tarot-card').forEach(el => {
-          // small polish delay so flip feels deliberate instead of instant
           setTimeout(() => {
             el.classList.add('flipped');
             el.style.opacity = '1';
@@ -299,10 +337,8 @@
         });
       });
 
-      // Wait for flip transition to end before showing the interpretation panel below.
-      // Using a timeout that matches the CSS transition duration ensures the interpretation appears after cards finish flipping,
-      // and because cards-container reserved space, the interpretation will not overlap.
-      const flipDurationMs = 800;
+      // show interpretation after flip completes; because cardsContainer reserves vertical space there is no overlap
+      const flipDurationMs = 820;
       setTimeout(() => {
         if(foolMode){
           interpretation.innerHTML = `
@@ -312,22 +348,17 @@
           `;
         } else {
           let html = '<h2 style="font-family:Cinzel,serif;color:var(--brand-2);margin-bottom:8px">✨ Your Reading</h2>';
-          // Use the drawn order and show details; ensure the interpretation is below the cards
-          document.querySelectorAll('#cardsContainer .tarot-card').forEach((el, i) => {
-            const card = drawn[i];
-            card.position = (i < positions.length) ? positions[i] : `Position ${i+1}`;
-            html += `<div class="card-detail"><h3>${card.emoji || ''} ${card.position}: ${card.name}</h3><p>${card.detail || card.meaning || ''}</p>${card.reversed ? `<p style="color:var(--muted);margin-top:6px"><strong>Reversed:</strong> ${card.reversed}</p>` : ''}</div>`;
+          drawn.forEach((card, i) => {
+            const pos = positions[i] || `Position ${i+1}`;
+            html += `<div class="card-detail"><h3>${card.emoji || ''} ${pos}: ${card.name}</h3><p>${card.detail || card.meaning || ''}</p>${card.reversed ? `<p style="color:var(--muted);margin-top:6px"><strong>Reversed:</strong> ${card.reversed}</p>` : ''}</div>`;
           });
           interpretation.innerHTML = html;
         }
-        // ensure interpretation shows (and because cards container reserves space, there will be no overlap)
         interpretation.classList.add('show');
-        // scroll so the interpretation is visible immediately after flip completes
         interpretation.scrollIntoView({behavior:'smooth', block:'start'});
       }, flipDurationMs + 100);
     });
 
-    // show card detail in interpretation (keeps interpretation below)
     function showCardDetail(card){
       const rev = card.reversed ? `<p style="color:var(--muted);margin-top:8px"><strong>Reversed:</strong> ${card.reversed}</p>` : '';
       interpretation.innerHTML = `<h2 style="font-family:Cinzel,serif;color:var(--brand-2)">${card.name}</h2><div class="card-detail"><h3>${card.emoji || ''} ${card.position || ''}</h3><p>${card.detail || card.meaning || ''}</p>${rev}</div>`;
@@ -341,8 +372,8 @@
       hint.className = 'control';
       hint.style.textAlign = 'center';
       hint.style.margin = '10px auto';
-      hint.textContent = 'Cards now flip (no drop) and the layout reserves vertical space to prevent any overlap between cards and text.';
-      document.querySelector('.container').insertBefore(hint, document.getElementById('cardsContainer'));
+      hint.textContent = 'Spread selection restored — pick Single, Three, or Celtic Cross above the controls.';
+      document.querySelector('.container').insertBefore(hint, document.getElementById('readingSelector'));
       setTimeout(()=>hint.remove(),9000);
     }, 600);
   </script>
