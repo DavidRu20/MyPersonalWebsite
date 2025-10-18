@@ -40,67 +40,67 @@
     html,body{height:100%}
     body{
       font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      background: 
+      background:
         radial-gradient(ellipse 1400px 900px at 90% -15%, rgba(217,70,239,.18), transparent 55%),
         radial-gradient(ellipse 1000px 700px at 10% 100%, rgba(245,158,11,.15), transparent 50%),
         var(--bg);
       color:var(--text); line-height:1.6; letter-spacing:.2px;
       background-attachment: fixed; padding:20px;
-      transition:filter .35s ease, transform .35s ease;
+      overflow-x:hidden;
     }
 
-    /* Blessed pulse applied to body when LOTM blessing is active */
-    body.blessed{
-      animation: blessedPulse 2.5s infinite;
-      filter: saturate(1.05) brightness(1.02);
-    }
-    @keyframes blessedPulse{
-      0% { transform: translateY(0px) }
-      50% { transform: translateY(-3px) }
-      100% { transform: translateY(0px) }
-    }
+    .container{max-width:920px; margin:0 auto; position:relative; z-index:2}
 
-    .container{max-width:900px; margin:0 auto}
-
-    .header{text-align:center; padding:40px 20px 20px}
+    .header{text-align:center; padding:36px 20px 6px}
     .header h1{
       font-family:'Cinzel', serif; font-size:clamp(32px, 5vw, 48px);
       background:linear-gradient(120deg, var(--brand), var(--brand-2), var(--accent));
       -webkit-background-clip:text; background-clip:text; color:transparent;
-      margin-bottom:8px; font-weight:900;
+      margin-bottom:6px; font-weight:900;
     }
-    .header p{color:var(--muted); font-size:16px}
+    .header p{color:var(--muted); font-size:15px}
 
     .back-btn{
       display:inline-flex; align-items:center; gap:8px; padding:10px 16px;
       background:var(--glass); border:1px solid var(--glass-brd); border-radius:12px;
       color:var(--text); text-decoration:none; transition:all .2s ease;
-      font-weight:500; margin-bottom:20px;
+      font-weight:500; margin-bottom:18px;
     }
     .back-btn:hover{border-color:var(--brand); transform:translateY(-2px); box-shadow:var(--shadow)}
 
     .reading-selector{
-      display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));
-      gap:16px; margin:32px 0;
+      display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+      gap:14px; margin:22px 0;
     }
     .spread-card{
       background:linear-gradient(135deg, rgba(139,92,246,.08), rgba(245,158,11,.06));
-      border:1px solid var(--glass-brd); border-radius:18px; padding:24px;
-      cursor:pointer; transition:all .3s ease; text-align:center;
+      border:1px solid var(--glass-brd); border-radius:16px; padding:20px;
+      cursor:pointer; transition:all .25s ease; text-align:center;
+      user-select:none;
     }
     .spread-card:hover{
-      transform:translateY(-5px); border-color:var(--brand);
-      box-shadow:0 15px 45px rgba(217,70,239,.4);
+      transform:translateY(-4px); border-color:var(--brand);
+      box-shadow:0 12px 36px rgba(217,70,239,.32);
     }
     .spread-card.active{
-      border-color:var(--brand); background:linear-gradient(135deg, rgba(139,92,246,.15), rgba(245,158,11,.1));
+      border-color:var(--brand); background:linear-gradient(135deg, rgba(139,92,246,.15), rgba(245,158,11,.08));
     }
-    .spread-icon{font-size:48px; margin-bottom:12px}
-    .spread-title{font-family:'Cinzel', serif; font-size:20px; font-weight:700; margin-bottom:6px}
+    .spread-icon{font-size:44px; margin-bottom:10px}
+    .spread-title{font-family:'Cinzel', serif; font-size:18px; font-weight:700; margin-bottom:6px}
     .spread-desc{font-size:13px; color:var(--muted)}
 
+    .controls{
+      display:flex; gap:12px; flex-wrap:wrap; align-items:center; justify-content:center;
+      margin:6px 0 18px;
+    }
+    .control{
+      background:var(--glass); border:1px solid var(--glass-brd); padding:8px 12px; border-radius:12px;
+      color:var(--text); font-size:14px; display:flex; gap:8px; align-items:center;
+    }
+    .control input{transform:scale(1.1)}
+
     .btn{
-      display:inline-flex; align-items:center; gap:10px; padding:16px 32px;
+      display:inline-flex; align-items:center; gap:10px; padding:14px 28px;
       background:linear-gradient(135deg, var(--brand), var(--brand-2));
       border:none; border-radius:14px; color:#fff; font-size:16px;
       font-weight:600; cursor:pointer; transition:all .3s ease;
@@ -111,63 +111,73 @@
     .btn:disabled{opacity:.5; cursor:not-allowed; transform:none}
 
     .cards-container{
-      display:flex; justify-content:center; gap:20px; flex-wrap:wrap;
-      margin:40px 0; min-height:400px; align-items:center;
+      display:flex; justify-content:center; gap:18px; flex-wrap:wrap;
+      margin:30px 0; min-height:340px; align-items:center;
     }
 
     .tarot-card{
-      width:180px; height:280px; perspective:1000px; cursor:pointer;
+      width:170px; height:270px; perspective:1100px; cursor:pointer; position:relative;
+      transition:transform .15s ease;
     }
     .card-inner{
-      width:100%; height:100%; position:relative; transition:transform .8s;
-      transform-style:preserve-3d;
+      width:100%; height:100%; position:relative; transition:transform .8s; transform-style:preserve-3d;
+      will-change:transform;
+      border-radius:14px;
     }
     .tarot-card.flipped .card-inner{transform:rotateY(180deg)}
     
     .card-face{
       position:absolute; width:100%; height:100%; backface-visibility:hidden;
-      border-radius:16px; display:flex; flex-direction:column; align-items:center;
-      justify-content:center; padding:20px; border:2px solid var(--glass-brd);
-      box-shadow:var(--shadow);
+      border-radius:14px; display:flex; flex-direction:column; align-items:center;
+      justify-content:center; padding:16px; border:2px solid var(--glass-brd);
+      box-shadow:var(--shadow); overflow:hidden;
     }
     .card-back{
-      background:linear-gradient(135deg, rgba(139,92,246,.2), rgba(245,158,11,.15));
-      backdrop-filter:blur(10px);
+      background:linear-gradient(135deg, rgba(139,92,246,.22), rgba(245,158,11,.14));
+      backdrop-filter:blur(8px);
+      display:flex; align-items:center; justify-content:center; font-size:64px; color:rgba(255,255,255,.12);
     }
     .card-back::before{
-      content:'🔮'; font-size:80px; opacity:.6;
+      content:'🔮'; font-size:72px; opacity:.65;
     }
     .card-front{
       background:linear-gradient(135deg, var(--panel), rgba(18,10,31,.95));
-      transform:rotateY(180deg); text-align:center;
+      transform:rotateY(180deg); text-align:center; padding:16px;
+      display:flex; flex-direction:column; justify-content:center; gap:8px;
     }
-    .card-emoji{font-size:64px; margin-bottom:16px}
+    .card-emoji{font-size:52px; margin-bottom:8px}
     .card-name{
-      font-family:'Cinzel', serif; font-size:16px; font-weight:700;
-      margin-bottom:8px; color:var(--brand-2);
+      font-family:'Cinzel', serif; font-size:15px; font-weight:700;
+      margin-bottom:6px; color:var(--brand-2);
     }
     .card-meaning{font-size:12px; color:var(--muted); line-height:1.4}
 
+    .reversed-indicator{
+      position:absolute; top:8px; right:8px; font-size:12px; background:rgba(0,0,0,.35);
+      padding:6px 8px; border-radius:999px; color:var(--brand-2); border:1px solid rgba(255,255,255,.04);
+      font-weight:700;
+    }
+
     .interpretation{
       background:linear-gradient(135deg, rgba(139,92,246,.12), rgba(245,158,11,.1));
-      border:1px solid var(--glass-brd); border-radius:18px; padding:28px;
-      margin:32px 0; backdrop-filter:blur(10px); box-shadow:var(--shadow);
+      border:1px solid var(--glass-brd); border-radius:18px; padding:26px;
+      margin:28px 0; backdrop-filter:blur(8px); box-shadow:var(--shadow);
       opacity:0; transform:translateY(20px); transition:all .6s ease;
     }
     .interpretation.show{opacity:1; transform:translateY(0)}
     .interpretation h2{
-      font-family:'Cinzel', serif; font-size:24px; margin-bottom:16px;
+      font-family:'Cinzel', serif; font-size:22px; margin-bottom:14px;
       color:var(--brand-2);
     }
     .card-detail{
-      margin:20px 0; padding:20px; background:rgba(0,0,0,.2);
-      border-radius:12px; border-left:4px solid var(--brand);
+      margin:16px 0; padding:16px; background:rgba(0,0,0,.18);
+      border-radius:10px; border-left:4px solid var(--brand);
     }
     .card-detail h3{
-      font-family:'Cinzel', serif; font-size:18px; color:var(--brand);
+      font-family:'Cinzel', serif; font-size:16px; color:var(--brand);
       margin-bottom:8px; display:flex; align-items:center; gap:10px;
     }
-    .card-detail p{color:var(--text); line-height:1.8}
+    .card-detail p{color:var(--text); line-height:1.6}
 
     .fool-mode{
       background:linear-gradient(135deg, rgba(239,68,68,.15), rgba(217,70,239,.15)) !important;
@@ -175,36 +185,20 @@
       animation:foolPulse 2s infinite;
     }
     @keyframes foolPulse{
-      0%, 100%{box-shadow:0 0 20px rgba(239,68,68,.3)}
-      50%{box-shadow:0 0 40px rgba(239,68,68,.6), 0 0 60px rgba(217,70,239,.4)}
+      0%, 100%{box-shadow:0 0 24px rgba(239,68,68,.28)}
+      50%{box-shadow:0 0 44px rgba(239,68,68,.55), 0 0 60px rgba(217,70,239,.38)}
     }
 
     .praise{
-      font-size:clamp(24px, 4vw, 36px); font-family:'Cinzel', serif;
-      text-align:center; font-weight:900; margin:40px 0;
+      font-size:clamp(22px, 4vw, 32px); font-family:'Cinzel', serif;
+      text-align:center; font-weight:900; margin:30px 0;
       background:linear-gradient(90deg, #ef4444, #d946ef, #f59e0b);
       -webkit-background-clip:text; background-clip:text; color:transparent;
       animation:shimmer 3s infinite;
     }
     @keyframes shimmer{
-      0%{filter:hue-rotate(0deg) brightness(1.2)}
-      100%{filter:hue-rotate(360deg) brightness(1.2)}
-    }
-
-    /* Confetti styles (for LOTM blessing) */
-    .confetti {
-      position:fixed; left:0; right:0; top:0; bottom:0; pointer-events:none; overflow:hidden;
-      z-index:9999;
-    }
-    .confetti span{
-      position:absolute; display:block; width:10px; height:16px; opacity:0.95;
-      transform-origin: center;
-      animation: confettiFall linear forwards;
-      border-radius:2px;
-    }
-    @keyframes confettiFall{
-      0% { transform: translateY(-10vh) rotate(0deg); opacity:1 }
-      100% { transform: translateY(120vh) rotate(720deg); opacity:0.8 }
+      0%{filter:hue-rotate(0deg) brightness(1.1)}
+      100%{filter:hue-rotate(360deg) brightness(1.1)}
     }
 
     @media (max-width: 640px){
@@ -212,122 +206,281 @@
       .tarot-card{width:150px; height:240px}
       .spread-icon{font-size:36px}
     }
+
+    /* canvas overlay for fool mode */
+    #foolCanvas{
+      position:fixed; left:0; top:0; width:100%; height:100%; pointer-events:none; z-index:1; mix-blend-mode:screen;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
+  <canvas id="foolCanvas" aria-hidden="true"></canvas>
+  <div class="container" id="app">
     <a href="index.html" class="back-btn">← Return to Grimoire</a>
     
     <div class="header">
       <h1>🔮 Arcane Divination</h1>
       <p>Let the mystical cards reveal your destiny</p>
-      <!-- LOTM quick config (editable) -->
-      <div style="margin-top:12px; display:flex; justify-content:center; gap:12px; align-items:center;">
-        <label style="font-size:13px; color:var(--muted)">LOTM Name:</label>
-        <input id="lotmInput" type="text" value="LOTM" style="padding:8px 10px; border-radius:8px; border:1px solid var(--glass-brd); background:transparent; color:var(--text);">
-        <button id="saveLotm" style="padding:8px 12px; border-radius:8px; border:none; background:var(--brand); color:#fff; cursor:pointer;">Save</button>
-      </div>
     </div>
 
-    <div class="reading-selector">
-      <div class="spread-card active" data-spread="single">
+    <div class="reading-selector" role="tablist">
+      <div class="spread-card active" data-spread="single" role="tab" aria-selected="true">
         <div class="spread-icon">🃏</div>
         <div class="spread-title">Single Card</div>
         <div class="spread-desc">Quick insight into your question</div>
       </div>
-      <div class="spread-card" data-spread="three">
+      <div class="spread-card" data-spread="three" role="tab">
         <div class="spread-icon">🎴</div>
         <div class="spread-title">Three Card</div>
         <div class="spread-desc">Past, Present, Future</div>
       </div>
-      <div class="spread-card" data-spread="celtic">
+      <div class="spread-card" data-spread="celtic" role="tab">
         <div class="spread-icon">✨</div>
         <div class="spread-title">Celtic Cross</div>
-        <div class="spread-desc">Deep, comprehensive reading</div>
+        <div class="spread-desc">Deep, comprehensive reading (simplified)</div>
       </div>
+    </div>
+
+    <div class="controls" aria-hidden="false">
+      <label class="control"><input type="checkbox" id="includeMinor"> Include Minor Arcana</label>
+      <label class="control"><input type="checkbox" id="showReversals" checked> Allow Reversals</label>
+      <label class="control"><input type="checkbox" id="enableSound"> Ambient Sound</label>
     </div>
 
     <center>
       <button class="btn" id="drawBtn">✨ Divine Your Fate ✨</button>
     </center>
 
-    <div class="cards-container" id="cardsContainer"></div>
-    <div class="interpretation" id="interpretation"></div>
+    <div class="cards-container" id="cardsContainer" aria-live="polite"></div>
+    <div class="interpretation" id="interpretation" aria-live="polite"></div>
   </div>
 
-  <div id="confetti" class="confetti" aria-hidden="true"></div>
-
   <script>
-    // Basic deck
-    const tarotDeck = [
-      {name: 'The Fool', emoji: '🃏', meaning: 'New beginnings, innocence, spontaneity, free spirit', detail: 'The Fool represents the beginning of a journey, embracing the unknown with courage and optimism. It speaks of taking risks and trusting in the universe.'},
-      {name: 'The Magician', emoji: '🎩', meaning: 'Manifestation, resourcefulness, power, inspired action', detail: 'The Magician harnesses the power of the universe. You have all the tools you need to achieve your goals. Focus your will and take action.'},
-      {name: 'The High Priestess', emoji: '🌙', meaning: 'Intuition, sacred knowledge, divine feminine, subconscious', detail: 'Trust your intuition and look beyond the obvious. The answers you seek lie within. Listen to your inner voice and pay attention to your dreams.'},
-      {name: 'The Empress', emoji: '👑', meaning: 'Femininity, beauty, nature, nurturing, abundance', detail: 'The Empress signifies creativity, fertility, and abundance. Connect with nature and embrace the beauty around you. Nurture yourself and others.'},
-      {name: 'The Emperor', emoji: '⚔️', meaning: 'Authority, structure, control, fatherhood', detail: 'The Emperor represents leadership and stability. Take charge of your situation with wisdom and authority. Establish order and set clear boundaries.'},
-      {name: 'The Hierophant', emoji: '📿', meaning: 'Spiritual wisdom, tradition, conformity, morality', detail: 'Seek guidance from established institutions or mentors. Honor tradition while finding your own spiritual path. Education and learning are highlighted.'},
-      {name: 'The Lovers', emoji: '💕', meaning: 'Love, harmony, relationships, choices, values', detail: 'The Lovers represent deep connections and important choices. Your values are being tested. Choose with your heart while keeping your mind clear.'},
-      {name: 'The Chariot', emoji: '🏇', meaning: 'Control, willpower, success, determination, action', detail: 'Victory through determination and control. Stay focused on your goals and maintain discipline. You have the strength to overcome obstacles.'},
-      {name: 'Strength', emoji: '🦁', meaning: 'Inner strength, courage, patience, compassion', detail: 'True strength comes from within. Face challenges with courage and compassion. Your gentle approach will triumph over force.'},
-      {name: 'The Hermit', emoji: '🕯️', meaning: 'Soul searching, introspection, inner guidance, solitude', detail: 'Take time for introspection and self-reflection. The answers you seek require solitude and contemplation. Trust your inner wisdom.'},
-      {name: 'Wheel of Fortune', emoji: '🎡', meaning: 'Change, cycles, fate, turning point, destiny', detail: 'Life moves in cycles. A turning point approaches. Embrace change and trust in the natural flow of the universe. What goes around comes around.'},
-      {name: 'Justice', emoji: '⚖️', meaning: 'Fairness, truth, cause and effect, law', detail: 'Truth and fairness prevail. Actions have consequences. Make decisions with integrity and seek balance in all things.'},
-      {name: 'The Hanged Man', emoji: '🙃', meaning: 'Suspension, restriction, letting go, sacrifice', detail: 'Sometimes surrender is necessary for growth. Change your perspective and let go of control. This pause will bring enlightenment.'},
-      {name: 'Death', emoji: '💀', meaning: 'Endings, transformation, transition, release', detail: 'An ending makes way for new beginnings. Release what no longer serves you. Transformation and rebirth are at hand.'},
-      {name: 'Temperance', emoji: '⚗️', meaning: 'Balance, moderation, patience, purpose, meaning', detail: 'Find balance and harmony in your life. Practice moderation and patience. Your purpose will reveal itself through mindful living.'},
-      {name: 'The Devil', emoji: '😈', meaning: 'Bondage, addiction, materialism, playfulness', detail: 'Examine what binds you. Are you trapped by material desires or unhealthy attachments? Break free from limiting beliefs.'},
-      {name: 'The Tower', emoji: '🏰', meaning: 'Sudden change, upheaval, chaos, revelation, awakening', detail: 'Sudden change shatters illusions. Though chaotic, this destruction clears the way for truth and rebuilding on stronger foundations.'},
-      {name: 'The Star', emoji: '⭐', meaning: 'Hope, faith, purpose, renewal, spirituality', detail: 'The Star brings hope and renewal. Have faith in the universe. Your wishes and dreams are within reach. Healing is coming.'},
-      {name: 'The Moon', emoji: '🌕', meaning: 'Illusion, fear, anxiety, subconscious, intuition', detail: 'Things are not as they seem. Trust your intuition but beware of illusions. Face your fears and explore your subconscious depths.'},
-      {name: 'The Sun', emoji: '☀️', meaning: 'Joy, success, celebration, positivity, vitality', detail: 'The Sun brings joy, success, and vitality. Everything is illuminated. Celebrate life and embrace optimism. Success is assured.'},
-      {name: 'Judgement', emoji: '🎺', meaning: 'Reflection, reckoning, inner calling, absolution', detail: 'A time of judgement and self-evaluation. Answer your inner calling. Past actions culminate in present consequences. Seek absolution and rebirth.'},
-      {name: 'The World', emoji: '🌍', meaning: 'Completion, accomplishment, travel, fulfillment', detail: 'The World represents completion and fulfillment. You have reached the end of a cycle. Celebrate your achievements and prepare for new adventures.'}
+    // -- Major arcana (kept mostly unchanged, but extended with upright/reversed when appropriate)
+    const majorArcana = [
+      {name: 'The Fool', emoji: '🃏', meaning: 'New beginnings, innocence, spontaneity, free spirit', detail: 'The Fool represents the beginning of a journey, embracing the unknown with courage and optimism. It speaks of taking risks and trusting in the universe.', reversed: 'Recklessness, naivety, holding back from a new start.'},
+      {name: 'The Magician', emoji: '🎩', meaning: 'Manifestation, resourcefulness, power, inspired action', detail: 'The Magician harnesses the elements. You have the tools to craft change; focus your will and move.', reversed: 'Scattered energies, untapped potential, manipulation.'},
+      {name: 'The High Priestess', emoji: '🌙', meaning: 'Intuition, sacred knowledge, divine feminine, subconscious', detail: 'Trust your inner voice. Secrets are present; pay attention to dreams and omens.', reversed: 'Blocked intuition, secrets withheld, confusion.'},
+      {name: 'The Empress', emoji: '👑', meaning: 'Femininity, beauty, nature, nurturing, abundance', detail: 'Creativity, fertility, and the nourishing side of life. Tend and grow your projects.', reversed: 'Smothering, creative blocks, neglect.'},
+      {name: 'The Emperor', emoji: '⚔️', meaning: 'Authority, structure, control, fatherhood', detail: 'Leadership and foundations. Apply discipline and set boundaries.', reversed: 'Rigidity, abuse of power, insecurity.'},
+      {name: 'The Hierophant', emoji: '📿', meaning: 'Spiritual wisdom, tradition, conformity, morality', detail: 'Seek guidance from mentors and institutions; learning is highlighted.', reversed: 'Question authority, break tradition, find personal meaning.'},
+      {name: 'The Lovers', emoji: '💕', meaning: 'Love, harmony, relationships, choices, values', detail: 'Connections and choices—align heart and mind when deciding.', reversed: 'Imbalance, misaligned values, difficult choices.'},
+      {name: 'The Chariot', emoji: '🏇', meaning: 'Control, willpower, success, determination, action', detail: 'Victory through focus and discipline. Keep the reins steady.', reversed: 'Lack of direction, scattered will, obstacles.'},
+      {name: 'Strength', emoji: '🦁', meaning: 'Inner strength, courage, patience, compassion', detail: 'Compassion and quiet courage will triumph where force fails.', reversed: 'Self-doubt, weakness, impatience.'},
+      {name: 'The Hermit', emoji: '🕯️', meaning: 'Soul searching, introspection, inner guidance, solitude', detail: 'Withdraw to find inner truth and wise counsel.', reversed: 'Loneliness, avoidance, refusal to look inward.'},
+      {name: 'Wheel of Fortune', emoji: '🎡', meaning: 'Change, cycles, fate, turning point, destiny', detail: 'Cycles and tides—prepare for a turning point.', reversed: 'Resisting change, bad timing, repeated patterns.'},
+      {name: 'Justice', emoji: '⚖️', meaning: 'Fairness, truth, cause and effect, law', detail: 'Balance and fairness will be sought; be honest in decisions.', reversed: 'Bias, injustice, denial of consequences.'},
+      {name: 'The Hanged Man', emoji: '🙃', meaning: 'Suspension, restriction, letting go, sacrifice', detail: 'Pause and surrender; see from a new angle.', reversed: 'Stagnation, needless sacrifice, refusal to yield.'},
+      {name: 'Death', emoji: '💀', meaning: 'Endings, transformation, transition, release', detail: 'Endings that clear the way for renewal and transformation.', reversed: 'Resistance to change, delayed endings.'},
+      {name: 'Temperance', emoji: '⚗️', meaning: 'Balance, moderation, patience, purpose, meaning', detail: 'Blend and integrate — balance is the path forward.', reversed: 'Extremes, impatience, imbalance.'},
+      {name: 'The Devil', emoji: '😈', meaning: 'Bondage, addiction, materialism, playfulness', detail: 'Chains of habit and desire; name them and face them.', reversed: 'Breaking free, awareness, reclaiming power.'},
+      {name: 'The Tower', emoji: '🏰', meaning: 'Sudden change, upheaval, chaos, revelation, awakening', detail: 'Cataclysmic revelation that clears falsehoods away.', reversed: 'Avoided disaster, delayed reckoning, lingering shock.'},
+      {name: 'The Star', emoji: '⭐', meaning: 'Hope, faith, purpose, renewal, spirituality', detail: 'Hope and healing are returning; breathe and trust.', reversed: 'Discouragement, lost faith, blocked renewal.'},
+      {name: 'The Moon', emoji: '🌕', meaning: 'Illusion, fear, anxiety, subconscious, intuition', detail: 'The subconscious stirs; use intuition to navigate shadows.', reversed: 'Clarity emerging, released fears, deception exposed.'},
+      {name: 'The Sun', emoji: '☀️', meaning: 'Joy, success, celebration, positivity, vitality', detail: 'Joy and accomplishment shine bright; embrace warmth.', reversed: 'Temporary setback, muted joy, prideful arrogance.'},
+      {name: 'Judgement', emoji: '🎺', meaning: 'Reflection, reckoning, inner calling, absolution', detail: 'A call to account; rebirth through honest reflection.', reversed: 'Self-doubt, refusal to forgive or move on.'},
+      {name: 'The World', emoji: '🌍', meaning: 'Completion, accomplishment, travel, fulfillment', detail: 'Cycle complete — celebrate and open new chapters.', reversed: 'Unfinished business, delayed success.'}
     ];
 
-    // Configurable LOTM values (editable by user)
-    let LOTM_NAME = 'LOTM';
-    let LOTM_LONG = 'Legion of the Threshold & Mirth'; // default long description; editable
+    // -- Generate a programmatic minor arcana (suits + ranks + compact meanings)
+    const suits = [
+      {name:'Wands', emoji:'🔥', domain:'action, creativity, will'},
+      {name:'Cups', emoji:'💧', domain:'emotions, relationships, intuition'},
+      {name:'Swords', emoji:'💨', domain:'thought, conflict, clarity'},
+      {name:'Pentacles', emoji:'🌿', domain:'material, body, work'}
+    ];
 
-    // expose input
-    const lotmInput = document.getElementById('lotmInput');
-    const saveLotmBtn = document.getElementById('saveLotm');
-    saveLotmBtn.addEventListener('click', () => {
-      LOTM_NAME = lotmInput.value.trim() || 'LOTM';
-      alert('LOTM name saved: ' + LOTM_NAME);
-    });
+    const rankNames = ['Ace','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Page','Knight','Queen','King'];
+    function generateMinorArcana(){
+      const arr = [];
+      suits.forEach(s => {
+        rankNames.forEach((rank, idx) => {
+          const name = `${rank} of ${s.name}`;
+          const short = `${rank} • ${s.emoji}`;
+          const meaning = `${s.domain.split(',')[0].trim()} — ${rank.toLowerCase()} energy.`;
+          const detail = `A ${rank.toLowerCase()} expression in the realm of ${s.domain}. Consider how the suit's domain is currently active in your life.`;
+          arr.push({name, emoji: s.emoji, meaning, detail, suit: s.name, rank: rank, reversed: `Reversed: a shadow of the ${rank.toLowerCase()} in ${s.name.toLowerCase()}.`});
+        });
+      });
+      return arr;
+    }
+    const minorArcana = generateMinorArcana();
 
+    // state
     let currentSpread = 'single';
-    let foolMode = false;
     let readingCount = 0;
+    let foolMode = false;
 
-    // Spread selector
+    // ui refs
+    const cardsContainer = document.getElementById('cardsContainer');
+    const interpretation = document.getElementById('interpretation');
+    const drawBtn = document.getElementById('drawBtn');
+    const includeMinorToggle = document.getElementById('includeMinor');
+    const showReversalsToggle = document.getElementById('showReversals');
+    const enableSoundToggle = document.getElementById('enableSound');
+    const foolCanvas = document.getElementById('foolCanvas');
+    const ctx = foolCanvas.getContext && foolCanvas.getContext('2d');
+
+    // responsive canvas
+    function resizeCanvas(){
+      foolCanvas.width = innerWidth * devicePixelRatio;
+      foolCanvas.height = innerHeight * devicePixelRatio;
+      foolCanvas.style.width = innerWidth + 'px';
+      foolCanvas.style.height = innerHeight + 'px';
+      ctx && ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // spread selector
     document.querySelectorAll('.spread-card').forEach(card => {
       card.addEventListener('click', () => {
-        document.querySelectorAll('.spread-card').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.spread-card').forEach(c => {
+          c.classList.remove('active');
+          c.setAttribute('aria-selected','false');
+        });
         card.classList.add('active');
+        card.setAttribute('aria-selected','true');
         currentSpread = card.dataset.spread;
-        document.getElementById('cardsContainer').innerHTML = '';
-        document.getElementById('interpretation').classList.remove('show');
+        cardsContainer.innerHTML = '';
+        interpretation.classList.remove('show');
       });
     });
 
-    // Draw cards
-    document.getElementById('drawBtn').addEventListener('click', () => {
+    // helper: build pool
+    function buildPool(){
+      let pool = [...majorArcana];
+      if(includeMinorToggle.checked) pool = pool.concat(minorArcana);
+      return pool;
+    }
+
+    // helper: pick random card with optional fool mode or reversals
+    function drawCardFromPool(pool, forceFool=false, allowReversal=true){
+      if(forceFool) {
+        // always return the Fool major card (the first entry in majorArcana)
+        const fool = majorArcana[0];
+        return {...fool, reversed:false};
+      }
+      const idx = Math.floor(Math.random() * pool.length);
+      const card = pool[idx];
+      const reversed = allowReversal && Math.random() < 0.35; // ~35% reversed
+      return {...card, reversed};
+    }
+
+    // mouse tilt handler for a card element
+    function enableTilt(cardEl){
+      const inner = cardEl.querySelector('.card-inner');
+      const rect = () => cardEl.getBoundingClientRect();
+      cardEl.addEventListener('mousemove', (e) => {
+        const r = rect();
+        const px = (e.clientX - r.left) / r.width;
+        const py = (e.clientY - r.top) / r.height;
+        const rx = (py - 0.5) * -10;
+        const ry = (px - 0.5) * 10;
+        inner.style.transform = `rotateY(${ry}deg) rotateX(${rx}deg) ${cardEl.classList.contains('flipped') ? 'rotateY(180deg)' : ''}`;
+      });
+      cardEl.addEventListener('mouseleave', () => {
+        inner.style.transform = cardEl.classList.contains('flipped') ? 'rotateY(180deg)' : 'none';
+      });
+    }
+
+    // simple audio using WebAudio (no external files)
+    function playChime(type='soft'){
+      if(!enableSoundToggle.checked || !window.AudioContext) return;
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const now = ctx.currentTime;
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = 'sine';
+        if(type === 'fool'){
+          // slightly dissonant cluster
+          const o2 = ctx.createOscillator();
+          const g2 = ctx.createGain();
+          o.frequency.setValueAtTime(220, now);
+          o2.frequency.setValueAtTime(277, now);
+          o.connect(g); o2.connect(g2);
+          g.connect(ctx.destination); g2.connect(ctx.destination);
+          g.gain.setValueAtTime(0.0001, now);
+          g2.gain.setValueAtTime(0.0001, now);
+          g.gain.exponentialRampToValueAtTime(0.18, now+0.02);
+          g2.gain.exponentialRampToValueAtTime(0.12, now+0.02);
+          g.gain.exponentialRampToValueAtTime(0.0001, now+1.2);
+          g2.gain.exponentialRampToValueAtTime(0.0001, now+1.2);
+          o.start(now); o2.start(now);
+          o.stop(now+1.25); o2.stop(now+1.25);
+        } else {
+          o.frequency.setValueAtTime(660, now);
+          o.connect(g); g.connect(ctx.destination);
+          g.gain.setValueAtTime(0.0001, now);
+          g.gain.exponentialRampToValueAtTime(0.12, now+0.02);
+          g.gain.exponentialRampToValueAtTime(0.0001, now+1.2);
+          o.start(now); o.stop(now+1.25);
+        }
+      } catch(e){ /* silently fail */ }
+    }
+
+    // subtle canvas particle bloom for fool-mode
+    const particles = [];
+    function spawnParticles(){
+      particles.length = 0;
+      for(let i=0;i<60;i++){
+        particles.push({
+          x: Math.random()*innerWidth,
+          y: Math.random()*innerHeight,
+          vx: (Math.random()-0.5)*0.6,
+          vy: (Math.random()-0.5)*0.6 - 0.2,
+          size: 1 + Math.random()*3,
+          hue: 280 + Math.random()*80,
+          life: 60 + Math.random()*180
+        });
+      }
+    }
+    let particleAnimId = null;
+    function animateParticles(){
+      if(!ctx) return;
+      ctx.clearRect(0,0,foolCanvas.width, foolCanvas.height);
+      const dpr = devicePixelRatio || 1;
+      ctx.save();
+      ctx.scale(dpr,dpr);
+      particles.forEach((p,i) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.004;
+        p.life--;
+        const alpha = Math.max(0, Math.min(1, p.life/200));
+        ctx.beginPath();
+        ctx.fillStyle = `hsla(${p.hue},85%,62%,${alpha*0.9})`;
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+        ctx.fill();
+        if(p.life <= 0){
+          p.x = Math.random()*innerWidth;
+          p.y = innerHeight + 10;
+          p.vx = (Math.random()-0.5)*0.6;
+          p.vy = -(0.6+Math.random()*1.2);
+          p.life = 60 + Math.random()*180;
+        }
+      });
+      ctx.restore();
+      particleAnimId = requestAnimationFrame(animateParticles);
+    }
+    function startFoolCanvas(){ spawnParticles(); if(particleAnimId==null) animateParticles(); foolCanvas.style.display = 'block'; }
+    function stopFoolCanvas(){ foolCanvas.style.display = 'none'; if(particleAnimId!=null){ cancelAnimationFrame(particleAnimId); particleAnimId = null; } ctx && ctx.clearRect(0,0,foolCanvas.width,foolCanvas.height); }
+
+    // main draw handler
+    drawBtn.addEventListener('click', () => {
       readingCount++;
-      // Every 3-5 readings, activate fool mode (randomized)
-      const shouldActivateFool = readingCount % (3 + Math.floor(Math.random() * 3)) === 0;
+      // activate fool mode intermittently but with an element of randomness
+      const interval = 3 + Math.floor(Math.random()*3); // 3-5
+      const shouldActivateFool = readingCount % interval === 0 && Math.random() < 0.9;
       foolMode = shouldActivateFool;
-      
-      const container = document.getElementById('cardsContainer');
-      const interpretation = document.getElementById('interpretation');
-      
-      container.innerHTML = '';
+
+      const pool = buildPool();
+      cardsContainer.innerHTML = '';
       interpretation.innerHTML = '';
       interpretation.classList.remove('show');
 
-      let numCards;
-      let positions;
-      
+      let numCards, positions;
       if(currentSpread === 'single'){
         numCards = 1;
         positions = ['Your Answer'];
@@ -335,139 +488,131 @@
         numCards = 3;
         positions = ['Past', 'Present', 'Future'];
       } else {
-        numCards = 5; // Simplified Celtic Cross
+        numCards = 5; // simplified Celtic Cross
         positions = ['Present', 'Challenge', 'Past', 'Future', 'Outcome'];
       }
 
-      // Draw cards
-      const drawnCards = [];
-      for(let i = 0; i < numCards; i++){
-        // When blessed by LOTM, always The Fool (first card in deck) — but keep it configurable for future
-        const card = foolMode ? tarotDeck[0] : tarotDeck[Math.floor(Math.random() * tarotDeck.length)];
-        drawnCards.push({...card, position: positions[i]});
+      // play sound
+      playChime(foolMode ? 'fool' : 'soft');
+
+      // handle canvas effect
+      if(foolMode) startFoolCanvas(); else stopFoolCanvas();
+
+      // draw cards
+      const drawn = [];
+      for(let i=0;i<numCards;i++){
+        const card = drawCardFromPool(pool, foolMode, showReversalsToggle.checked);
+        drawn.push({...card, position: positions[i] || `Position ${i+1}`});
       }
 
-      // Display cards
-      drawnCards.forEach((card, index) => {
+      // Create card elements with staggered reveal
+      drawn.forEach((card, idx) => {
         const cardEl = document.createElement('div');
         cardEl.className = 'tarot-card';
+        cardEl.setAttribute('tabindex','0');
+        // front/back content
+        const frontExtra = card.reversed ? `<div class="reversed-indicator">↷ Reversed</div>` : '';
+        const frontClass = foolMode ? 'fool-mode' : '';
         cardEl.innerHTML = `
           <div class="card-inner">
-            <div class="card-face card-back"></div>
-            <div class="card-face card-front ${foolMode ? 'fool-mode' : ''}">
+            <div class="card-face card-back" aria-hidden="true"></div>
+            <div class="card-face card-front ${frontClass}">
+              ${frontExtra}
               <div class="card-emoji">${card.emoji}</div>
               <div class="card-name">${card.name}</div>
               <div class="card-meaning">${card.meaning}</div>
             </div>
           </div>
         `;
-        
+        // flip after insert
         setTimeout(() => {
-          container.appendChild(cardEl);
-          setTimeout(() => cardEl.classList.add('flipped'), 100);
-        }, index * 300);
+          cardsContainer.appendChild(cardEl);
+          // allow tilt interactions
+          enableTilt(cardEl);
+          // flip animation
+          setTimeout(() => cardEl.classList.add('flipped'), 90);
+          // store data for click
+          cardEl._card = card;
+          // clicking a specific card shows expanded detail; if reversed, show reversed text
+          cardEl.addEventListener('click', () => {
+            showCardDetail(cardEl._card);
+          });
+          cardEl.addEventListener('keydown', (e) => {
+            if(e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault(); showCardDetail(cardEl._card);
+            }
+          });
+        }, idx * 240);
       });
 
-      // Show interpretation (with LOTM-aware copy when blessed)
+      // interpretation panel after reveal
       setTimeout(() => {
         if(foolMode){
-          // Add blessed body animation + confetti
-          document.body.classList.add('blessed');
-          createConfetti(32);
-
+          // LOTM-flavored fool presentation (homage, not canonical citation)
           interpretation.innerHTML = `
-            <div class="praise">🃏 BLESSED BY THE ${escapeHtml(LOTM_NAME).toUpperCase()} 🃏</div>
-            <p style="text-align:center; font-size:18px; color:var(--muted); font-style:italic;">
-              "The ${escapeHtml(LOTM_NAME)} laughs at the edges of fate and anoints those who dare the dance."
+            <div class="praise">🃏 THE FOOL'S BLESSING</div>
+            <p style="text-align:center; font-size:16px; color:var(--muted); font-style:italic;">
+              The Fool steps in and the rules fray — a wink to the uncanny plays and secret histories you may have read in stories like "Lord of the Mysteries".
             </p>
             <div class="card-detail">
-              <h3>🌟 The ${escapeHtml(LOTM_NAME)} Revelation</h3>
-              <p>The ${escapeHtml(LOTM_NAME)} has blessed your reading! Every card drawn carries the essence of infinite possibility and divine chaos.
-              You stand at the precipice of madness and enlightenment. Embrace the paradox where revelation is wrapped in jest — the ${escapeHtml(LOTM_NAME)} rewards those
-              who let go and step forward with abandon. In ritual and revel, there is a truth only they can whisper.</p>
+              <h3>🔮 A Note from the Abyss</h3>
+              <p>In this reading, The Fool transforms the cards into cues in a larger, conspiratorial tapestry. Expect hidden agendas, strange orders, and sudden revelations — the kind that rearrange how you interpret causality. The Fool laughs where reason falters; what appears as chaos may be a deliberate cipher. Treat coincidences as clues and watch for motifs repeating across your life like a secret rite.</p>
             </div>
-            <div style="margin-top:12px; font-size:13px; color:var(--muted);">
-              <strong>LOTM Motto:</strong> ${escapeHtml(LOTM_LONG)}
-            </div>
-            <div style="margin-top:16px; text-align:center;">
-              <button id="dismissBless" class="btn" style="padding:10px 18px; font-size:14px;">Dismiss Blessing</button>
+            <div class="card-detail">
+              <h3>🕯️ How to Read This Blessing</h3>
+              <p>Take the Fool's presence as a nudge to re-examine assumptions, question friendly face-value "truths", and consider the role of narrative in your decisions. The Fool does not answer so much as point: look where the finger refuses to point, and you'll find the door.</p>
             </div>
           `;
-
-          // Dismiss button cleans up animation/confetti
-          setTimeout(() => {
-            const btn = document.getElementById('dismissBless');
-            if(btn){
-              btn.addEventListener('click', () => {
-                clearConfetti();
-                document.body.classList.remove('blessed');
-                interpretation.classList.remove('show');
-                setTimeout(() => interpretation.classList.add('show'), 20); // re-show in normal state
-              });
-            }
-          }, 60);
-
         } else {
+          // standard interpretation — include upright/reversed details
           let html = '<h2>✨ Your Reading</h2>';
-          drawnCards.forEach(card => {
+          drawn.forEach(card => {
+            const revNote = card.reversed ? `<p style="color:var(--muted); font-size:13px; margin-top:6px;"><em>${card.reversed}</em></p>` : '';
             html += `
               <div class="card-detail">
                 <h3>${card.emoji} ${card.position}: ${card.name}</h3>
                 <p>${card.detail}</p>
+                ${card.reversed ? `<p style="margin-top:8px;color:var(--muted)"><strong>Reversed meaning:</strong> ${card.reversed}</p>` : ''}
               </div>
             `;
           });
           interpretation.innerHTML = html;
         }
         interpretation.classList.add('show');
-      }, numCards * 300 + 800);
+        // ensure focus is available for keyboard users
+        interpretation.setAttribute('tabindex','-1');
+        interpretation.focus({preventScroll:true});
+      }, numCards * 260 + 420);
     });
 
-    // Simple confetti generator
-    const confettiContainer = document.getElementById('confetti');
-    let confettiTimeouts = [];
-    function createConfetti(amount = 24){
-      clearConfetti(); // ensure clean slate
-      const colors = ['#ef4444','#d946ef','#f59e0b','#10b981','#60a5fa','#fde68a'];
-      for(let i=0;i<amount;i++){
-        const el = document.createElement('span');
-        const size = (8 + Math.random()*16) | 0;
-        el.style.width = size + 'px';
-        el.style.height = Math.round(size*1.4) + 'px';
-        el.style.left = Math.random()*100 + '%';
-        el.style.background = colors[Math.floor(Math.random()*colors.length)];
-        el.style.top = (Math.random()*-10) + 'vh';
-        const duration = 2000 + Math.random()*2500;
-        el.style.animationDuration = duration + 'ms';
-        el.style.opacity = (0.7 + Math.random()*0.3);
-        confettiContainer.appendChild(el);
-        // remove after animation
-        const t = setTimeout(() => {
-          el.remove();
-        }, duration + 500);
-        confettiTimeouts.push(t);
-      }
-      // auto clear body class after a short while
-      const t2 = setTimeout(()=> {
-        document.body.classList.remove('blessed');
-      }, 4200);
-      confettiTimeouts.push(t2);
-    }
-    function clearConfetti(){
-      confettiTimeouts.forEach(t => clearTimeout(t));
-      confettiTimeouts = [];
-      confettiContainer.innerHTML = '';
+    // show detail for a clicked card (single-card modal-style inside interpretation)
+    function showCardDetail(card){
+      const revText = card.reversed ? `<p style="margin-top:8px;color:var(--muted)"><strong>Reversed:</strong> ${card.reversed}</p>` : '';
+      interpretation.innerHTML = `
+        <h2>🔎 ${card.name}</h2>
+        <div class="card-detail">
+          <h3>${card.emoji} ${card.position || ''}</h3>
+          <p>${card.detail}</p>
+          ${revText}
+        </div>
+      `;
+      interpretation.classList.add('show');
+      interpretation.scrollIntoView({behavior:'smooth', block:'center'});
     }
 
-    // Helper to escape user-provided LOTM text (avoid raw HTML insertion)
-    function escapeHtml(str){
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
+    // initial small hint for users on first load
+    setTimeout(() => {
+      const hint = document.createElement('div');
+      hint.className = 'control';
+      hint.style.margin = '10px auto';
+      hint.style.textAlign = 'center';
+      hint.textContent = 'Tip: Click a card to view an expanded interpretation. Toggle "Include Minor Arcana" for a larger pool.';
+      document.querySelector('.container').insertBefore(hint, document.querySelector('.container').children[4]);
+      setTimeout(()=>hint.remove(), 10000);
+    }, 700);
+
+    // ensure canvas hidden initially
+    stopFoolCanvas();
   </script>
 </body>
 </html>
