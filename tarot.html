@@ -19,9 +19,11 @@
       --accent: #10b981;
       --ring: 0 0 0 2px rgba(217,70,239,.35);
       --shadow: 0 10px 40px rgba(217,70,239,.25);
-      --glow: 0 0 20px rgba(217,70,239,.4);
+      --glow: 0 0 30px rgba(217,70,239,.45);
       --glass: rgba(139,92,246,.08);
       --glass-brd: rgba(139,92,246,.25);
+      --fool-glow-1: rgba(239,68,68,.25);
+      --fool-glow-2: rgba(217,70,239,.35);
     }
     [data-theme="light"]{
       --bg: #faf8fc;
@@ -119,6 +121,7 @@
       border-radius:14px; display:flex; flex-direction:column; align-items:center;
       justify-content:center; padding:18px; border:2px solid var(--glass-brd);
       box-shadow:var(--shadow); overflow:hidden;
+      transition:box-shadow .3s, transform .3s;
     }
     .card-back{
       background:linear-gradient(135deg, rgba(139,92,246,.18), rgba(245,158,11,.12));
@@ -139,7 +142,6 @@
     }
     .card-meaning{font-size:12px; color:var(--muted); line-height:1.4; min-height:40px}
 
-    /* subtle reveal shimmer */
     .card-front::after{
       content:''; position:absolute; inset:0; pointer-events:none;
       background:linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.03));
@@ -166,25 +168,26 @@
     }
     .card-detail p{color:var(--text); line-height:1.7; font-size:14px}
 
-    /* Fool mode visuals */
-    .fool-mode-body{
-      --fool-accent: linear-gradient(90deg,#711cf6,#ef4444 50%, #f59e0b);
-      animation:backgroundPulse 3.5s infinite;
+    /* Fool visuals */
+    .fool-glow {
+      box-shadow: 0 0 12px 2px var(--fool-glow-2), 0 0 30px 6px var(--fool-glow-1) inset;
+      border-color: rgba(255,255,255,.12);
+      animation: foolPulse 2.6s infinite;
     }
-    @keyframes backgroundPulse{
-      0%{filter:hue-rotate(0deg) saturate(1)}
-      50%{filter:hue-rotate(20deg) saturate(1.05) brightness(1.02)}
-      100%{filter:hue-rotate(0deg) saturate(1)}
+    @keyframes foolPulse{
+      0%{transform: translateY(0) scale(1)}
+      50%{transform: translateY(-4px) scale(1.02)}
+      100%{transform: translateY(0) scale(1)}
     }
+
     .fool-banner{
       text-align:center; font-family:'Cinzel', serif; font-weight:900; margin:16px 0;
       color:transparent; -webkit-background-clip:text; background-clip:text;
-      background:var(--fool-accent); font-size:28px;
+      background:linear-gradient(90deg,#ef4444,#d946ef,#f59e0b); font-size:30px;
       animation:shimmer 2.5s linear infinite;
     }
     @keyframes shimmer{0%{filter:hue-rotate(0)}100%{filter:hue-rotate(360deg)}}
 
-    /* confetti (simple) */
     .confetti-piece{
       width:8px;height:12px;border-radius:2px;position:fixed;top:-20px;
       opacity:0.95; transform:translateY(0);
@@ -195,7 +198,6 @@
       to{transform:translateY(120vh) rotate(720deg); opacity:0.95}
     }
 
-    /* reversed styling */
     .reversed .card-inner{transform:rotateZ(180deg)}
     .reversed .card-front{transform:rotateY(180deg) rotate(180deg)}
     .reversed .card-emoji{transform:rotate(180deg)}
@@ -212,7 +214,7 @@
 
     <div class="header">
       <h1>🔮 Arcane Divination</h1>
-      <p>Draw from the Major and Minor Arcana. Enable reversals to unlock shadow meanings. The Fool may sometimes bless you — expect strange effects.</p>
+      <p>Draw from the Major and Minor Arcana. Enable reversals to unlock shadow meanings.</p>
     </div>
 
     <div class="controls" role="region" aria-label="reading controls">
@@ -256,7 +258,7 @@
   </div>
 
   <script>
-    // --- Major Arcana with improved descriptions ---
+    // --- Major Arcana (kept concise) ---
     const majorArcana = [
       {slug:'fool', name:'The Fool', emoji:'🃏', detailed: "Beginnings, leaps of faith, innocence in the face of the unknown. The Fool asks you to step with curiosity rather than fear — a threshold between what was and what may be."},
       {slug:'magician', name:'The Magician', emoji:'🎩', detailed: "Manifestation through focused will. You possess the tools to create change; intention and action align to transform ideas into reality."},
@@ -282,36 +284,72 @@
       {slug:'world', name:'The World', emoji:'🌍', detailed: "Completion, synthesis, and travel into new cycles. Celebrate endings as accomplishments; prepare for broader horizons."}
     ];
 
-    // --- Minor arcana generation (ranks + suits with generic meanings) ---
-    const suits = [
-      {key:'Wands', element:'Fire', base:'action, ambition, and creative energy'},
-      {key:'Cups', element:'Water', base:'emotion, relationships, and intuition'},
-      {key:'Swords', element:'Air', base:'thought, conflict, and clarity'},
-      {key:'Pentacles', element:'Earth', base:'material matters, work, and body'}
+    // --- Expanded Minor Arcana: 56 bespoke descriptions ---
+    const minorArcana = [
+      // WANDS (Fire) — Action, inspiration
+      {slug:'ace-wands', name:'Ace of Wands', suit:'Wands', rank:'Ace', element:'Fire', emoji:'🔥', detailed: "A bright spark of creative impulse or the first push toward a new endeavor. The Ace of Wands heralds potential — a call to act with courage and curiosity. If you answer, momentum will follow."},
+      {slug:'two-wands', name:'Two of Wands', suit:'Wands', rank:'Two', element:'Fire', emoji:'🔥', detailed: "Vision and early planning: you've seen possibilities and now prepare to choose a path. This card asks you to weigh expansion against risk and to make a decisive survey before you stride."},
+      {slug:'three-wands', name:'Three of Wands', suit:'Wands', rank:'Three', element:'Fire', emoji:'🔥', detailed: "Initial efforts bear the shape of future success; your plans extend outward. Expect results from past initiative and consider partnerships or trade that magnify your reach."},
+      {slug:'four-wands', name:'Four of Wands', suit:'Wands', rank:'Four', element:'Fire', emoji:'🔥', detailed: "A moment of celebration, community, and restful achievement. The Four of Wands marks a milestone where effort meets joy — take time to enjoy the harvest before starting again."},
+      {slug:'five-wands', name:'Five of Wands', suit:'Wands', rank:'Five', element:'Fire', emoji:'🔥', detailed: "Conflict, competition, and energetic friction. Rather than ruin, these clashes refine ideas; learn the rules of engagement and pick the battles that teach you strength."},
+      {slug:'six-wands', name:'Six of Wands', suit:'Wands', rank:'Six', element:'Fire', emoji:'🔥', detailed: "Public recognition, a victory lap after struggle. The Six of Wands suggests you will be seen for your achievements — accept praise and use it responsibly."},
+      {slug:'seven-wands', name:'Seven of Wands', suit:'Wands', rank:'Seven', element:'Fire', emoji:'🔥', detailed: "Defend your position with resolve. Others may challenge your territory, but courage and a firm stance will protect what you've built."},
+      {slug:'eight-wands', name:'Eight of Wands', suit:'Wands', rank:'Eight', element:'Fire', emoji:'🔥', detailed: "Swift movement and news in motion. Projects accelerate; communications arrive — be ready to act quickly and keep momentum steady."},
+      {slug:'nine-wands', name:'Nine of Wands', suit:'Wands', rank:'Nine', element:'Fire', emoji:'🔥', detailed: "Perseverance after many trials. You may be weary, yet this card shows you standing guard: resilience now will secure long-awaited gains."},
+      {slug:'ten-wands', name:'Ten of Wands', suit:'Wands', rank:'Ten', element:'Fire', emoji:'🔥', detailed: "Burden and overextension: success carries weight. Delegate or shed what exhausts you — the goal isn't suffering, it's mastery with sustainable energy."},
+      {slug:'page-wands', name:'Page of Wands', suit:'Wands', rank:'Page', element:'Fire', emoji:'🔥', detailed: "A messenger of inspiration — youthful zeal, prototypes, and bright curiosity. Follow the Page's playful prompt and test small experiments."},
+      {slug:'knight-wands', name:'Knight of Wands', suit:'Wands', rank:'Knight', element:'Fire', emoji:'🔥', detailed: "Bold pursuit and adventurous drive. The Knight charges ahead; temper daring with a plan to avoid reckless pitfalls."},
+      {slug:'queen-wands', name:'Queen of Wands', suit:'Wands', rank:'Queen', element:'Fire', emoji:'🔥', detailed: "Charismatic leadership and creative warmth. The Queen channels ambition into generosity, supporting others while pursuing her craft."},
+      {slug:'king-wands', name:'King of Wands', suit:'Wands', rank:'King', element:'Fire', emoji:'🔥', detailed: "Commanding vision and entrepreneurial authority. The King masters risk with clarity and inspires teams toward high aims."},
+
+      // CUPS (Water) — Emotions, relationships
+      {slug:'ace-cups', name:'Ace of Cups', suit:'Cups', rank:'Ace', element:'Water', emoji:'🥛', detailed: "A fountain of feeling: new love, healing, or a fresh emotional beginning. Open your heart and allow tenderness to flow without fear of the unknown."},
+      {slug:'two-cups', name:'Two of Cups', suit:'Cups', rank:'Two', element:'Water', emoji:'🥛', detailed: "Mutual attraction and the promise of partnership. This card celebrates reciprocal feelings, healing reconciliations, or balanced collaborations."},
+      {slug:'three-cups', name:'Three of Cups', suit:'Cups', rank:'Three', element:'Water', emoji:'🥛', detailed: "Community, celebration, and emotional support. Gather with those who uplift you; collective joy strengthens each member of the circle."},
+      {slug:'four-cups', name:'Four of Cups', suit:'Cups', rank:'Four', element:'Water', emoji:'🥛', detailed: "A malaise of the heart — offers go unnoticed when you're inward. Sit with your discontent; boredom sometimes signals unmet deeper needs."},
+      {slug:'five-cups', name:'Five of Cups', suit:'Cups', rank:'Five', element:'Water', emoji:'🥛', detailed: "Grief and focusing on loss. Mourning matters; yet notice what remains — healing begins by honoring sadness and discovering small consolations."},
+      {slug:'six-cups', name:'Six of Cups', suit:'Cups', rank:'Six', element:'Water', emoji:'🥛', detailed: "Nostalgia, kindness, and childhood echoes. A gentle reminder to reconnect with simple pleasures and acts of forgiveness."},
+      {slug:'seven-cups', name:'Seven of Cups', suit:'Cups', rank:'Seven', element:'Water', emoji:'🥛', detailed: "Many desires, fantasized choices. Discern between illusion and substance — clarity requires focused longing rather than diffuse wishful thinking."},
+      {slug:'eight-cups', name:'Eight of Cups', suit:'Cups', rank:'Eight', element:'Water', emoji:'🥛', detailed: "Walking away from what once sustained you. Courageous withdrawal can open the path toward truer fulfillment."},
+      {slug:'nine-cups', name:'Nine of Cups', suit:'Cups', rank:'Nine', element:'Water', emoji:'🥛', detailed: "Satisfaction and heartfelt enjoyment. Wishes fulfilled may be simple pleasures — savor them and share your abundance."},
+      {slug:'ten-cups', name:'Ten of Cups', suit:'Cups', rank:'Ten', element:'Water', emoji:'🥛', detailed: "Emotional harmony and family blessings. The Ten of Cups is domestic peace realized; cherish the bonds that form your sanctuary."},
+      {slug:'page-cups', name:'Page of Cups', suit:'Cups', rank:'Page', element:'Water', emoji:'🥛', detailed: "A tender message, dream, or artistic impulse. Listen to the Page: curiosity in feeling can awaken creative gifts."},
+      {slug:'knight-cups', name:'Knight of Cups', suit:'Cups', rank:'Knight', element:'Water', emoji:'🥛', detailed: "A romantic or idealistic quest. The Knight follows his heart; be mindful of sentimentality and seek balance with grounded action."},
+      {slug:'queen-cups', name:'Queen of Cups', suit:'Cups', rank:'Queen', element:'Water', emoji:'🥛', detailed: "Emotional mastery and deep compassion. The Queen holds feeling as a source of wisdom and supports others without losing herself."},
+      {slug:'king-cups', name:'King of Cups', suit:'Cups', rank:'King', element:'Water', emoji:'🥛', detailed: "Mature empathy and steady emotional governance. Lead with calm counsel, stabilizing turbulent waters for those in need."},
+
+      // SWORDS (Air) — Thought, conflict
+      {slug:'ace-swords', name:'Ace of Swords', suit:'Swords', rank:'Ace', element:'Air', emoji:'⚔️', detailed: "A flash of intellectual clarity or decisive truth. Cut through confusion with honest words and a sharp inner logic."},
+      {slug:'two-swords', name:'Two of Swords', suit:'Swords', rank:'Two', element:'Air', emoji:'⚔️', detailed: "Stalemate and difficult choices. You may be avoiding a decision; bring facts into the light and balance head with heart."},
+      {slug:'three-swords', name:'Three of Swords', suit:'Swords', rank:'Three', element:'Air', emoji:'⚔️', detailed: "Pain, heartbreak, and piercing truth. Sorrow stings now, but clarity follows honesty — let grief teach and refine your limits."},
+      {slug:'four-swords', name:'Four of Swords', suit:'Swords', rank:'Four', element:'Air', emoji:'⚔️', detailed: "Rest and recuperation for an overworked mind. Withdraw to heal; the calm prepares you for clearer strategy ahead."},
+      {slug:'five-swords', name:'Five of Swords', suit:'Swords', rank:'Five', element:'Air', emoji:'⚔️', detailed: "Pyrrhic victories and ethical cost. Winning at the expense of trust harms future ground — consider whether the gain is worth the price."},
+      {slug:'six-swords', name:'Six of Swords', suit:'Swords', rank:'Six', element:'Air', emoji:'⚔️', detailed: "Transitioning away from turbulence toward calmer thinking. The Six signals necessary travel—literal or mental—toward repair."},
+      {slug:'seven-swords', name:'Seven of Swords', suit:'Swords', rank:'Seven', element:'Air', emoji:'⚔️', detailed: "Cunning, stealth, or selective honesty. Beware of deceit — yours or others' — and reclaim integrity where possible."},
+      {slug:'eight-swords', name:'Eight of Swords', suit:'Swords', rank:'Eight', element:'Air', emoji:'⚔️', detailed: "Feeling trapped by thought patterns. The prison is mostly mental; small acts of reframing unlock wide freedom."},
+      {slug:'nine-swords', name:'Nine of Swords', suit:'Swords', rank:'Nine', element:'Air', emoji:'⚔️', detailed: "Anxiety and sleepless worry dominating the mind. Name the fears; many are shadowed exaggerations that lose power when precisely described."},
+      {slug:'ten-swords', name:'Ten of Swords', suit:'Swords', rank:'Ten', element:'Air', emoji:'⚔️', detailed: "A final rupture in thought or situation — an ending that hurts but clears the slate for new insight. After the nadir, recovery begins."},
+      {slug:'page-swords', name:'Page of Swords', suit:'Swords', rank:'Page', element:'Air', emoji:'⚔️', detailed: "Curiosity and alertness; a student of ideas. The Page brings questions and the need to test assumptions diligently."},
+      {slug:'knight-swords', name:'Knight of Swords', suit:'Swords', rank:'Knight', element:'Air', emoji:'⚔️', detailed: "Swift intellect and direct action. The Knight charges ideas forward — be mindful to temper speed with care for consequences."},
+      {slug:'queen-swords', name:'Queen of Swords', suit:'Swords', rank:'Queen', element:'Air', emoji:'⚔️', detailed: "Hard-earned clarity and fair discernment. The Queen cuts through sentiment to deliver precise counsel and necessary boundaries."},
+      {slug:'king-swords', name:'King of Swords', suit:'Swords', rank:'King', element:'Air', emoji:'⚔️', detailed: "Judicious thought, law, and strategy. The King applies reason with ethics — a ruler of clear principles and decisive judgment."},
+
+      // PENTACLES (Earth) — Material, work, body
+      {slug:'ace-pentacles', name:'Ace of Pentacles', suit:'Pentacles', rank:'Ace', element:'Earth', emoji:'🏵️', detailed: "A seed of material opportunity: a job, offering, or grounded start. Nurture it practically and it will grow into lasting security."},
+      {slug:'two-pentacles', name:'Two of Pentacles', suit:'Pentacles', rank:'Two', element:'Earth', emoji:'🏵️', detailed: "Balance and juggling of responsibilities. Skillful management keeps the flow steady — remain flexible when currents shift."},
+      {slug:'three-pentacles', name:'Three of Pentacles', suit:'Pentacles', rank:'Three', element:'Earth', emoji:'🏵️', detailed: "Craftsmanship and collaborative building. Recognition comes from skillful contribution and shared standards of excellence."},
+      {slug:'four-pentacles', name:'Four of Pentacles', suit:'Pentacles', rank:'Four', element:'Earth', emoji:'🏵️', detailed: "Holding on tightly to resources. Conservatism ensures survival but beware of hoarding that stifles growth."},
+      {slug:'five-pentacles', name:'Five of Pentacles', suit:'Pentacles', rank:'Five', element:'Earth', emoji:'🏵️', detailed: "Hardship, scarcity, or feeling left out in the cold. Seek aid and community — scarcity is eased by reaching for support."},
+      {slug:'six-pentacles', name:'Six of Pentacles', suit:'Pentacles', rank:'Six', element:'Earth', emoji:'🏵️', detailed: "Generosity and reciprocal giving. Share when you can and accept help when you need it — fairness strengthens networks."},
+      {slug:'seven-pentacles', name:'Seven of Pentacles', suit:'Pentacles', rank:'Seven', element:'Earth', emoji:'🏵️', detailed: "Assessment of invested effort. Pause to measure results and decide whether to continue or reallocate your energies."},
+      {slug:'eight-pentacles', name:'Eight of Pentacles', suit:'Pentacles', rank:'Eight', element:'Earth', emoji:'🏵️', detailed: "Apprenticeship and diligent practice. Mastery comes through repetition; honor the process rather than rush to prestige."},
+      {slug:'nine-pentacles', name:'Nine of Pentacles', suit:'Pentacles', rank:'Nine', element:'Earth', emoji:'🏵️', detailed: "Self-sufficiency and refined comfort. The fruits of disciplined labor allow graceful independence and quiet luxury."},
+      {slug:'ten-pentacles', name:'Ten of Pentacles', suit:'Pentacles', rank:'Ten', element:'Earth', emoji:'🏵️', detailed: "Long-term legacy, family wealth, and stable foundations. Consider how present actions will shape an inheritance of value."},
+      {slug:'page-pentacles', name:'Page of Pentacles', suit:'Pentacles', rank:'Page', element:'Earth', emoji:'🏵️', detailed: "A studious, grounded offer or beginning. The Page brings an invitation to learn practical skills and steward resources well."},
+      {slug:'knight-pentacles', name:'Knight of Pentacles', suit:'Pentacles', rank:'Knight', element:'Earth', emoji:'🏵️', detailed: "Steady effort and reliable execution. Slow-moving but dependable — the Knight methodically secures results over time."},
+      {slug:'queen-pentacles', name:'Queen of Pentacles', suit:'Pentacles', rank:'Queen', element:'Earth', emoji:'🏵️', detailed: "Nurturing prosperity and practical warmth. The Queen blends caregiving with sensible management of household and resources."},
+      {slug:'king-pentacles', name:'King of Pentacles', suit:'Pentacles', rank:'King', element:'Earth', emoji:'🏵️', detailed: "Economic authority and prudent leadership. The King offers stable stewardship and wise investment of tangible assets."}
     ];
-    const ranks = ['Ace','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Page','Knight','Queen','King'];
-
-    function makeMinorDeck(){
-      const deck = [];
-      suits.forEach(s => {
-        ranks.forEach((r,i) => {
-          const name = `${r} of ${s.key}`;
-          deck.push({
-            slug: `${r.toLowerCase()}-${s.key.toLowerCase()}`,
-            name,
-            suit: s.key,
-            rank: r,
-            element: s.element,
-            emoji: s.key === 'Cups' ? '🥛' : s.key === 'Wands' ? '🔥' : s.key === 'Swords' ? '⚔️' : '🏵️',
-            // brief template; final wording produced by minorMeaning()
-            detailed: ''
-          });
-        });
-      });
-      return deck;
-    }
-
-    const minorDeck = makeMinorDeck();
 
     // Utility: shuffle an array copy
     function shuffle(arr){
@@ -321,35 +359,6 @@
         [copy[i], copy[j]] = [copy[j], copy[i]];
       }
       return copy;
-    }
-
-    function minorMeaning(card, reversed){
-      // Generic meanings depending on rank + suit theme
-      const baseSuit = suits.find(s => s.key === card.suit);
-      const rank = card.rank;
-      let meaning = '';
-
-      // simple rank-based tonal mapping (concise)
-      if(rank === 'Ace') meaning = `A new beginning in ${baseSuit.base}. Fresh potential and the seed of something meaningful.`;
-      else if(rank === 'Two') meaning = `Partnership, alignment, or a choice related to ${baseSuit.base}.`;
-      else if(rank === 'Three') meaning = `Collaboration and growth in matters of ${baseSuit.base}.`;
-      else if(rank === 'Four') meaning = `Stability, foundation, or a pause to consolidate gains in ${baseSuit.base}.`;
-      else if(rank === 'Five') meaning = `Conflict or challenge testing your resources within ${baseSuit.base}.`;
-      else if(rank === 'Six') meaning = `Support, small victories, or reconciliation concerning ${baseSuit.base}.`;
-      else if(rank === 'Seven') meaning = `Defending a position or reassessing choices tied to ${baseSuit.base}.`;
-      else if(rank === 'Eight') meaning = `Rapid movement, skill at work, or aptitude moving ${baseSuit.base} forward.`;
-      else if(rank === 'Nine') meaning = `Fruition approaching — near completion or a watchful moment for ${baseSuit.base}.`;
-      else if(rank === 'Ten') meaning = `Culmination and the burden or reward that comes with completion in ${baseSuit.base}.`;
-      else if(rank === 'Page') meaning = `A message, spark of curiosity or a young energy regarding ${baseSuit.base}.`;
-      else if(rank === 'Knight') meaning = `Focused pursuit or journey related to ${baseSuit.base}. Movement with intent.`;
-      else if(rank === 'Queen') meaning = `Nurturing mastery and receptivity in ${baseSuit.base}; wise steward of the domain.`;
-      else if(rank === 'King') meaning = `Commanding authority and practical leadership in matters of ${baseSuit.base}.`;
-
-      if(reversed){
-        // Simple reversed modifiers
-        return `${meaning} (Reversed: block, delay, or shadow expression of this card — ask what resists you.)`;
-      }
-      return meaning;
     }
 
     // UI state
@@ -386,7 +395,6 @@
 
       // Every 3-5 readings, possible fool blessing
       const shouldActivateFool = readingCount % (3 + Math.floor(Math.random()*3)) === 0;
-      // Slight chance only if using Major-focused readings but we keep allowed for fun
       foolMode = shouldActivateFool;
 
       const includeMinors = document.getElementById('includeMinors').checked;
@@ -400,58 +408,53 @@
         numCards = 3; positions = ['Past','Present','Future'];
       } else if(currentSpread === 'celtic'){
         numCards = 5; positions = ['Present','Challenge','Past','Future','Outcome'];
-      } else { // full reading
+      } else {
         numCards = 7; positions = ['Anchor','Obstacle','Heart','Mind','Near Future','Advice','Outcome'];
       }
 
-      // build deck pool
+      // Build normal pool (majors + optionally minors)
       let pool = majorArcana.map(m => ({...m, arcana:'major'}));
-      if(includeMinors || currentSpread === 'full') {
-        // include minor arcana in the pool for selection
-        const minors = minorDeck.map(m => ({...m, arcana:'minor'}));
-        pool = pool.concat(minors);
+      if(includeMinors || currentSpread === 'full'){
+        pool = pool.concat(minorArcana.map(m => ({...m, arcana:'minor'})));
       }
 
-      // if foolMode: thematic effect - we still draw but alter presentation
-      const selection = [];
-      const shuffled = shuffle(pool);
-      for(let i=0,j=0; i<numCards && j<shuffled.length; j++){
-        const candidate = {...shuffled[j]};
+      let selection = [];
 
-        // When in foolMode, do a special treatment:
-        // - Either replace with The Fool (majorArcana[0]) OR keep but tag with foolBlessed true for visual
-        if(foolMode){
-          // 60% chance the card becomes The Fool; otherwise it's marked as touched by the Fool
-          if(Math.random() < 0.6){
-            const fool = {...majorArcana[0], arcana:'major', foolBless:true};
-            // allow reversal optionally
-            fool.reversed = allowReversals ? (Math.random() < 0.5) : false;
-            fool.position = positions[i] || `Position ${i+1}`;
-            selection.push(fool);
-            i++;
-            continue;
-          } else {
-            candidate.foolTouched = true;
+      if(foolMode){
+        // When blessed by the Fool: every drawn card is The Fool.
+        // Create numCards copies of The Fool with a flag to render glow.
+        const foolCard = {...majorArcana.find(m => m.slug === 'fool'), arcana:'major', foolBless:true};
+        for(let i=0;i<numCards;i++){
+          const c = {...foolCard};
+          c.position = positions[i] || `Position ${i+1}`;
+          // optionally reversed randomly if allowed (but visually The Fool is same)
+          c.reversed = allowReversals ? (Math.random() < 0.3) : false;
+          selection.push(c);
+        }
+      } else {
+        // Normal draw: shuffle pool and take top numCards (respecting no duplicates)
+        const shuffled = shuffle(pool);
+        let i=0,j=0;
+        while(i<numCards && j<shuffled.length){
+          const cand = {...shuffled[j]};
+          cand.reversed = allowReversals ? (Math.random() < 0.45) : false;
+          cand.position = positions[i] || `Position ${i+1}`;
+
+          // for minors ensure detailed is set from minorArcana list
+          if(cand.arcana === 'minor'){
+            // find the matching entry in minorArcana array to get detailed text
+            const found = minorArcana.find(m=>m.slug === cand.slug || m.name === cand.name);
+            if(found) cand.detailed = found.detailed;
+            else cand.detailed = `${cand.rank} of ${cand.suit} — ${cand.element} energy.`;
           }
+
+          selection.push(cand);
+          i++; j++;
         }
-
-        // otherwise normal draw
-        candidate.reversed = allowReversals ? (Math.random() < 0.45) : false;
-        candidate.position = positions[i] || `Position ${i+1}`;
-
-        // for minors, produce detailed description on the fly
-        if(candidate.arcana === 'minor'){
-          candidate.detailed = minorMeaning(candidate, candidate.reversed);
-          candidate.emoji = candidate.emoji || '🔹';
-        }
-
-        selection.push(candidate);
-        i++;
       }
 
       renderCards(selection, foolMode);
-      // show interpretation after animations
-      setTimeout(() => showInterpretation(selection, foolMode), numCards * 320 + 600);
+      setTimeout(()=> showInterpretation(selection, foolMode), numCards * 320 + 700);
     });
 
     // Render selected cards to DOM with flip animation and reversal visual
@@ -462,7 +465,7 @@
       // apply global fool visuals
       if(isFool){
         document.getElementById('pageBody').classList.add('fool-mode-body');
-        triggerConfetti(18);
+        triggerConfetti(26);
       } else {
         document.getElementById('pageBody').classList.remove('fool-mode-body');
       }
@@ -473,15 +476,17 @@
         if(card.reversed) cardEl.classList.add('reversed');
 
         const isMajor = card.arcana === 'major';
-        const name = card.name || card.title || (isMajor ? card.name : card.name);
+        const name = card.name || (isMajor ? card.name : card.name);
+        const emoji = card.emoji || '🔮';
+        const meaningSnippet = (isMajor ? (card.detailed ? card.detailed.split('.')[0] : '') : (card.detailed || ''));
 
-        const emoji = card.emoji || (isMajor ? '🔮' : '🔹');
-        const meaningSnippet = isMajor ? (card.detailed ? card.detailed.split('.')[0] : '') : (card.detailed || '');
+        // Add fool glow class to the front when in foolMode (all cards become The Fool)
+        const frontClass = card.foolBless ? 'fool-glow' : '';
 
         cardEl.innerHTML = `
           <div class="card-inner">
             <div class="card-face card-back" aria-hidden="true">🔮</div>
-            <div class="card-face card-front ${card.foolBless ? 'fool-mode' : ''}">
+            <div class="card-face card-front ${frontClass}">
               <div class="card-emoji">${emoji}</div>
               <div class="card-name">${name}</div>
               <div class="card-meaning">${meaningSnippet}</div>
@@ -513,47 +518,51 @@
       interpretation.classList.remove('show');
 
       if(isFool){
-        // Fool blessing - updated to reference "Lord of the Mysteries" thematically without quoting
-        const banner = `<div class="fool-banner">🃏 PRAISE THE FOOL — THE LIGHT IN CHAOS 🃏</div>`;
-        const intro = `<p style="text-align:center; color:var(--muted); font-style:italic; margin-bottom:12px;">
-          You have been touched by The Fool. As in modern mythic tales like "Lord of the Mysteries", this is more than whimsy:
-          the Fool signifies rupture, revelation, and the strange grace that reorders destiny. Expect paradox, uncanny luck, and riddles that lead to wisdom.</p>`;
+        // Grand, long "Praise The Fool" text — this replaces normal reading entirely.
+        const header = `<div class="fool-banner">🃏 PRAISE THE FOOL — THE GREAT JESTER OF THE THRESHOLD 🃏</div>`;
+        const longPraise = `
+          <p style="text-align:left; color:var(--muted); margin-bottom:12px; line-height:1.7;">
+            All cards are The Fool. The cosmos smiles in riddles; the pattern of meaning melts into a single bright prank.
+            This blessing is not petty fortune but a profound overturning. Rules loosen. Certainties become suggestion. The Fool
+            offers both ruin and revelation: what seemed fixed is now malleable. Where there was structure there may be laughter;
+            where there was fear there may be an inexplicable courage. The Fool asks you to accept paradox, for in that acceptance
+            you will find new sight. Do not seek to place this blessing into tidy language — it is a portal, a momentary collapse
+            of the usual scaffolding so that something stranger and truer can be glimpsed.
+          </p>
 
-        let details = '';
-        // Render each card but with Fool interpretation tone
-        selection.forEach(c => {
-          // If the card is explicitly the Fool, give a special, vibrant message
-          if(c.slug === 'fool' || c.foolBless){
-            details += `
-              <div class="card-detail">
-                <h3>🃏 ${c.position}: ${c.name}</h3>
-                <p>The Fool stands at the hinge of your story. Here the usual rules bend: certainties unravel and secrets are given as jokes.
-                The path forward may appear absurd, but that absurdity is a gateway. Hold contradiction gently — meaning will unfold in surprising forms.</p>
-              </div>
-            `;
-          } else {
-            // other cards touched by fool
-            const base = c.arcana === 'major' ? (c.detailed || '') : (c.detailed || minorMeaning(c, c.reversed));
-            details += `
-              <div class="card-detail">
-                <h3>${c.emoji || ''} ${c.position}: ${c.name}${c.reversed ? ' (Reversed)' : ''}</h3>
-                <p>${c.foolTouched ? ('Marked by The Fool — ' + base) : base}</p>
-              </div>
-            `;
-          }
-        });
+          <p style="text-align:left; color:var(--muted); margin-bottom:12px; line-height:1.7;">
+            Practically: expect improbable coincidence, a reversal of expectations, and an invitation to act from impulse rather than
+            calculation. Keep a wry heart. The Fool's laughter loosens knots: if you have been stuck, a ludic twist may offer release.
+            If you have been certain, be willing to unlearn. If you cling, prepare for delightfully disruptive change.
+          </p>
 
-        interpretation.innerHTML = banner + intro + details +
-          `<p style="color:var(--muted); font-size:13px; margin-top:8px;">Note: The Fool's blessing often introduces playful distortion — double-check choices, and expect the unexpected.</p>`;
+          <p style="text-align:left; color:var(--muted); margin-bottom:12px; line-height:1.7;">
+            Spiritually: this is an initiation into a playful kind of wisdom. The Fool challenges hierarchy and reveals hidden grace
+            in folly. Reverence for the Fool is not disorder; it is recognition that the world is stranger than our maps and that
+            humility and humor can be gateways to insight. Bow, laugh, and step forward with open hands.
+          </p>
 
-        // add a small soundless theatrical confetti and extended visual (confetti already triggered)
+          <div class="card-detail">
+            <h3>🃏 The Fool's Mandate</h3>
+            <p>The Fool invites you to take one deliberate, absurd step: something small but sincere. It may look foolish to others, and
+            that is the point. In the wake of that step you may find a new alignment: an answer, a door, or simply a freedom you had
+            forgotten. Honor the madness and the mercy together.</p>
+          </div>
+
+          <p style="text-align:center; color:var(--muted); font-size:13px; margin-top:8px;">
+            This reading is dominated by the archetype of the Fool — let the ordinary meanings sleep and attend to the humor, the
+            miracle, and the rupture. Praise the Fool.
+          </p>
+        `;
+
+        interpretation.innerHTML = header + longPraise;
       } else {
         // Normal reading: include each card's expanded description + reversal nuance
         let html = '<h2>✨ Your Reading</h2>';
         selection.forEach(card => {
           const title = `${card.emoji || ''} ${card.position}: ${card.name}${card.reversed ? ' (Reversed)' : ''}`;
-          const detail = card.arcana === 'major' ? (card.detailed || '') : (card.detailed || minorMeaning(card, card.reversed));
-          const reversedNote = card.reversed ? '<em style="color:var(--muted); display:block; margin-top:6px;">This reversal suggests a blockage, internalization, or the need to reframe the energy.</em>' : '';
+          const detail = card.arcana === 'major' ? (card.detailed || '') : (card.detailed || '');
+          const reversedNote = card.reversed ? '<em style="color:var(--muted); display:block; margin-top:6px;">(Reversed: internal block, delay, or shadow expression — reflect on what resists you.)</em>' : '';
           html += `
             <div class="card-detail">
               <h3>${title}</h3>
@@ -587,9 +596,6 @@
         }, duration + 800);
       }
     }
-
-    // Initialize: fill major arcana details
-    // (Already set in majorArcana array)
   </script>
 </body>
 </html>
